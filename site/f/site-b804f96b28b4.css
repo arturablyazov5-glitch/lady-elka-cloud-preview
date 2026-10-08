@@ -585,7 +585,7 @@
 .text_wrapper__billet {display: flex; flex-direction: column; align-items: flex-start; row-gap: 0px; width: auto; flex-shrink: 1; justify-content: center;}
 .title-question__billet {display: flex; align-items: center; column-gap: 12px;}
 .site__h4 {font-size: 16px; font-family: 'Manrope'; line-height: 130%; font-weight: 500;}
-.color__h3 {color: rgba(146, 146, 146, 1); background-size: auto; background-image: none/*linear-gradient(rgb(245, 245, 245) 0%, rgb(245, 245, 245) 100%)*/; background-repeat: repeat; background-position: left 0px top 0px; background-attachment: scroll;}
+.color__h3 {color: rgba(108, 108, 108, 1); background-size: auto; background-image: none/*linear-gradient(rgb(245, 245, 245) 0%, rgb(245, 245, 245) 100%)*/; background-repeat: repeat; background-position: left 0px top 0px; background-attachment: scroll;}
 .item_list {display: flex; flex-direction: column; row-gap: 12px; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px;}
 .wrapper__list {display: flex; flex-direction: column; align-items: stretch; width: 100%;}
 .dot__list {width: 6px; height: 6px; border-top-left-radius: 1000px; border-top-right-radius: 1000px; border-bottom-left-radius: 1000px; border-bottom-right-radius: 1000px; margin-top: 10px; background-size: auto; background-image: linear-gradient(rgba(17, 131, 65, 1) 0%, rgba(17, 131, 65, 1) 100%); background-repeat: no-repeat; background-position: left 0px top 0px; background-attachment: scroll; flex-shrink: 0;}
@@ -652,7 +652,8 @@
 .white__button {padding-left: 32px; padding-right: 32px; padding-top: 16px; padding-bottom: 16px; border-top-left-radius: 1000px; border-top-right-radius: 1000px; border-bottom-left-radius: 1000px; border-bottom-right-radius: 1000px; display: inline-block; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; width: auto; flex-grow: 0; flex-shrink: 0; justify-content: space-between; font-family: 'Soyuz Grotesk'; font-size: 24px; background-size: auto; background-image: none/*linear-gradient(rgba(231, 39, 39, 1) 0%, rgba(198, 40, 40, 1) 102%)*/; background-repeat: no-repeat; background-position: left 0px top 0px; background-attachment: scroll; line-height: 120%; margin-top: 0px; background-color: rgb(255, 255, 255); transition-property: all; transition-duration: 200ms; transition-delay: 0ms; transition-timing-function: linear; color: rgba(39, 43, 48, 1);}
 .white__button:hover {background-image: none/*linear-gradient(rgba(39, 43, 48, 1) 0%, rgba(39, 43, 48, 1) 100%)*/; background-color: rgb(39, 43, 48); background-size: auto; color: rgba(255, 255, 255, 1);}
 .worm__img {background-size: contain; background-image: url("/d/vector_2.svg"); background-repeat: no-repeat; background-position: center center; background-attachment: scroll; width: 984px; height: 466px; position: absolute; right: 200px; z-index: 1; opacity: 0.1; top: -57px; bottom: -32px; flex-grow: 0;}
-.doc__img {position: absolute; width: 1021px; height: 730px; right: -164px; z-index: 1; top: -63px;}
+/* dokumenty_1_1.png has wide transparent margins (paper is x 409-864 of 998px). The old box (1021px, right:-164px) kept the paper in the column, but its empty part widened the page. The box now starts where the paper starts and ends at the column edge; background-size/position keep every visible pixel in place. */
+.doc__img {position: absolute; width: 438.6px; height: 730px; right: 0; z-index: 1; top: -63px; background-size: 1021px auto; background-position: -418.4px center;}
 .question__img {padding-left: 20px; padding-right: 20px; padding-top: 20px; padding-bottom: 20px; background-image: url("/d/photo_2026-09-13_16-09-18.jpg"); background-position: center center; background-size: cover;}
 .site-catalog__h1 {font-size: 28px; font-weight: 700; font-family: 'Manrope'; line-height: 120%;}
 .site-catalog__h3 {font-size: 12px; font-family: 'Manrope'; font-weight: 600; line-height: 130%; text-transform: uppercase;}
@@ -783,8 +784,9 @@
 .text-wrapper__about {flex-direction: column; align-items: flex-start; row-gap: 2px; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px;}
 .promocode-wrapper {flex-direction: row; column-gap: 12px; align-items: stretch; width: 100%; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px;}
 .form-dual {width: 100%; column-gap: 12px; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px;}
-.bread__crumbs {column-gap: 4px; align-items: center; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px;}
-.bread__crumbs-link {padding-left: 2px; padding-right: 2px; padding-top: 2px; padding-bottom: 2px; color: rgba(146, 146, 146, 1); transition-property: all; transition-duration: 200ms; transition-delay: 0ms; transition-timing-function: ease;}
+.bread__crumbs {flex-wrap: wrap; column-gap: 4px; align-items: center; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px;}
+.bread__crumbs > .text {min-width: 0; max-width: 100%; overflow-wrap: anywhere;}
+.bread__crumbs-link {padding-left: 2px; padding-right: 2px; padding-top: 2px; padding-bottom: 2px; color: rgba(108, 108, 108, 1); transition-property: all; transition-duration: 200ms; transition-delay: 0ms; transition-timing-function: ease;}
 .bread__crumbs-link:hover {color: rgba(39, 43, 48, 1); font-weight: 600;}
 .filters-wrapper {padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px; justify-content: space-between; align-items: center; width: 100%;}
 .emoji__h3 {width: 20px; height: 20px;}
@@ -873,6 +875,11 @@
 @media (max-width: 991px) {.question__img {height: 400px; background-position: right 0% center; background-size: cover;}}
 @media (max-width: 991px) {.left__wrapper {flex-direction: row;}}
 @media (max-width: 991px) {.plan__img {display: none;}}
+@media (min-width: 992px) and (max-width: 1099px) {
+  .main-content__footer {column-gap: 20px;}
+  .list__footer {column-gap: 20px;}
+  .item__footer {margin-left: 10px; margin-right: 10px;}
+}
 @media (max-width: 991px) {.grid__footer {row-gap: 40px; padding-top: 52px; padding-bottom: 52px; padding-left: 10px; padding-right: 10px;}}
 @media (max-width: 991px) {.grid__header {padding-left: 20px; padding-right: 20px; padding-bottom: 12px; align-items: center; column-gap: 8px;}}
 @media (max-width: 991px) {.product__img {height: 352px; width: 100%;}}
@@ -923,7 +930,7 @@
 @media (max-width: 767px) {.site__h2 {font-size: 20px;}}
 @media (max-width: 767px) {.emoji-billet__img {width: 24px; height: 24px;}}
 @media (max-width: 767px) {.text-emoji__billet {padding-left: 20px; padding-right: 20px; padding-top: 12px; padding-bottom: 12px;}}
-@media (max-width: 767px) {.doc__img {top: 449px; width: 500px; flex-grow: 0; height: 436px; right: -64px;}}
+@media (max-width: 767px) {.doc__img {top: 449px; width: 231.1px; flex-grow: 0; height: 436px; right: 0; background-size: 500px auto; background-position: -204.9px center;}}
 @media (max-width: 767px) {.content-button__gap__billet {padding-left: 16px; padding-right: 16px; padding-top: 16px; padding-bottom: 40px;}}
 @media (max-width: 767px) {.list__slider {height: 320px;}}
 @media (max-width: 767px) {.button-description__wrapper {flex-direction: column; align-items: flex-start; row-gap: 8px;}}
@@ -1022,10 +1029,10 @@
 @media (max-width: 479px) {.reviews__img {width: 40px; height: 40px;}}
 @media (max-width: 479px) {.fill__img {border-top-left-radius: 24px; border-top-right-radius: 24px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; height: 220px;}}
 @media (max-width: 479px) {.content-button__gap {row-gap: 32px;}}
-@media (max-width: 479px) {.doc__img {top: 294px; width: 225px; flex-grow: 0; height: 275px; right: -23px;}}
+@media (max-width: 479px) {.doc__img {top: 294px; width: 111.9px; flex-grow: 0; height: 275px; right: 0; background-size: auto 275px; background-position: -90.1px center;}}
 @media (max-width: 479px) {.grid__footer {row-gap: 40px; padding-left: 20px; padding-right: 20px;}}
 @media (max-width: 479px) {.grid__header {padding-top: 6px; padding-bottom: 6px; column-gap: 8px;}}
-@media (max-width: 479px) {.product__img {height: auto;}}
+@media (max-width: 479px) {.product__img {height: auto; aspect-ratio: var(--storefront-image-ratio, 3/4);}}
 @media (max-width: 479px) {.content__product {row-gap: 24px;}}
 @media (max-width: 479px) {.site-catalog__h1 {font-size: 20px;}}
 @media (max-width: 479px) {.property-content__product {row-gap: 14px;}}
@@ -1096,6 +1103,9 @@
 @media (max-width: 479px) {.gap-ver--15px {row-gap: 15px;}}
 @media (max-width: 479px) {.gap-ver--20px {row-gap: 20px;}}
 @media (max-width: 479px) {.gap-ver--80px {row-gap: 40px;}}
+
+/* The footer uses a dark background: preserve its original, accessible light grey. */
+.footer .color__h3 { color: #929292; }
 
 .div--u-ifiy9q2xa {transform: scale3d(0.8, 0.8, 0.8);}
 .div--u-ip9kfwz7k {transform: scale3d(0.8, 0.8, 0.8);}
@@ -1439,3 +1449,12 @@ table.table2 th {
 .mosaic-video-widget__video[src]:not([src=""]) ~ .mosaic-video-widget__video-controls {
     display: none !important;
 }
+
+/* Restore the keyboard indicator suppressed by the captured platform form reset. */
+.form :is(input, textarea, select):focus-visible { outline: 2px solid #118341; outline-offset: 3px; }
+/* Browser placeholder grey fails contrast on the shared search field's #f7f7f8 background. */
+.search-bar__input::placeholder { color: #6c6c6c; opacity: 1; }
+
+/* Shared loading behavior: home uses four-shared plus its page design, products use root-shared. */
+@media (max-width: 767px) { .div--u-iwe3o9efl { --storefront-delivery-background: url("/d/dostavka-mobile.webp"); } }
+.div--u-iwe3o9efl[data-background-deferred] { background-image: none; }

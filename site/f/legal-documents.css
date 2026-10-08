@@ -1,0 +1,2 @@
+/* Preserve the original document and breadcrumb color within legal pages. */
+.legal-document .color__h3 { color: #929292; }
