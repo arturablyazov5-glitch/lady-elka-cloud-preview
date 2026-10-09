@@ -1086,6 +1086,11 @@ window.__LE_SNAPSHOT_READS__={"/__offline/catalog/trees.csv":{"type":"text/csv",
     return loadProducts(catalogEndpoint("decor"), "decor.csv", decorProducts2);
   }
 
+  // storefront/url-path.mjs
+  function pagePath(value) {
+    return String(value).replace(/^([^?#]*)([?#].*)?$/, (_, path, suffix = "") => (path === "/" || /\.(?:html?|xml|txt|json|csv|css|m?js|map|pdf|gz|zip|png|jpe?g|webp|avif|gif|svg|ico|mp4|webm|woff2?|ttf)$/i.test(path) ? path : path.replace(/\/+$/, "") + "/") + suffix);
+  }
+
   // storefront/products/card-renderer.mjs
   var imageSizeResolver = null;
   var attributeOf = (tag, name) => {
@@ -1208,7 +1213,7 @@ window.__LE_SNAPSHOT_READS__={"/__offline/catalog/trees.csv":{"type":"text/csv",
       <div data-prop-discount class="text offer__product site-catalog__h3"><span class="text-block-wrap-div">${discount ? `-${Math.abs(discount)}%` : ""}</span></div>
     </div><div data-prop-offer class="text site__h4 color__h3" style="text-decoration:line-through"><span class="text-block-wrap-div">${initial.oldPrice > initial.price ? money4(initial.oldPrice) : ""}</span></div></div>
     <div class="div button-wrapper__product"><div tabindex="0" data-cart-open role="button" class="button standart-catalog__button-2 buy-btn"><span class="text-button"><span class="text-block-wrap-div">купить</span></span></div>
-      <a href="${escapeHtml(route.path)}" class="button stroke-catalog__button"><span class="text-button"><span class="text-block-wrap-div">подробнее</span></span></a></div></div>
+      <a href="${escapeHtml(pagePath(route.path))}" class="button stroke-catalog__button"><span class="text-button"><span class="text-block-wrap-div">подробнее</span></span></a></div></div>
   </div><script type="application/json" data-storefront-variants>${serialized}<\/script></div>`;
   }
   function decorCardHtml(opening, product, route, template = "") {
@@ -1228,7 +1233,7 @@ window.__LE_SNAPSHOT_READS__={"/__offline/catalog/trees.csv":{"type":"text/csv",
       ${product.variants.length > 1 || first.size ? fieldHtml({ classes: "div input__catalog", labelClass: templateClass(template, byData("data-prop-height"), "text site-catalog__h3 color__h2"), data: "variant", ariaLabel: "Вариант декора", value: first.label || first.category, options: product.variants.filter((v) => v.category === first.category).map((v) => ({ value: v.size, label: v.label || v.category })) }) : ""}
       </div><div class="div price-button-wrapper__product"><div data-price-decor class="text color__h2 site-catalog__h1"><span class="text-block-wrap-div">${money4(first.price)}</span></div>
       <div class="div button-wrapper__product"><div tabindex="0" data-cart-open role="button" class="button standart-catalog__button-2 buy-btn"><span class="text-button"><span class="text-block-wrap-div">в корзину</span></span></div>
-      <a href="${escapeHtml(route.path)}" class="button stroke-catalog__button"><span class="text-button"><span class="text-block-wrap-div">подробнее</span></span></a></div></div>
+      <a href="${escapeHtml(pagePath(route.path))}" class="button stroke-catalog__button"><span class="text-button"><span class="text-block-wrap-div">подробнее</span></span></a></div></div>
     </div><script type="application/json" data-storefront-variants>${serialized}<\/script></div>`;
   }
 
@@ -1299,7 +1304,7 @@ window.__LE_SNAPSHOT_READS__={"/__offline/catalog/trees.csv":{"type":"text/csv",
         card.remove();
         continue;
       }
-      const path = ((_c = card.querySelector("a.stroke-catalog__button[href]")) == null ? void 0 : _c.getAttribute("href")) || "/catalog";
+      const path = ((_c = card.querySelector("a.stroke-catalog__button[href]")) == null ? void 0 : _c.getAttribute("href")) || "/catalog/";
       const route = { id: source.id, kind, path, liveTitle: source.title };
       const template = card.outerHTML;
       const html = kind === "decor" ? decorCardHtml(opening, source, route, template) : cardHtml(opening, source, route, template);
@@ -1342,7 +1347,7 @@ window.__LE_SNAPSHOT_READS__={"/__offline/catalog/trees.csv":{"type":"text/csv",
   var demand;
   var formsReady = false;
   function loadForms() {
-    return demand || (demand = import("/assets/83bbb446b51ef095cb1454f2032e4157fff55e5a208554521450fe5c84726faa.js").then((module) => {
+    return demand || (demand = import("/assets/5561afb48ca99da68d5a1a3c6b49e303e557bd0d8448b44e49dd324d25c2e48c.js").then((module) => {
       module.start(getPromo, cart_store_exports);
       formsReady = true;
     }).catch((error) => {
@@ -1580,7 +1585,7 @@ window.__LE_SNAPSHOT_READS__={"/__offline/catalog/trees.csv":{"type":"text/csv",
     const input = form.matches('form') ? form.querySelector('input[name="search"]') : null;
     if (!input) return;
     event.preventDefault();
-    location.assign('/search?search=' + encodeURIComponent(input.value.trim()));
+    location.assign('/search/?search=' + encodeURIComponent(input.value.trim()));
   });
 
   document.addEventListener('click', (event) => {

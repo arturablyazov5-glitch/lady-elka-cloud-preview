@@ -2,56 +2,56 @@
 		xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
 		xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
  <url>
-  <loc>https://lady-elka.ru/catalog</loc>
+  <loc>https://lady-elka.ru/catalog/</loc>
   <lastmod>2025-08-28T22:22:49+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.6</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/oferta</loc>
+  <loc>https://lady-elka.ru/oferta/</loc>
   <lastmod>2025-08-28T22:23:00+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.6</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/privacy</loc>
+  <loc>https://lady-elka.ru/privacy/</loc>
   <lastmod>2025-08-28T22:23:12+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.6</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/decor</loc>
+  <loc>https://lady-elka.ru/decor/</loc>
   <lastmod>2025-08-28T22:23:21+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.6</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/partneram</loc>
+  <loc>https://lady-elka.ru/partneram/</loc>
   <lastmod>2025-08-28T22:23:30+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.6</priority>
  </url>
  
  <url>
-  <loc>https://lady-elka.ru/o-nas</loc>
+  <loc>https://lady-elka.ru/o-nas/</loc>
   <lastmod>2025-08-28T22:23:49+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.6</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru</loc>
+  <loc>https://lady-elka.ru/</loc>
   <lastmod>2025-08-26T13:34:38+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>1</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/catalog/landscape-gardening</loc>
+  <loc>https://lady-elka.ru/catalog/landscape-gardening/</loc>
   <lastmod>2026-06-09T07:05:27+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.6</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/blog</loc>
+  <loc>https://lady-elka.ru/blog/</loc>
   <lastmod>2026-08-15T19:02:04+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.6</priority>
@@ -59,266 +59,266 @@
  
  
  <url>
-  <loc>https://lady-elka.ru/catalog-tree</loc>
+  <loc>https://lady-elka.ru/catalog-tree/</loc>
   <lastmod>2026-09-15T23:11:29+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.6</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/miranda</loc>
+  <loc>https://lady-elka.ru/tree/miranda/</loc>
   <lastmod>2026-09-15T18:06:07+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/bella</loc>
+  <loc>https://lady-elka.ru/tree/bella/</loc>
   <lastmod>2026-09-15T17:52:37+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/vendi</loc>
+  <loc>https://lady-elka.ru/tree/vendi/</loc>
   <lastmod>2026-09-15T18:11:35+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/vita</loc>
+  <loc>https://lady-elka.ru/tree/vita/</loc>
   <lastmod>2026-09-14T18:39:16+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/greta</loc>
+  <loc>https://lady-elka.ru/tree/greta/</loc>
   <lastmod>2026-09-15T18:19:46+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/silviya</loc>
+  <loc>https://lady-elka.ru/tree/silviya/</loc>
   <lastmod>2026-09-15T18:08:20+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/berta</loc>
+  <loc>https://lady-elka.ru/tree/berta/</loc>
   <lastmod>2026-09-15T17:26:45+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/darina</loc>
+  <loc>https://lady-elka.ru/tree/darina/</loc>
   <lastmod>2026-09-15T18:17:54+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/avrora</loc>
+  <loc>https://lady-elka.ru/tree/avrora/</loc>
   <lastmod>2026-09-15T17:32:20+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/katrin</loc>
+  <loc>https://lady-elka.ru/tree/katrin/</loc>
   <lastmod>2026-09-15T17:48:20+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/vivian</loc>
+  <loc>https://lady-elka.ru/tree/vivian/</loc>
   <lastmod>2026-09-15T17:34:51+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/betti</loc>
+  <loc>https://lady-elka.ru/tree/betti/</loc>
   <lastmod>2026-09-15T16:52:12+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/kameliya</loc>
+  <loc>https://lady-elka.ru/tree/kameliya/</loc>
   <lastmod>2026-09-15T17:59:55+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/adel</loc>
+  <loc>https://lady-elka.ru/tree/adel/</loc>
   <lastmod>2026-09-15T18:16:12+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/valensiya</loc>
+  <loc>https://lady-elka.ru/tree/valensiya/</loc>
   <lastmod>2026-09-15T18:22:40+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/elizabet</loc>
+  <loc>https://lady-elka.ru/tree/elizabet/</loc>
   <lastmod>2026-09-15T18:25:47+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/kamila</loc>
+  <loc>https://lady-elka.ru/tree/kamila/</loc>
   <lastmod>2026-09-07T12:59:33+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/afina</loc>
+  <loc>https://lady-elka.ru/tree/afina/</loc>
   <lastmod>2026-09-15T17:29:44+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/graciya</loc>
+  <loc>https://lady-elka.ru/tree/graciya/</loc>
   <lastmod>2026-09-07T12:59:26+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/karolina</loc>
+  <loc>https://lady-elka.ru/tree/karolina/</loc>
   <lastmod>2026-09-15T17:37:51+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/mishel</loc>
+  <loc>https://lady-elka.ru/tree/mishel/</loc>
   <lastmod>2026-09-27T14:47:03+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/nikol</loc>
+  <loc>https://lady-elka.ru/tree/nikol/</loc>
   <lastmod>2026-09-13T13:54:20+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/tuya-60-90-sm</loc>
+  <loc>https://lady-elka.ru/tree/tuya-60-90-sm/</loc>
   <lastmod>2026-09-07T12:59:41+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  
  <url>
-  <loc>https://lady-elka.ru/tree/tuya-golubaya-60-90-sm</loc>
+  <loc>https://lady-elka.ru/tree/tuya-golubaya-60-90-sm/</loc>
   <lastmod>2026-09-07T12:59:49+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/tuya-120-150-sm</loc>
+  <loc>https://lady-elka.ru/tree/tuya-120-150-sm/</loc>
   <lastmod>2026-09-07T12:59:56+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/tuya-150-sm-na-nozhke</loc>
+  <loc>https://lady-elka.ru/tree/tuya-150-sm-na-nozhke/</loc>
   <lastmod>2026-09-07T13:00:02+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/tuya-skladchataya</loc>
+  <loc>https://lady-elka.ru/tree/tuya-skladchataya/</loc>
   <lastmod>2026-09-07T13:00:09+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/tuya-skladchataya-s-golubym-konchikom</loc>
+  <loc>https://lady-elka.ru/tree/tuya-skladchataya-s-golubym-konchikom/</loc>
   <lastmod>2026-09-07T13:04:22+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/tuya-smaragd</loc>
+  <loc>https://lady-elka.ru/tree/tuya-smaragd/</loc>
   <lastmod>2026-09-07T13:04:41+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/tuya-3-shara-na-nozhke</loc>
+  <loc>https://lady-elka.ru/tree/tuya-3-shara-na-nozhke/</loc>
   <lastmod>2026-09-07T13:04:46+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/tuya-shar-goluboi</loc>
+  <loc>https://lady-elka.ru/tree/tuya-shar-goluboi/</loc>
   <lastmod>2026-09-07T13:04:52+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/tuya-shar</loc>
+  <loc>https://lady-elka.ru/tree/tuya-shar/</loc>
   <lastmod>2026-09-07T13:06:49+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/tuya-shar-na-nozhke</loc>
+  <loc>https://lady-elka.ru/tree/tuya-shar-na-nozhke/</loc>
   <lastmod>2026-09-07T13:06:57+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/tuya-180-250-sm</loc>
+  <loc>https://lady-elka.ru/tree/tuya-180-250-sm/</loc>
   <lastmod>2026-09-07T13:07:03+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/mozhzhevelnik</loc>
+  <loc>https://lady-elka.ru/tree/mozhzhevelnik/</loc>
   <lastmod>2026-09-13T13:16:43+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/tree/kiparisovik</loc>
+  <loc>https://lady-elka.ru/tree/kiparisovik/</loc>
   <lastmod>2026-09-07T13:07:18+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/catalog-tree/korzina-pod-yelku</loc>
+  <loc>https://lady-elka.ru/catalog-tree/korzina-pod-yelku/</loc>
   <lastmod>2025-11-13T08:30:48+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/catalog-tree/nastolnaya-elka-vesta</loc>
+  <loc>https://lady-elka.ru/catalog-tree/nastolnaya-elka-vesta/</loc>
   <lastmod>2026-09-13T13:25:33+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/catalog-tree/sumka-dlya-hraneniya-yelok</loc>
+  <loc>https://lady-elka.ru/catalog-tree/sumka-dlya-hraneniya-yelok/</loc>
   <lastmod>2025-11-13T08:29:59+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/catalog-tree/hvojnaya-girlyanda-2.8-metra</loc>
+  <loc>https://lady-elka.ru/catalog-tree/hvojnaya-girlyanda-2.8-metra/</loc>
   <lastmod>2026-09-14T15:10:34+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/catalog-tree/venok-naturalnyj</loc>
+  <loc>https://lady-elka.ru/catalog-tree/venok-naturalnyj/</loc>
   <lastmod>2026-09-13T13:47:03+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/blog/novogodnie-iskusstvennye-yelki-kak-vybrat-idealnuyu-yelku-dlya-doma-na-dolgie-gody</loc>
+  <loc>https://lady-elka.ru/blog/novogodnie-iskusstvennye-yelki-kak-vybrat-idealnuyu-yelku-dlya-doma-na-dolgie-gody/</loc>
   <lastmod>2026-08-13T19:52:29+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>
  </url>
  <url>
-  <loc>https://lady-elka.ru/blog/iskusstvennaya-yelka-cena-i-chto-na-nee-vliyaet</loc>
+  <loc>https://lady-elka.ru/blog/iskusstvennaya-yelka-cena-i-chto-na-nee-vliyaet/</loc>
   <lastmod>2026-08-13T19:57:40+03:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.4</priority>

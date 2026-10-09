@@ -7,7 +7,7 @@
   const count = document.querySelector('.search-result__count .value__search .text-block-wrap-div');
   const list = document.querySelector('.search-result__list');
   const controls = document.querySelector('.search-result__controls');
-  document.querySelectorAll('form[action="/search"] input[name="search"]').forEach(input => { input.value = query; });
+  document.querySelectorAll('form[action="/search/"] input[name="search"], form[action="/search"] input[name="search"]').forEach(input => { input.value = query; });
   if (!count || !list || !controls) return;
 
   const link = (path, text, className) => {
@@ -75,12 +75,12 @@
         for (let number = 0; number < pages; number++) {
           const wrapper = document.createElement('div');
           wrapper.className = 'search-result__pagination-item' + (number === page ? ' is-active' : '');
-          const path = number ? `/search/p/${number}` : '/search';
+          const path = number ? `/search/p/${number}/` : '/search/';
           wrapper.append(link(`${path}?search=${encodeURIComponent(query)}`, String(number + 1), 'search-result__page-link'));
           pagination.append(wrapper);
         }
         controls.append(pagination);
-        if (page + 1 < pages) controls.append(link(`/search/p/${page + 1}?search=${encodeURIComponent(query)}`, 'Следующая', 'search-result__next-page'));
+        if (page + 1 < pages) controls.append(link(`/search/p/${page + 1}/?search=${encodeURIComponent(query)}`, 'Следующая', 'search-result__next-page'));
       }
     })
     .catch(() => {

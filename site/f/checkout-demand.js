@@ -481,8 +481,8 @@ function buildOrderPayload(items2, customer, promo = null, origin = location.ori
     } : null,
     orderId,
     clientId: customer.name || "Леди Елка",
-    successUrl: `${origin}/spasibo?oid=${encodeURIComponent(orderId)}`,
-    failUrl: `${origin}/pay-return?fail=1&oid=${encodeURIComponent(orderId)}`,
+    successUrl: `${origin}/spasibo/?oid=${encodeURIComponent(orderId)}`,
+    failUrl: `${origin}/pay-return/?fail=1&oid=${encodeURIComponent(orderId)}`,
     promoCode: (promo == null ? void 0 : promo.code) || "",
     address: customer.address,
     contactPref: customer.contactPref
@@ -1016,7 +1016,7 @@ function setFieldError(control, message) {
 function initForms(root = document) {
   for (const form of root.querySelectorAll("form")) {
     if (mounted2.has(form) || form.matches("[data-pay-now]") || form.querySelector("[data-pay-now]")) continue;
-    if (form.method.toLowerCase() === "get" && new URL(form.action, location.href).pathname === "/search") continue;
+    if (form.method.toLowerCase() === "get" && new URL(form.action, location.href).pathname.replace(/\/+$/, "") === "/search") continue;
     if (form.querySelector(".js-flt")) {
       form.addEventListener("submit", (event) => event.preventDefault(), true);
       mounted2.add(form);

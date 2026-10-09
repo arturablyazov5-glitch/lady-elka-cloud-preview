@@ -193,7 +193,7 @@
     const input = form.matches('form') ? form.querySelector('input[name="search"]') : null;
     if (!input) return;
     event.preventDefault();
-    location.assign('/search?search=' + encodeURIComponent(input.value.trim()));
+    location.assign('/search/?search=' + encodeURIComponent(input.value.trim()));
   });
 
   document.addEventListener('click', (event) => {

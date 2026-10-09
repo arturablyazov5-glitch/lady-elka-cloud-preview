@@ -1,7 +1,7 @@
 // Native interactions for the source 404 markup. No Taptop/analytics runtime.
 (() => {
   if (window.innerWidth <= 768) {
-    const label = document.querySelector('[href="/catalog/landscape-gardening"] .menu__link-text .text-block-wrap-div');
+    const label = document.querySelector('[href="/catalog/landscape-gardening/"] .menu__link-text .text-block-wrap-div');
     if (label) label.textContent = 'Ландшафтное озеленение';
   }
   const up = document.querySelector('.up-button');
@@ -90,7 +90,7 @@ document.querySelectorAll('.dot-online__work').forEach(dot => onlineDots.observe
     if (!idx) return null;
     const qn = norm(q), qs = toSlug(q);
     const hit = idx.find(it=>{
-      const t = norm(it.title), u = (it.url||'').toLowerCase();
+      const t = norm(it.title), u = (it.url||'').toLowerCase().replace(/\/+$/, '');
       return t===qn || u.endsWith('/'+qs) || u.endsWith('/'+qs.replace(/-/g,''));
     });
     return hit?.url || null;
@@ -108,7 +108,7 @@ document.querySelectorAll('.dot-online__work').forEach(dot => onlineDots.observe
     const fromIndex = findInIndex(q);
     if (fromIndex){
       e.preventDefault();
-      location.assign(fromIndex);
+      location.assign(fromIndex.replace(/\/+$/, '') + '/');
       return;
     }
 
@@ -116,8 +116,8 @@ document.querySelectorAll('.dot-online__work').forEach(dot => onlineDots.observe
     e.preventDefault(); // останавливаем навигацию, у нас быстрый план B
     const slug = toSlug(q);
     const candidates = [
-      `/tree/${slug}`,
-      `/tree/${slug.replace(/-/g,'')}`,  // на случай «анна-мария» vs «аннамария»
+      `/tree/${slug}/`,
+      `/tree/${slug.replace(/-/g,'')}/`,  // на случай «анна-мария» vs «аннамария»
     ];
 
     // Проверяем кандидатов параллельно и берём первого успешного
@@ -127,7 +127,7 @@ document.querySelectorAll('.dot-online__work').forEach(dot => onlineDots.observe
   }
 
   function bind(){
-    document.querySelectorAll('form[action="/search"]').forEach(f=>{
+    document.querySelectorAll('form[action="/search/"], form[action="/search"]').forEach(f=>{
       if (f.__fastBind) return;
       f.addEventListener('submit', onSubmitFast);
       f.__fastBind = true;
