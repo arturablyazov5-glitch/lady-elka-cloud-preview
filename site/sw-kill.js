@@ -1,15 +1,27 @@
-const LE_SW_CONFIG = {"release":"872ecb019ff53e38aa8dcee537a3410611418111d579a7cef49979a8d351f872","kill":true,"assets":{}};
+const LE_SW_CONFIG = {"release":"441e2a2e81931405c798a033a9a790d61a5bf9d2d829f89a29bfd99174edfaf6","kill":true,"assets":{}};
 /* Generated /sw.js prepends LE_SW_CONFIG. Only content-addressed static assets
    belong here. No precache, no API/HTML storage, no background revalidation. */
-const { release, kill, assets } = LE_SW_CONFIG;
+const { kill, assets } = LE_SW_CONFIG;
 const PREFIX = 'le-static-';
-const CACHE = PREFIX + release;
+const CACHE = PREFIX + 'v1';
 const MAX_ENTRIES = 512;
 const MAX_TOTAL_BYTES = 64 * 1024 * 1024;
 const MAX_OBJECT_BYTES = 4 * 1024 * 1024;
 const HASHED = /^\/(?:assets|media\/(?:catalog-pinned|catalog-thumbs))\/([a-f0-9]{64})\.(?:css|js|woff2?|png|jpe?g|webp|avif|gif|svg|ico)$/;
 const pending = new Map();
 let writes = Promise.resolve();
+let sizes, totalBytes = 0;
+async function inventory(cache) {
+  if (sizes) return sizes;
+  const loaded = new Map();
+  for (const key of await cache.keys()) {
+    const entry = await cache.match(key);
+    loaded.set(key.url, Number(entry?.headers.get('X-LE-SW-Bytes')) || MAX_OBJECT_BYTES);
+  }
+  sizes = loaded;
+  totalBytes = [...sizes.values()].reduce((total, size) => total + size, 0);
+  return sizes;
+}
 self.addEventListener('install', event => {
   // Ordinary releases wait until all old controlled tabs close. Emergency
   // shutdown has no fetch handler and can safely take over immediately.
@@ -18,9 +30,26 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-    await Promise.all(names.filter(name => kill || (name.startsWith(PREFIX) && name !== CACHE)).map(name => caches.delete(name)));
-    if (kill) { await self.registration.unregister(); return; }
-    await caches.open(CACHE);
+    if (kill) {
+      await Promise.all(names.map(name => caches.delete(name)));
+      await self.registration.unregister(); return;
+    }
+    const cache = await caches.open(CACHE);
+    const retained = request => {
+      const url = new URL(request.url);
+      return url.origin === self.location.origin && !url.search && Object.hasOwn(assets, url.pathname);
+    };
+    // Upgrade existing release caches without forcing unchanged assets back to
+    // the network. These entries were already verified by the previous worker.
+    for (const name of names.filter(name => name.startsWith(PREFIX) && name !== CACHE)) {
+      const old = await caches.open(name);
+      for (const key of await old.keys()) if (retained(key) && !await cache.match(key)) {
+        const entry = await old.match(key);
+        if (entry) await cache.put(key, entry);
+      }
+      await caches.delete(name);
+    }
+    for (const key of await cache.keys()) if (!retained(key)) await cache.delete(key);
     await self.clients.claim();
   })());
 });
@@ -45,18 +74,13 @@ async function save(cache, request, response, expectedHash) {
   headers.set('X-LE-SW-Bytes', String(body.byteLength));
   const stored = new Response(body, { status: 200, statusText: response.statusText, headers });
   writes = writes.catch(() => {}).then(async () => {
+    const entries = await inventory(cache);
     await cache.put(request, stored);
-    const keys = await cache.keys();
-    let bytes = 0;
-    const sizes = [];
-    for (const key of keys) {
-      const entry = await cache.match(key);
-      const size = Number(entry?.headers.get('X-LE-SW-Bytes')) || MAX_OBJECT_BYTES;
-      sizes.push(size); bytes += size;
-    }
-    let count = keys.length;
-    for (let i = 0; count > MAX_ENTRIES || bytes > MAX_TOTAL_BYTES; i++) {
-      await cache.delete(keys[i]); bytes -= sizes[i]; count--;
+    totalBytes += body.byteLength - (entries.get(request.url) || 0);
+    entries.set(request.url, body.byteLength);
+    for (const [url, size] of entries) {
+      if (entries.size <= MAX_ENTRIES && totalBytes <= MAX_TOTAL_BYTES) break;
+      await cache.delete(url); entries.delete(url); totalBytes -= size;
     }
   });
   await writes;
@@ -72,6 +96,7 @@ if (!kill) self.addEventListener('fetch', event => {
   }
   const match = !url.search && HASHED.exec(url.pathname);
   if (!match) return;
+  let saving = Promise.resolve();
   const task = (async () => {
     let cache;
     try { cache = await caches.open(CACHE); const hit = await cache.match(request); if (hit) return hit; }
@@ -80,16 +105,17 @@ if (!kill) self.addEventListener('fetch', event => {
     if (!load) {
       load = (async () => {
         const response = await fetch(request);
-        await save(cache, request, response, match[1]).catch(() => {});
+        // Clone before handing the streaming response to the document.
+        saving = save(cache, request, response.clone(), match[1]).catch(() => {});
         return response;
       })();
       pending.set(request.url, load);
-      load.finally(() => pending.delete(request.url)).catch(() => {});
+      load.then(() => saving, () => {}).finally(() => pending.delete(request.url)).catch(() => {});
     }
     return (await load).clone();
   })();
   event.respondWith(task);
-  event.waitUntil(task.then(() => {}, () => {}));
+  event.waitUntil(task.then(() => saving, () => {}));
 });
 
 if (!kill) self.addEventListener('message', event => {
