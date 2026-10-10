@@ -1,4 +1,5 @@
 // Publication adapters for the built static site. Chosen by --publish / LE_DEPLOY_METHOD.
+//   git-timeweb — filtered preview Git push, one app deployment, active+smoke acknowledgement
 //   none     — build only (default; nothing leaves the machine)
 //   dir      — local immutable release + symlink switch (LE_DEPLOY_DIR)
 //   rsync    — rsync over SSH to the hosting document root (LE_DEPLOY_RSYNC_TARGET=user@host:/path, LE_DEPLOY_SSH_KEY=file)
