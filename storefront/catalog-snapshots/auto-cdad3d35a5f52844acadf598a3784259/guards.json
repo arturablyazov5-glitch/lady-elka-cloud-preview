@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "blocked": [],
+  "warnings": [],
+  "stats": {
+    "activeProducts": 39,
+    "activeVariants": 243,
+    "previousActiveProducts": 39,
+    "previousActiveVariants": 243
+  },
+  "thresholds": {
+    "maxActiveProductDropPct": 20,
+    "maxActiveProductDropAbs": 5,
+    "maxActiveVariantDropPct": 35,
+    "minPrice": 100,
+    "maxPrice": 1000000,
+    "maxPriceJumpPct": 50,
+    "promoRubWarn": 5000,
+    "promoPctWarn": 20
+  }
+}
