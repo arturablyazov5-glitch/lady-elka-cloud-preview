@@ -140,6 +140,12 @@ export async function syncCatalog(options = {}, deps = {}) {
     await (deps.build || buildSnapshot)({ pointerPath: proposed, output, mode, previousAssets: retainedAssets, signal: abort.signal, blogSnapshot: blogChanged ? blog.file : undefined });
     await (deps.diskGuard || diskGuard)();
     const builtRoutes = JSON.parse(await readFile(join(output, 'product-routes.json'), 'utf8'));
+    if (!dryRun && method === 'git-timeweb') {
+      stage = 'recheck-live-feeds';
+      const latest = await (deps.fetchInputs || fetchInputs)(options);
+      const latestHash = feedsDigest(Object.fromEntries(names.map(n => [n, {sha256: hash(latest[n].text)}])));
+      if (latestHash !== feedHash) throw new Error('Live feeds changed during build; publication stopped before Git/Timeweb writes');
+    }
     stage = 'publish';
     const publication = dryRun ? { skipped: true, method } : await (deps.publish || publish)(output, { method, signal: abort.signal, pointer: newPointer || readPointer(pointerPath), blogSnapshot: blogChanged ? blog.file : undefined });
     if (!dryRun && mode === 'production' && method !== 'git-timeweb') {

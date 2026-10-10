@@ -31,3 +31,18 @@ test('mock price change passes; empty price/photo, >50% jump and product drop bl
  assert.equal(checkCatalog({prev:feeds,next:edit(r=>r[active].price=String(Math.round(Number(r[active].price)*1.01)))}).passed,true);
  for(const next of [edit(r=>r[active].price=''),edit(r=>r[active].photos=''),edit(r=>r[active].price=String(Number(r[active].price)*2)),edit(r=>r.splice(0,170))])assert.equal(checkCatalog({prev:feeds,next}).passed,false);
 });
+test('feeds changing during build stop before publication and preserve active snapshot',async()=>{
+ const {syncCatalog}=await import('../catalog-sync.mjs');
+ const w=await mkdtemp('/tmp/le-live-recheck-'),p=readPointer(),before=await readFile(p.path),file=join(w,'active.json');await writeFile(file,before);
+ const baseline=await readFeedsOf(p.manifestPath),media=JSON.parse(await readFile(p.mediaPath));let reads=0,publishes=0;
+ const inputs=feeds=>Object.fromEntries(Object.entries(feeds).map(([n,text])=>[n,{...baseline.manifest.feeds[n],text}]));
+ try{
+  await assert.rejects(syncCatalog({pointerPath:file,dryRun:false,method:'git-timeweb',rebuildCurrent:true},{
+   diskGuard:async()=>{},notify:async()=>({sent:true}),prepareBlog:async()=>({status:'unchanged'}),pinMedia:async()=>({...media,failures:[]}),
+   fetchInputs:async()=>inputs(reads++===0?baseline.feeds:{...baseline.feeds,promos:baseline.feeds.promos+'\n'}),
+   build:async({output})=>{await mkdir(output);await writeFile(join(output,'product-routes.json'),'[]')},
+   publish:async()=>{publishes++;throw Error('Publication must not be called')}
+  }),/Live feeds changed/);
+  assert.equal(publishes,0);assert.deepEqual(await readFile(file),before);
+ }finally{await rm(w,{recursive:true,force:true});}
+});
