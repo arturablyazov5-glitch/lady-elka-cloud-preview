@@ -1,8 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "2026-10-08T04-59-43-880Z",
-  "manifest": "storefront/catalog-snapshots/2026-10-08T04-59-43-880Z/manifest.json",
-  "media": "storefront/catalog-snapshots/2026-10-08T04-59-43-880Z/media-manifest.json",
-  "feedsSha256": "e1652ef443822d30589c5813d4f83956d5628dcbab6fe82ba46390800a20c2c7",
-  "activatedAt": "2026-10-08T09:07:37.742Z"
+  "id": "auto-cdad3d35a5f52844acadf598a3784259",
+  "manifest": "storefront/catalog-snapshots/auto-cdad3d35a5f52844acadf598a3784259/manifest.json",
+  "media": "storefront/catalog-snapshots/auto-cdad3d35a5f52844acadf598a3784259/media-manifest.json",
+  "feedsSha256": "07593f66652551c8a3ef04e5e367f86e18d4ac1e9b0345db331e1c8a2e19fc35",
+  "activatedAt": "2026-10-10T05:50:30.407Z",
+  "previousId": "2026-10-08T04-59-43-880Z"
 }
