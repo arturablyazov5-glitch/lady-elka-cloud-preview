@@ -71,7 +71,7 @@ jobs:
           if [ "$LE_DRY_RUN" = true ]; then args+=(--dry-run); else args+=(--apply --publish=git-timeweb); fi
           if [ '${{ inputs.rebuild_current }}' = true ]; then args+=(--rebuild-current); fi
           node scripts/catalog-sync.mjs "${args[@]}"
-      - name: Unchanged: no build, commit or deploy
+      - name: "Unchanged: no build, commit or deploy"
         if: steps.feeds.outputs.changed == 'false' && !inputs.rebuild_current
         run: echo 'unchanged — no build, commit or Timeweb deploy'
       - name: Private Telegram failure alert
