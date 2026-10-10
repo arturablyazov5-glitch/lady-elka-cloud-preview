@@ -5,12 +5,16 @@ import {fetchInputs} from '../catalog-sync.mjs';
 import {feedsDigest,readFeedsOf} from './snapshot.mjs';
 import {readPointer} from '../../storefront/products/snapshot-acceptance.mjs';
 import {recoverPending} from './git-timeweb.mjs';
+import {fetchPublished} from '../../storefront/blog/sync.mjs';
 import {notify,formatMessage} from './notify.mjs';
 const mode=process.argv[2];
 if(mode==='check'){
  const inputs=await fetchInputs(), baseline=await readFeedsOf(readPointer().manifestPath);
  const digest=feedsDigest(Object.fromEntries(Object.entries(inputs).map(([n,v])=>[n,{sha256:createHash('sha256').update(v.text).digest('hex')}])))
- const changed=digest!==feedsDigest(baseline.manifest.feeds);
+ const feedChanged=digest!==feedsDigest(baseline.manifest.feeds);
+ let blogChanged=false;
+ try{const remote=await fetchPublished();let current={posts:[]};try{current=JSON.parse(await readFile('storefront/blog/snapshot.json'));}catch(e){if(e.code!=='ENOENT')throw e;}blogChanged=JSON.stringify(remote.exported.posts)!==JSON.stringify(current.posts);}catch{console.log('Blog export unavailable; previous blog retained');}
+ const changed=feedChanged||blogChanged;
  console.log(changed?'changed':'unchanged');
  if(process.env.GITHUB_OUTPUT)await appendFile(process.env.GITHUB_OUTPUT,`changed=${changed}\n`);
 }else if(mode==='recover'){

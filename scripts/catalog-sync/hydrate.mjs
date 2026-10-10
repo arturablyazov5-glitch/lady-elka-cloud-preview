@@ -28,3 +28,16 @@ for(const a of media.assets){
  if(!verify(b))throw Error('Published media checksum mismatch');
  await mkdir(dirname(file),{recursive:true});await writeFile(file,b);
 }
+
+// Blog cover snapshot is also reproducible from the successful published site.
+try {
+ const blog=JSON.parse(await readFile(resolve(root,'storefront/blog/snapshot.json')));
+ for(const a of Object.values(blog.assets)) {
+  const file=resolve(root,'storefront/public',a.url.replace(/^\//,''));
+  if(!file.startsWith(resolve(root,'storefront/public')+'/'))throw Error('Blog path escapes root');
+  let b;try{b=await readFile(file);if(createHash('sha256').update(b).digest('hex')===a.sha256)continue;}catch(e){if(e.code!=='ENOENT')throw e;}
+  b=await readFile(resolve(root,'site',a.url.replace(/^\//,'')));
+  if(createHash('sha256').update(b).digest('hex')!==a.sha256)throw Error('Blog cover checksum mismatch');
+  await mkdir(dirname(file),{recursive:true});await writeFile(file,b);
+ }
+}catch(e){if(e.code!=='ENOENT')throw e;}
