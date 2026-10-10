@@ -13,7 +13,7 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: '7,27,47 * * * *'
+    - cron: '0 3,15 * * *'
 permissions:
   contents: write
 concurrency:
@@ -39,6 +39,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci --no-audit --no-fund
+      - name: Validate workflow syntax and trigger contract
+        run: node --test scripts/catalog-sync/workflow.test.mjs
       - name: Recover successful pending deployment; never retry an ambiguous deploy
         run: node scripts/catalog-sync/ci.mjs recover
       - name: Compare live feed hashes with active snapshot

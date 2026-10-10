@@ -7,11 +7,12 @@
   "scripts": {
     "build:storefront:production": "node storefront/build.mjs --mode=production",
     "catalog:sync": "node scripts/catalog-sync.mjs",
-    "test:catalog-sync": "node --test --test-concurrency=1 scripts/catalog-sync/git-timeweb.test.mjs scripts/catalog-sync/review-regressions.test.mjs scripts/catalog-sync/blog-sync.test.mjs"
+    "test:catalog-sync": "node --test --test-concurrency=1 scripts/catalog-sync/workflow.test.mjs scripts/catalog-sync/git-timeweb.test.mjs scripts/catalog-sync/review-regressions.test.mjs scripts/catalog-sync/blog-sync.test.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",
-    "esbuild": "^0.24.0"
+    "esbuild": "^0.24.0",
+    "yaml": "^2.9.1"
   },
   "dependencies": {
     "sharp": "^0.35.4"

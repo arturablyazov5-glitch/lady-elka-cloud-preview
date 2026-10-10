@@ -1,6 +1,6 @@
 # Lady Elka — Cloud preview
 
-Public repository containing only the generated static website and a dependency-free copy build.
+Preview repository containing the static website and guarded catalog CI sources. See [CATALOG-SYNC.md](CATALOG-SYNC.md) for publication, alerts and rollback.
 
 Timeweb Cloud App Platform: frontend / HTML/CSS/JS, branch `main`, project directory `/site`. This mode serves the generated files directly and has no platform build command. For local verification, `npm run build` copies the same files to `dist`.
 
