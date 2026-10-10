@@ -1,0 +1,25 @@
+.pop-up__inside-close-button--s2-imh2rrmsg {display: flex;}
+.pop-up__outside-close-button--s2-ivks6ps22 {display: none;}
+.form__field--s2-i9gxu1bb4 .form__checkbox {display: none;}
+.form__field--s2-i9gxu1bb4 .form__checkbox-styled {display: block;}
+.blocklist__list--s2-ilkjzjutj {width: 100%;}
+.blocklist__item-wrapper--s2-idpbbobl7 {width: auto;}
+.blocklist__item--s2-inzftz8sj {min-width: 150px;}
+.pop-up--u-ioknli02v {max-height: 100vh;}
+.text-title--u-iy1td23r0 {margin-bottom: 0px;}
+.div--u-imtp6ffse {display: flex; padding: 10px; width: 100%; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px; row-gap: 12px; column-gap: 12px; flex-wrap: nowrap;}
+.form__field--u-i58mi2whm {margin-top: 0px; margin-bottom: 0px; width: 100%;}
+.form__field--u-i5w4u58ce {margin-top: 0px; margin-bottom: 0px; width: 100%;}
+.div--u-ijfmk4f0a {display: flex; padding: 10px; width: auto;}
+.form__field--u-ifpnf39wv {margin-top: 0px; margin-bottom: 0px; width: 100%;}
+.form__field--u-ij96mouf8 {margin-top: 0px; margin-bottom: 0px; width: 100%;}
+.form__field--u-inu07vey3 {margin-top: 0px; margin-bottom: 0px; width: 100%;}
+.form__widget-item--u-iws404jps:has(:checked) .form__checkbox-styled--u-ijiin9r3v {background-image: url("/g/s3/mosaic/images/widgets/checkbox.svg"), linear-gradient(rgba(17, 131, 65, 1) 0%, rgba(17, 131, 65, 1) 100%); border-top-width: 1px; border-left-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-top-style: solid; border-left-style: solid; border-right-style: solid; border-bottom-style: solid; border-top-color: rgba(17, 131, 65, 1); border-left-color: rgba(17, 131, 65, 1); border-right-color: rgba(17, 131, 65, 1); border-bottom-color: rgba(17, 131, 65, 1);}
+.form__checkbox-styled--u-ijiin9r3v {border-top-color: rgba(17, 131, 65, 1); border-left-color: rgba(17, 131, 65, 1); border-right-color: rgba(17, 131, 65, 1); border-bottom-color: rgba(17, 131, 65, 1);}
+.form__label-text--u-i8jgtr87m {display: none;}
+.div--u-isep7nvpr {display: flex; padding: 10px; width: auto;}
+.div--u-i7bqvroxn {width: auto;}
+.div--u-i66wk7ctl {width: auto;}
+.text--u-irk1dbmdy {opacity: 0.8;}
+.button--u-ientpas3j {z-index: 2;}
+@media (max-width: 479px) {.pop-up__inside-close-button--u-imh2rrmsg {z-index: 10;}}

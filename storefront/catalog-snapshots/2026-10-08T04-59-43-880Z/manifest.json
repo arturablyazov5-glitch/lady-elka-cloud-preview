@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-10-08T04-59-43-880Z",
+  "snapshotDate": "2026-10-08",
+  "artifactGeneratedAt": "2026-10-08T09:07:37.733Z",
+  "dataAsOf": null,
+  "productionReady": false,
+  "source": {
+    "kind": "public-read-only-catalog-export"
+  },
+  "assetCoverage": "pinned-local-media",
+  "feeds": {
+    "trees": {
+      "path": "trees.csv",
+      "status": "available",
+      "records": 248,
+      "sha256": "7b8cd1f3b63d26af372849bc0638fcf5417a5500a1fd52ee98ff06b7f1de9971",
+      "source": "https://mgnotvaahftrbifqtahf.supabase.co/storage/v1/object/public/le-catalog-feeds/trees.csv",
+      "receivedAt": "2026-10-08T04:59:39.967Z",
+      "http": {
+        "status": 200,
+        "etag": "\"9d331d07a48c69547b6846e026e9814d\"",
+        "lastModified": "Thu, 08 Oct 2026 04:54:51 GMT"
+      }
+    },
+    "decor": {
+      "path": "decor.csv",
+      "status": "available",
+      "records": 9,
+      "sha256": "72a982248b73f305d3b4cd23abc7c1aa54262357dc5b5f6f8a41568e1a5e2c10",
+      "source": "https://mgnotvaahftrbifqtahf.supabase.co/storage/v1/object/public/le-catalog-feeds/decor.csv",
+      "receivedAt": "2026-10-08T04:59:43.404Z",
+      "http": {
+        "status": 200,
+        "etag": "\"43bb9971c23a1c3327006f433fe20c37\"",
+        "lastModified": "Thu, 08 Oct 2026 04:54:53 GMT"
+      }
+    },
+    "promos": {
+      "path": "promos.csv",
+      "status": "available",
+      "records": 10,
+      "sha256": "28a3787c51ea19bc62ce94c0e8811fb95cc09c4d118cf1164ad06bbf53ee248c",
+      "source": "https://mgnotvaahftrbifqtahf.supabase.co/storage/v1/object/public/le-catalog-feeds/promos.csv",
+      "receivedAt": "2026-10-08T04:59:43.880Z",
+      "http": {
+        "status": 200,
+        "etag": "\"b14365fb2f925833cff81409ed6bc8cb\"",
+        "lastModified": "Mon, 05 Oct 2026 13:27:45 GMT"
+      }
+    }
+  },
+  "candidate": "storefront/catalog-import/candidates/2026-10-08T04-59-43-880Z",
+  "limitations": [
+    "Three separate public GETs do not prove a single merchant revision or atomic snapshot",
+    "Fetch timestamps are not historical effective dates of prices"
+  ],
+  "freshness": "current-fetch-owner-confirmed",
+  "ownerAccepted": true,
+  "ownerConfirmation": {
+    "accepted": true,
+    "date": "2026-10-08",
+    "source": "Explicit owner task 9 continuation",
+    "quote": "Снапшот candidates/2026-10-08T04-59-43-880Z (+catalog-media/2026-10-08-public-feed) владелец одобрил к активации (Дарина 22 000/46 000 и пр.).",
+    "scope": [
+      "prices",
+      "active",
+      "descriptions",
+      "media",
+      "promos"
+    ],
+    "authoritativeSource": "Current public Supabase catalog exports",
+    "effectiveHistoricalDate": null
+  }
+}

@@ -1,0 +1,84 @@
+name: Catalog sync
+on:
+  repository_dispatch:
+    types: [catalog_changed]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Build and check without publication
+        type: boolean
+        default: true
+      rebuild_current:
+        description: Rebuild identical live inputs for deployment rehearsal
+        type: boolean
+        default: false
+  schedule:
+    - cron: '7,27,47 * * * *'
+permissions:
+  contents: write
+concurrency:
+  group: catalog-sync
+  cancel-in-progress: false
+jobs:
+  sync:
+    if: vars.LE_CATALOG_SYNC_ENABLED != 'false' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LE_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'true' || 'false' }}
+      TIMEWEB_API_TOKEN: ${{ secrets.TIMEWEB_API_TOKEN }}
+      TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+      LE_SYNC_TG_CHAT_ID: ${{ secrets.LE_SYNC_TG_CHAT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Recover successful pending deployment; never retry an ambiguous deploy
+        run: node scripts/catalog-sync/ci.mjs recover
+      - name: Compare live feed hashes with active snapshot
+        id: feeds
+        run: node scripts/catalog-sync/ci.mjs check
+      - name: Media cache (content addressed files verified by SHA256)
+        if: steps.feeds.outputs.changed == 'true' || inputs.rebuild_current
+        uses: actions/cache@v4
+        with:
+          path: |
+            storefront/catalog-media
+            storefront/public/media/blog
+          key: catalog-media-${{ runner.os }}-${{ hashFiles('storefront/catalog-snapshots/**/media-manifest.json') }}-${{ github.run_id }}
+          restore-keys: |
+            catalog-media-${{ runner.os }}-${{ hashFiles('storefront/catalog-snapshots/**/media-manifest.json') }}-
+            catalog-media-${{ runner.os }}-
+      - name: Restore SHA256 verified captured build inputs
+        if: steps.feeds.outputs.changed == 'true' || inputs.rebuild_current
+        run: |
+          node scripts/catalog-sync/hydrate.mjs
+          node scripts/catalog-sync/ci.mjs previous
+      - name: Publication, guards and failure regression tests
+        if: steps.feeds.outputs.changed == 'true' || inputs.rebuild_current
+        run: npm run test:catalog-sync
+      - name: Guarded candidate, media, offline production build, Git and Timeweb publication
+        if: steps.feeds.outputs.changed == 'true' || inputs.rebuild_current
+        shell: bash
+        run: |
+          args=(--mode=production --previous-assets="$GITHUB_WORKSPACE/site")
+          if [ "$LE_DRY_RUN" = true ]; then args+=(--dry-run); else args+=(--apply --publish=git-timeweb); fi
+          if [ '${{ inputs.rebuild_current }}' = true ]; then args+=(--rebuild-current); fi
+          node scripts/catalog-sync.mjs "${args[@]}"
+      - name: Unchanged: no build, commit or deploy
+        if: steps.feeds.outputs.changed == 'false' && !inputs.rebuild_current
+        run: echo 'unchanged — no build, commit or Timeweb deploy'
+      - name: Private Telegram failure alert
+        if: failure() && env.LE_DRY_RUN != 'true'
+        run: node scripts/catalog-sync/ci.mjs alert
+      - name: Result
+        if: always()
+        run: |
+          echo '### Catalog sync' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Result: ${{ job.status }}; feed change: ${{ steps.feeds.outputs.changed }}; dry-run: ${{ env.LE_DRY_RUN }}' >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-10-08T04-59-43-880Z",
+  "manifest": "storefront/catalog-snapshots/2026-10-08T04-59-43-880Z/manifest.json",
+  "media": "storefront/catalog-snapshots/2026-10-08T04-59-43-880Z/media-manifest.json",
+  "feedsSha256": "e1652ef443822d30589c5813d4f83956d5628dcbab6fe82ba46390800a20c2c7",
+  "activatedAt": "2026-10-08T09:07:37.742Z"
+}

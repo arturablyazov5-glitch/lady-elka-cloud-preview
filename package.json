@@ -3,6 +3,25 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "scripts": { "build": "node build.mjs" },
-  "engines": { "node": ">=20" }
+  "description": "Lady Elka — интернет-магазин ёлок (Taptop + Supabase + Google Sheets)",
+  "scripts": {
+    "build:storefront:production": "node storefront/build.mjs --mode=production",
+    "catalog:sync": "node scripts/catalog-sync.mjs",
+    "test:catalog-sync": "node --test --test-concurrency=1 scripts/catalog-sync/git-timeweb.test.mjs scripts/catalog-sync/review-regressions.test.mjs scripts/catalog-sync/blog-sync.test.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "esbuild": "^0.24.0"
+  },
+  "dependencies": {
+    "sharp": "^0.35.4"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arturablyazov5-glitch/lady-elka-cloud-preview.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

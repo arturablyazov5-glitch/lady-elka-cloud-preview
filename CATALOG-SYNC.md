@@ -1,0 +1,17 @@
+# Preview catalog CI
+
+Only `arturablyazov5-glitch/lady-elka-cloud-preview/main` and Timeweb app 266305 are managed. The application consumes `/site`, uses static-nobuild, and automatic Timeweb deployment remains off.
+
+`repository_dispatch` accepts `catalog_changed` with `{revision}` (payload is a hint, never executed). The workflow also supports manual dry-run/current-version rehearsal and compares live public feed SHA256 hashes every 20 minutes at 7/27/47. `catalog-sync` concurrency never cancels a running deployment; GitHub replaces excess pending runs. Node 22, npm lockfile, content-addressed verified media cache. No Supabase secrets required.
+
+Captured binary build inputs are restored from immutable existing Git blobs listed in `storefront/build-inputs/assets.json` and verified by SHA256. New catalog media bootstrap from committed `/site/media/catalog-pinned` even without cache. New images are fetched only from public allowlisted Supabase Storage. Source HTML/CSS/client behavior is unchanged; two original SEO inputs moved out of audit into build-inputs. No duplicate media trees or audit artifacts are committed.
+
+Candidate -> guards -> offline production -> filtered incremental /site mirror -> regular bot push (pull/rebase, at most 3 push attempts) -> ONE Timeweb POST with pinned commit_sha -> poll deployment success and matching active commit (15 minutes) -> byte-exact smoke -> commit acknowledged active pointer. Metadata lives in catalog-state, outside /site. Keep sw.js/sw-kill.js. Exclude build-manifest, audit, nginx example, .htaccess, catalog-snapshot, immutable-manifest and request-assets. Failed deployment keeps previous active pointer; pending.json blocks automatic redeployment. If a crash follows an already successful deployment, the next run smoke-checks and acknowledges it. No silent restart after ambiguous POST/timeout.
+
+Only three secrets: TIMEWEB_API_TOKEN, TG_BOT_TOKEN, LE_SYNC_TG_CHAT_ID. Notification code rejects negative/group ids. Failures link to the run in one personal chat. Dry runs do not send Telegram. The scan checks the staged tree and new commit history without printing credential values.
+
+Disable: set repository variable LE_CATALOG_SYNC_ENABLED=false (or remove schedule). Manual workflow_dispatch remains available for investigation; dry_run defaults true. Stop pending/running runs separately if urgently required; stopping an active deployment is a manual decision. Roll back: disable automation, restore /site and the matching acknowledged catalog-snapshots/active.json from a known successful commit using a NEW normal commit (no reset/force); POST deploy that commit once and run smoke. Inspect catalog-state/pending.json before removing it; do not remove it to restart a timed-out deployment blindly.
+
+Price verification without real writes: copy an accepted feed to a temporary directory, change ONE price by 1%, recalculate its manifest checksum, run --dry-run --input-dir=... and compare generated product HTML and bundled CSV. Empty price/photo, >50% price jump and product drop are covered by profile mock tests. Fixture inputs are rejected for --apply. Real price changes, Supabase, DNS and Timeweb settings are outside this CI task.
+
+References: [Timeweb OpenAPI](https://timeweb.cloud/api-docs-data/bundle.json), [GitHub workflow concurrency](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency).

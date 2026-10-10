@@ -1,0 +1,45 @@
+[data-pay-now][disabled]{opacity:.6;pointer-events:none}
+.le-image-skeleton{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(100deg,#eee 20%,#f7f7f7 38%,#eee 56%);
+  background-size:200% 100%;
+  animation:le-skeleton-shimmer 1.2s linear infinite;
+}
+.le-image-skeleton img{opacity:0 !important}
+@keyframes le-skeleton-shimmer{to{background-position:-200% 0}}
+[data-pay-now][data-busy="1"] .text-block-wrap-div::after{
+  content:"";
+  display:inline-block; width:.85em; height:.85em; margin-left:.45em;
+  border:2px solid currentColor; border-right-color:transparent;
+  border-radius:50%; animation:spin .8s linear infinite;
+  vertical-align:-.2em;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+
+/* Скрываем без display:none, чтобы значения уехали в CRM/телеграм */
+.le-ghost-field,
+[data-le-hide]{
+  position:absolute !important;
+  left:-10000px !important;
+  width:1px !important;
+  height:1px !important;
+  padding:0 !important;
+  margin:0 !important;
+  border:0 !important;
+  overflow:hidden !important;
+}
+
+/* карточки, помеченные скриптом, прячем в любом случае */
+.product-card.is-inactive,
+.product-wrapper__cms.is-inactive,
+.collection__item.no-active-rows,
+.collection__item[hidden]{
+  display: none !important;
+}
+
+/* Подарок скрыт по умолчанию */
+[data-bag-wrapper]{display:none !important}
+/* Когда активирован — показываем (нужен flex? оставь flex) */
+[data-bag-wrapper][data-on]{display:flex !important}
