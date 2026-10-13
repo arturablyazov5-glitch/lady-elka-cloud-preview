@@ -1,9 +1,0 @@
-{
-  "pointer": null,
-  "blog": false,
-  "qa": {
-    "orderId": "LE-1791875606040-QA1-7a5ca6",
-    "path": "/qa/payment/",
-    "amount": 1
-  }
-}
