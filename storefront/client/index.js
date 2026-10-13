@@ -1,3 +1,4 @@
+import { initPaymentReturn } from './payment-return.js';
 import * as cartStore from './cart-store.js';
 import { initFormPresentation } from './form-presentation.js';
 import { initProducts } from './product-ui.js';
@@ -16,6 +17,7 @@ function loadForms() {
 }
 function start() {
   initFormPresentation();
+  initPaymentReturn(cartStore);
   const relevant = target => target?.closest?.('form,[data-cart-open],.buy-btn,[data-modal-open]');
   for (const type of ['pointerdown', 'focusin', 'click', 'keydown']) document.addEventListener(type, event => {
     if (relevant(event.target)) void loadForms().catch(error => console.error('Form runtime unavailable', error));

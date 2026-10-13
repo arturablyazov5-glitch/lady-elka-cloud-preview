@@ -179,3 +179,12 @@
 [data-cart-popup] :is(input, textarea, select)::placeholder { color: #6c6c6c; opacity: 1; }
 [data-cart-popup] :is(input, textarea, select, button, [role="button"]):focus-visible { outline: 2px solid #118341; outline-offset: 3px; }
 [data-cart-popup] .form__widget-item:has(input:focus-visible) { outline: 2px solid #118341; outline-offset: 3px; }
+
+/* Verified payment return: shared with thank-you and failed-return pages only. */
+.storefront-payment-return { max-width: 600px; margin: 16px auto 0; text-align: center; font-size: 16px; line-height: 1.45; font-weight: 400; overflow-wrap: anywhere; }
+.storefront-payment-return p { margin: 0 0 12px; font-weight: 400; }
+.storefront-payment-return button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 20px; margin: 0 8px 12px; border: 0; border-radius: 999px; background: #118341; color: #fff; font: inherit; cursor: pointer; }
+.storefront-payment-return button:disabled { opacity: .6; cursor: wait; }
+.storefront-payment-return button[hidden] { display: none; }
+.storefront-payment-return a { display: inline-block; color: #118341; font: inherit; text-decoration: underline; }
+.storefront-payment-return :is(button,a):focus-visible { outline: 2px solid #118341; outline-offset: 3px; }

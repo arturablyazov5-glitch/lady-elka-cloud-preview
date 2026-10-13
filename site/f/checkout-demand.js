@@ -865,6 +865,17 @@ function initCheckout(form, getPromo, cartStore = { getItems, clear, reprice }) 
       markInvalid({ method: true });
       return;
     }
+    let endpoint;
+    try {
+      endpoint = paymentEndpoint();
+    } catch (error) {
+      show(error.message, true);
+      return;
+    }
+    if ((pending == null ? void 0 : pending.payload) && pending.endpoint !== endpoint) {
+      show("Этот заказ был начат в прежней версии магазина. Если деньги списаны, не оплачивайте повторно: свяжитесь с нами и укажите номер " + pending.payload.orderId + ".", true);
+      return;
+    }
     const promo = getPromo();
     const signature = JSON.stringify({ items: items2, customer, promo, paymentMethod });
     const retry = (pending == null ? void 0 : pending.signature) === signature;
@@ -890,9 +901,9 @@ function initCheckout(form, getPromo, cartStore = { getItems, clear, reprice }) 
           return ((_a3 = lookup(item)) == null ? void 0 : _a3.price) !== item.price;
         })) throw new RequestFailure("conflict", { status: 409, code: "Catalog changed" });
       }
-      pending = { signature, payload };
+      pending = { signature, payload, endpoint };
       savePending();
-      const ENDPOINT = paymentEndpoint();
+      const ENDPOINT = endpoint;
       const url = paymentMethod === "cash_on_delivery" ? `${ENDPOINT}?action=create-cod-order` : ENDPOINT;
       const result = await postJson(url, payload, { timeoutMs: 3e4 });
       if (result.paid === true) {

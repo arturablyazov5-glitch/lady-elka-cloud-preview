@@ -32,6 +32,186 @@
     mod
   ));
 
+  // storefront/client/config.js
+  function config() {
+    const value = globalThis.__LE_STOREFRONT_CONFIG__;
+    if (!value || !["preview", "production"].includes(value.mode)) throw new Error("Конфигурация витрины отсутствует");
+    return value;
+  }
+  function catalogEndpoint(name) {
+    var _a;
+    const endpoint = (_a = config().catalog) == null ? void 0 : _a[name];
+    if (!endpoint) throw new Error("Источник каталога не настроен");
+    return endpoint;
+  }
+  function paymentEndpoint() {
+    const endpoint = config().payment;
+    if (!endpoint) throw new Error("Оформление заказов отключено в локальном просмотре.");
+    return endpoint;
+  }
+
+  // storefront/client/request-errors.js
+  var MAX_HOLD_SECONDS = 15 * 60;
+  var RequestFailure = class extends Error {
+    constructor(kind, { status = 0, retryAfter = null, code = "", serverMessage = "", accepted = false, orderId = "" } = {}) {
+      super(kind);
+      this.name = "RequestFailure";
+      Object.assign(this, { kind, status, retryAfter, code, serverMessage, accepted, orderId });
+    }
+  };
+  function retryAfterSeconds(value, now = Date.now()) {
+    if (value == null || value === "") return null;
+    const text = String(value).trim();
+    let seconds = /^\d+$/.test(text) ? Number(text) : Math.ceil((Date.parse(text) - now) / 1e3);
+    if (!Number.isFinite(seconds)) return null;
+    seconds = Math.max(1, Math.min(MAX_HOLD_SECONDS, seconds));
+    return seconds;
+  }
+  function classifyStatus(status) {
+    if (status === 429) return "rate";
+    if (status === 409) return "conflict";
+    if (status === 413) return "too-large";
+    if (status === 401 || status === 403) return "auth";
+    if (status >= 400 && status < 500) return "invalid";
+    return "unavailable";
+  }
+  var cyrillic = (text) => typeof text === "string" && /[а-яё]/i.test(text) ? text.slice(0, 300) : "";
+  async function postJson(url, payload, { timeoutMs = 2e4, isSuccess = (response) => response.ok, fetchImpl = globalThis.fetch } = {}) {
+    var _a, _b;
+    const controller = typeof AbortController === "function" ? new AbortController() : null;
+    let timedOut = false;
+    const timer = controller ? setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, timeoutMs) : null;
+    let response;
+    try {
+      response = await fetchImpl(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: controller == null ? void 0 : controller.signal
+      });
+    } catch {
+      throw new RequestFailure(timedOut ? "timeout" : "network");
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+    let body = null;
+    try {
+      body = await response.json();
+    } catch {
+    }
+    if (body && typeof body === "object" && isSuccess(response, body)) return body;
+    const result = body && typeof body === "object" ? body : {};
+    const status = Number(response.status) || 0;
+    const kind = response.ok ? body ? "invalid" : "unavailable" : classifyStatus(status);
+    throw new RequestFailure(kind, {
+      status,
+      code: typeof result.error === "string" ? result.error : "",
+      retryAfter: retryAfterSeconds((_b = (_a = response.headers) == null ? void 0 : _a.get) == null ? void 0 : _b.call(_a, "Retry-After")),
+      serverMessage: cyrillic(result.message),
+      accepted: result.accepted === true,
+      orderId: result.orderId || ""
+    });
+  }
+
+  // storefront/client/payment-return.js
+  var pendingKey = "lady_elka_pending_order_v1";
+  var draftKey = "lady_elka_checkout_draft_v1";
+  var receiptKey = "lady_elka_paid_return_v2";
+  var itemProjection = (items2) => items2.map((item) => ({ productId: item.productId, variantId: item.variantId, kind: item.kind, quantity: item.quantity, price: item.price })).sort((a, b) => (a.productId + "|" + a.variantId).localeCompare(b.productId + "|" + b.variantId));
+  function samePurchasedCart(items2, payload) {
+    return JSON.stringify(itemProjection(items2)) === JSON.stringify(itemProjection(payload.items || []));
+  }
+  function initPaymentReturn(cart, { document: doc = document, location: loc = location, storage, request = postJson } = {}) {
+    var _a;
+    if (!["/spasibo", "/pay-return"].includes(loc.pathname.replace(/\/+$/, ""))) return;
+    const oid = new URL(loc.href).searchParams.get("oid");
+    if (!oid) return;
+    const title = doc.querySelector("h1 .text-block-wrap-div") || doc.querySelector("h1");
+    if (!title) return;
+    const region = doc.createElement("section");
+    region.setAttribute("role", "status");
+    region.dataset.paymentReturn = "";
+    region.className = "storefront-payment-return";
+    const message = doc.createElement("p"), retry = doc.createElement("button"), back = doc.createElement("a");
+    retry.type = "button";
+    retry.textContent = "Проверить оплату";
+    back.href = "/";
+    back.textContent = "Вернуться в магазин";
+    region.append(message, retry, back);
+    title.closest("h1").after(region);
+    let pending, endpoint;
+    try {
+      storage || (storage = globalThis.sessionStorage);
+      pending = JSON.parse(storage.getItem(pendingKey) || "null");
+      if (((_a = pending == null ? void 0 : pending.payload) == null ? void 0 : _a.orderId) !== oid) pending = JSON.parse(storage.getItem(receiptKey) || "null");
+      endpoint = paymentEndpoint();
+    } catch {
+    }
+    if (!(pending == null ? void 0 : pending.payload) || pending.payload.orderId !== oid || pending.payload.paymentMethod !== "card" || pending.endpoint !== endpoint) {
+      title.textContent = loc.pathname.replace(/\/+$/, "") === "/pay-return" ? "Оплата не завершена" : "Статус оплаты требует проверки";
+      message.textContent = "Не удалось найти данные этого заказа в текущей вкладке. Если деньги списаны, свяжитесь с нами и укажите номер заказа " + oid + ".";
+      retry.hidden = true;
+      return;
+    }
+    let busy = false, attempts = 0, timer;
+    const check = async () => {
+      var _a2;
+      if (busy) return;
+      busy = true;
+      retry.disabled = true;
+      title.textContent = "Проверяем оплату";
+      message.textContent = "Уточняем статус заказа в банке…";
+      try {
+        const result = await request(endpoint + "?action=order-status", pending.payload, { timeoutMs: 2e4 });
+        if (result.ok !== true || result.orderId !== oid || typeof result.paid !== "boolean") throw new Error("Unconfirmed order status");
+        if (result.paid === true && result.status === "paid") {
+          title.textContent = "Заказ оплачен";
+          message.textContent = "Заказ № " + oid + " оплачен. Мы скоро свяжемся с вами.";
+          try {
+            storage.setItem(receiptKey, JSON.stringify(pending));
+          } catch {
+          }
+          if (samePurchasedCart(cart.getItems(), pending.payload)) {
+            try {
+              cart.clear();
+            } catch {
+            }
+          }
+          try {
+            const current = JSON.parse(storage.getItem(pendingKey) || "null");
+            if (((_a2 = current == null ? void 0 : current.payload) == null ? void 0 : _a2.orderId) === oid) {
+              storage.removeItem(pendingKey);
+              storage.removeItem(draftKey);
+            }
+          } catch {
+          }
+          retry.hidden = true;
+          clearTimeout(timer);
+          return;
+        }
+        if (result.paid === true) throw new Error("Contradictory payment response");
+        title.textContent = result.status === "refunded" ? "Оплата возвращена" : result.status === "cancelled" ? "Оплата не завершена" : "Ожидаем подтверждение оплаты";
+        message.textContent = "Корзина и данные заказа сохранены. Если вы уже оплатили заказ, повторите проверку позже.";
+        if (result.status === "awaiting_payment" && ++attempts < 3) timer = setTimeout(check, 6e4);
+      } catch {
+        title.textContent = "Статус оплаты пока недоступен";
+        message.textContent = "Корзина сохранена. Если деньги списаны, не оплачивайте повторно: повторите проверку или свяжитесь с нами.";
+      } finally {
+        busy = false;
+        retry.disabled = false;
+      }
+    };
+    retry.addEventListener("click", () => {
+      clearTimeout(timer);
+      void check();
+    });
+    void check();
+    return () => clearTimeout(timer);
+  }
+
   // storefront/client/cart-store.js
   var cart_store_exports = {};
   __export(cart_store_exports, {
@@ -749,19 +929,6 @@
     return controller;
   }
 
-  // storefront/client/config.js
-  function config() {
-    const value = globalThis.__LE_STOREFRONT_CONFIG__;
-    if (!value || !["preview", "production"].includes(value.mode)) throw new Error("Конфигурация витрины отсутствует");
-    return value;
-  }
-  function catalogEndpoint(name) {
-    var _a;
-    const endpoint = (_a = config().catalog) == null ? void 0 : _a[name];
-    if (!endpoint) throw new Error("Источник каталога не настроен");
-    return endpoint;
-  }
-
   // storefront/client/promo.js
   var KEY2 = "lady_promo_state";
   var state = null;
@@ -1315,6 +1482,7 @@
   }
   function start() {
     initFormPresentation();
+    initPaymentReturn(cart_store_exports);
     const relevant = (target) => {
       var _a;
       return (_a = target == null ? void 0 : target.closest) == null ? void 0 : _a.call(target, "form,[data-cart-open],.buy-btn,[data-modal-open]");

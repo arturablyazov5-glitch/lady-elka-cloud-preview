@@ -185,6 +185,12 @@ export function initCheckout(form, getPromo, cartStore = { getItems, clear, repr
     if (!controls.consent?.checked) { show('Подтвердите согласие на обработку персональных данных.', true); markInvalid({ consent: true }); return; }
     const paymentMethod = value('method');
     if (!['card', 'cash_on_delivery'].includes(paymentMethod)) { show('Выберите способ оплаты.', true); markInvalid({ method: true }); return; }
+    let endpoint;
+    try { endpoint = paymentEndpoint(); } catch(error) { show(error.message, true); return; }
+    if (pending?.payload && pending.endpoint !== endpoint) {
+      show('Этот заказ был начат в прежней версии магазина. Если деньги списаны, не оплачивайте повторно: свяжитесь с нами и укажите номер ' + pending.payload.orderId + '.', true);
+      return;
+    }
     const promo = getPromo();
     const signature = JSON.stringify({ items, customer, promo, paymentMethod });
     const retry = pending?.signature === signature;
@@ -202,9 +208,9 @@ export function initCheckout(form, getPromo, cartStore = { getItems, clear, repr
         catch { throw new RequestFailure('network'); }
         if (items.some(item => lookup(item)?.price !== item.price)) throw new RequestFailure('conflict', { status: 409, code: 'Catalog changed' });
       }
-      pending = { signature, payload };
+      pending = { signature, payload, endpoint };
       savePending();
-      const ENDPOINT = paymentEndpoint();
+      const ENDPOINT = endpoint;
       const url = paymentMethod === 'cash_on_delivery' ? `${ENDPOINT}?action=create-cod-order` : ENDPOINT;
       const result = await postJson(url, payload, { timeoutMs: 30000 });
       if (result.paid === true) {
