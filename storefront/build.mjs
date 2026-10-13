@@ -556,6 +556,7 @@ if (serviceWorkerEnabled && option('service-worker') !== 'kill') {
   await writeFile(runtimePath, (await readFile(runtimePath, 'utf8')) + '\n' + await readFile(new URL('./client/register-service-worker.js', import.meta.url), 'utf8'));
 }
 await (await import('./request-assets.mjs')).optimizeRequests(target);
+await (await import('./qa/build.mjs')).copyQaPage(target);
 await validateBuildAssets(target);
 console.log('Static storefront built:', target);
 

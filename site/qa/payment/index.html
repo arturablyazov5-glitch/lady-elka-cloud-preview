@@ -1,0 +1,40 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-kIww7ujIfG/dErnFjC61vM7njZg5wBmzzD1/IqSTYkg='; connect-src https://mgnotvaahftrbifqtahf.supabase.co; base-uri 'none'; form-action 'none'"><title>Тест оплаты — 1 ₽</title><main><h1>ТЕСТ ОПЛАТЫ — 1 ₽ — НЕ ОБРАБАТЫВАТЬ</h1><p>Тест без доставки, резервирования и изменения остатков. Уведомление только в личку.</p><p>После оплаты вернитесь в эту же вкладку. В другом браузере начните с этой тестовой ссылки, чтобы сохранить данные возврата.</p><p id="message" role="status">Сумма: ровно 1 RUB / 100 копеек.</p><button type="button" disabled>Перейти к оплате 1 ₽</button></main><script>const expectedOrder="LE-1791875606040-QA1-7a5ca6";
+const endpoint='https://mgnotvaahftrbifqtahf.supabase.co/functions/v1/pay-v2';
+const technical='https://arturablyazov5-glitch-lady-elka-cloud-preview-3626.twc1.net';
+const pendingKey='lady_elka_pending_order_v1';
+const message=document.querySelector('#message'), start=document.querySelector('button');
+let envelope;
+try {
+  if(location.origin!==technical)throw new Error('Откройте страницу на техническом сайте.');
+  envelope=JSON.parse(decodeURIComponent(location.hash.slice(1)));
+  history.replaceState(null,'',location.pathname);
+  const p=envelope.payload, item=p?.items?.[0];
+  if(p?.orderId!==expectedOrder || p.paymentMethod!=='card' || p.amount!==1 || p.promo!==null
+    || p.items.length!==1 || item.productId!=='qa-payment-100-kopecks' || item.variantId!=='qa:100:RUB'
+    || item.quantity!==1 || item.price!==1 || p.description!=='ТЕСТ ОПЛАТЫ — 1 ₽ — НЕ ОБРАБАТЫВАТЬ')throw new Error('Некорректная ссылка тестового заказа.');
+  const bank=new URL(envelope.url);
+  if(bank.protocol!=='https:' || bank.hostname!=='payment.alfabank.ru' || bank.username || bank.password
+    || !/^[0-9a-f-]{36}$/i.test(envelope.paymentId) || ![...bank.searchParams.values()].includes(envelope.paymentId))throw new Error('Некорректная банковская ссылка.');
+  const success=new URL(p.successUrl), fail=new URL(p.failUrl);
+  if(success.origin!==technical || success.pathname!=='/spasibo/' || success.searchParams.get('oid')!==expectedOrder
+    || fail.origin!==technical || fail.pathname!=='/pay-return/' || fail.searchParams.get('oid')!==expectedOrder)throw new Error('Некорректный возврат.');
+  const pending=JSON.parse(sessionStorage.getItem(pendingKey)||'null');
+  if(pending && pending.payload?.orderId!==expectedOrder)throw new Error('В этой вкладке уже есть другой заказ. Откройте тестовую ссылку в новой вкладке.');
+  start.disabled=false;
+} catch(error) {message.textContent=error.message || 'Ссылка недоступна.';}
+start.addEventListener('click',async()=>{
+ start.disabled=true;
+ try {
+  message.textContent='Проверяем сохранённый тестовый заказ…';
+  const response=await fetch(endpoint+'?action=order-status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(envelope.payload),signal:AbortSignal.timeout(20000)});
+  const result=await response.json();
+  if(!response.ok || result.ok!==true || result.orderId!==expectedOrder || typeof result.paid!=='boolean'
+    || !['awaiting_payment','paid'].includes(result.status) || result.paid!==(result.status==='paid'))throw new Error('Сохранённый заказ не подтверждён. Не оплачивайте по этой ссылке.');
+  const serialized=JSON.stringify({payload:envelope.payload,endpoint,signature:'isolated-qa-100-kopecks'});
+  const other=JSON.parse(sessionStorage.getItem(pendingKey)||'null');
+  if(other && other.payload?.orderId!==expectedOrder)throw new Error('Во вкладке появился другой заказ. Откройте тест в новой вкладке.');
+  sessionStorage.setItem(pendingKey,serialized);
+  if(sessionStorage.getItem(pendingKey)!==serialized)throw new Error('Браузер не сохранил данные возврата.');
+  location.assign(result.paid ? envelope.payload.successUrl : envelope.url);
+ } catch(error) {message.textContent=error.message || 'Проверка недоступна. Повторите позже.';start.disabled=false;}
+});</script></html>
