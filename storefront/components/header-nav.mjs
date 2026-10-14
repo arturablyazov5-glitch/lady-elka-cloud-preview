@@ -13,10 +13,10 @@ export function renderHeaderNav() {
     '<div class="menu__item-lvl1 menu__item-lvl1--u-idj509tbi" data-catalog-dropdown>'+
     '<button type="button" class="menu__link-lvl1 tabs__header" id="iodmf865s_0" data-catalog-toggle aria-expanded="false" aria-controls="header-catalog-links" aria-label="Каталог '+catalogBadge+'">'+text('Каталог')+badge('i83kg91sr_0')+'<span class="header-catalog-arrow" aria-hidden="true"></span></button>'+
     '<div id="header-catalog-links" data-catalog-links hidden aria-label="Разделы каталога">'+
-    '<a class="header-catalog-link tabs__header" href="'+d.trees+'" aria-label="Елки '+catalogBadge+'">'+text('Елки')+badge()+'</a>'+
+    '<a class="header-catalog-link tabs__header" href="'+d.trees+'" aria-label="Ёлки '+catalogBadge+'">'+text('Ёлки')+badge()+'</a>'+
+    '<a class="header-catalog-link tabs__header" href="'+d.toys+'" target="_blank" rel="noopener">'+text('Ёлочные игрушки')+'</a>'+
     '<a class="header-catalog-link tabs__header" href="'+d.decor+'">'+text('Декор')+'</a>'+
-    '<a class="header-catalog-link tabs__header" href="'+d.landscape+'">'+text('Искусственное озеленение')+'</a>'+
-    '<a class="header-catalog-link tabs__header" href="'+d.toys+'" target="_blank" rel="noopener">'+text('Елочные игрушки')+'</a></div></div>'+
+    '<a class="header-catalog-link tabs__header" href="'+d.landscape+'">'+text('Искусственное озеленение')+'</a></div></div>'+
     [['reviews','Отзывы'],['faq','FAQ'],['installment','Рассрочка'],['delivery','Доставка']].map(([key,label],i)=>'<div class="menu__item-lvl1 menu__item-lvl1--u-idj509tbi"><a href="'+d[key]+'" class="menu__link-lvl1 tabs__header" id="iodmf865s_'+(i+3)+'">'+text(label)+'</a></div>').join('')+'</div>';
 }
 export function applyHeaderNav(html) {
