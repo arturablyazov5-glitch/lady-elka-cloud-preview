@@ -1916,3 +1916,6 @@ table.table2 th {
 
 /* Preserve the dedicated 404 header slot, which is 12px wider. */
 @media(min-width:1280px) { [data-header-nav] { min-width: 482.875px; } }
+
+/* Center the catalog badge glyphs without changing the pill or header geometry. */
+[data-header-nav] .tabs-dot__header > .text-block-wrap-div { flex: 0 0 auto; text-align: center; }

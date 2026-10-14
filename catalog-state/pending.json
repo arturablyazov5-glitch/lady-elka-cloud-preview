@@ -1,0 +1,9 @@
+{
+  "pointer": null,
+  "blog": false,
+  "ui": {
+    "changes": 1,
+    "task": "center catalog +2 badge glyphs",
+    "base": "b18afbf1a2ff664da5d149a849d576b36ce33c80"
+  }
+}

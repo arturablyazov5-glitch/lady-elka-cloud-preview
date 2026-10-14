@@ -205,3 +205,6 @@ html { scroll-behavior: smooth; scroll-padding-top: var(--storefront-header-offs
 
 /* Preserve the existing desktop slot and contact alignment. */
 @media(min-width:1280px) { [data-header-nav] { min-width: 470.875px; } }
+
+/* Center the catalog badge glyphs without changing the pill or header geometry. */
+[data-header-nav] .tabs-dot__header > .text-block-wrap-div { flex: 0 0 auto; text-align: center; }
