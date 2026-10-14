@@ -15,9 +15,13 @@ export function initPaymentReturn(cart, {document:doc=document, location:loc=loc
   const title = doc.querySelector('h1 .text-block-wrap-div') || doc.querySelector('h1');
   if (!title) return;
   const region=doc.createElement('section');region.setAttribute('role','status');region.dataset.paymentReturn='';region.className='storefront-payment-return';
-  const message=doc.createElement('p'), retry=doc.createElement('button'), back=doc.createElement('a');
-  retry.type='button';retry.textContent='Проверить оплату';back.href='/';back.textContent='Вернуться в магазин';
-  region.append(message,retry,back);title.closest('h1').after(region);
+  const message=doc.createElement('p'), retry=doc.createElement('button');
+  retry.type='button';retry.textContent='Проверить оплату';
+  region.append(message,retry);
+  if (loc.pathname.replace(/\/+$/, '') === '/pay-return') {
+    const back=doc.createElement('a');back.href='/';back.textContent='Вернуться в магазин';region.append(back);
+  }
+  title.closest('h1').after(region);
   let pending, endpoint;
   try {storage ||= globalThis.sessionStorage;pending=JSON.parse(storage.getItem(pendingKey)||'null');if(pending?.payload?.orderId!==oid)pending=JSON.parse(storage.getItem(receiptKey)||'null');endpoint=paymentEndpoint();} catch {}
   if (!pending?.payload || pending.payload.orderId!==oid || pending.payload.paymentMethod!=='card' || pending.endpoint!==endpoint) {

@@ -135,12 +135,16 @@
     region.setAttribute("role", "status");
     region.dataset.paymentReturn = "";
     region.className = "storefront-payment-return";
-    const message = doc.createElement("p"), retry = doc.createElement("button"), back = doc.createElement("a");
+    const message = doc.createElement("p"), retry = doc.createElement("button");
     retry.type = "button";
     retry.textContent = "Проверить оплату";
-    back.href = "/";
-    back.textContent = "Вернуться в магазин";
-    region.append(message, retry, back);
+    region.append(message, retry);
+    if (loc.pathname.replace(/\/+$/, "") === "/pay-return") {
+      const back = doc.createElement("a");
+      back.href = "/";
+      back.textContent = "Вернуться в магазин";
+      region.append(back);
+    }
     title.closest("h1").after(region);
     let pending, endpoint;
     try {

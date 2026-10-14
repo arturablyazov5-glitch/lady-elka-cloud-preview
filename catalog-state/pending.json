@@ -1,0 +1,8 @@
+{
+  "pointer": null,
+  "blog": false,
+  "ui": {
+    "route": "/spasibo/",
+    "change": "remove redundant text return link"
+  }
+}
