@@ -1,9 +1,0 @@
-{
-  "pointer": null,
-  "blog": false,
-  "ui": {
-    "changes": 1,
-    "task": "checkout select height",
-    "base": "b69405415e75ba4cd002c2740efb0de120ad93fd"
-  }
-}
