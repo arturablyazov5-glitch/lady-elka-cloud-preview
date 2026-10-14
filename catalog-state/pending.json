@@ -1,0 +1,9 @@
+{
+  "pointer": null,
+  "blog": false,
+  "ui": {
+    "changes": 10,
+    "task": "heading checkout product gallery question footer anchors status",
+    "base": "cd46aec11d26b2478bed8a08169f329984cd4f98"
+  }
+}

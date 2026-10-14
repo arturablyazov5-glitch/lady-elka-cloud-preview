@@ -503,6 +503,7 @@
     var _a;
     const autocomplete = { name: "name", phone: "tel", email: "email", city: "address-level2" }[control.dataset.leadField];
     if (autocomplete && !control.hasAttribute("autocomplete")) control.setAttribute("autocomplete", autocomplete);
+    if (control.dataset.leadField === "phone" && control.closest('form[data-lead-type="question"]')) control.setAttribute("aria-label", "Телефон");
     if (control.type !== "checkbox" && !((_a = control.labels) == null ? void 0 : _a.length) && !control.hasAttribute("aria-label") && control.id && control.placeholder) {
       const label2 = document.createElement("label");
       label2.className = "storefront-visually-hidden";

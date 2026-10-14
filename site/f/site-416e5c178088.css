@@ -1394,7 +1394,7 @@ table.table2 th {
 .close__video__img {width: 18px; height: 18px; transform: rotateX(0deg) rotateY(0deg) rotateZ(45deg);}
 .plan__form-popup {display: flex; flex-direction: column; padding-left: 40px; padding-right: 40px; padding-top: 40px; padding-bottom: 40px; min-width: auto; min-height: auto; width: 960px; border-top-left-radius: 40px; border-top-right-radius: 40px; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; row-gap: 40px; margin-top: 0px; margin-bottom: 0px; max-height: 100%;}
 .plan__form {padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px;}
-.input__product-wrapper {flex-direction: column; row-gap: 12px; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px; width: 100%;}
+.input__product-wrapper {display: flex;flex-direction: column; row-gap: 12px; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px; width: 100%;}
 .close__popup {min-width: 40px; min-height: 40px; padding-left: 4px; padding-right: 4px; padding-top: 4px; padding-bottom: 4px; top: 16px; right: 16px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; background-color: rgb(255, 255, 255);}
 .popup-grid {max-height: 100vh; padding-top: 40px; padding-bottom: 40px;}
 .contet-wrapper__cookie {display: flex; flex-direction: row; padding-left: 24px; padding-right: 24px; padding-top: 24px; padding-bottom: 24px; border-top-left-radius: 28px; border-top-right-radius: 28px; border-bottom-left-radius: 28px; border-bottom-right-radius: 28px; align-items: center; width: 640px; position: fixed; right: 24px; bottom: 24px; column-gap: 24px; box-shadow: 0px 20px 40px 0px rgba(0, 0, 0, 0.2); border-top-width: 0px; border-left-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-top-style: none; border-left-style: none; border-right-style: none; border-bottom-style: none;}
@@ -1688,6 +1688,8 @@ table.table2 th {
 
 /* The footer uses a dark background: preserve its original, accessible light grey. */
 .footer .color__h3 { color: #929292; }
+@media (hover: hover) { .footer .text-hover:hover { color: #118341; } }
+.footer .text-hover:focus-visible { color: #118341; }
 
 .pop-up__outside-close-button--s2-ibf3z95e1 {display: none;}
 .form__select--s2-iiehbiqnl {appearance: none;}

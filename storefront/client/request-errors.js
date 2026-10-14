@@ -121,6 +121,7 @@ const ERROR_COLOR = '#a4262c', OK_COLOR = '#187742';
 export function showMessage(notice, message, error = false) {
   notice.setAttribute?.('role', error ? 'alert' : 'status');
   notice.textContent = message;
+  if (notice.hasAttribute?.('data-checkout-notice')) notice.hidden = !message;
   if (notice.style) notice.style.color = error ? ERROR_COLOR : OK_COLOR;
   if (notice.dataset) notice.dataset.state = message ? (error ? 'error' : 'ok') : '';
 }
@@ -133,6 +134,7 @@ export function showFailure(notice, description, { action = null, prefix = '' } 
   const text = `${prefix}${description.text}`;
   if (!doc?.createElement || !doc.createTextNode) {
     notice.textContent = failureText({ ...description, text }, doc);
+    if (notice.hasAttribute?.('data-checkout-notice')) notice.hidden = false;
     return;
   }
   const parts = [doc.createTextNode(text)];
@@ -156,6 +158,7 @@ export function showFailure(notice, description, { action = null, prefix = '' } 
     parts.push(button);
   }
   notice.append(...parts);
+  if (notice.hasAttribute?.('data-checkout-notice')) notice.hidden = false;
 }
 
 // Disabling the focused submit button drops focus to <body>, escaping the cart dialog's focus trap.

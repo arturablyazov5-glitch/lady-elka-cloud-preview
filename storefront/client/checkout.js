@@ -5,7 +5,7 @@ import { loadTreeProducts, loadDecorProducts } from '../products/model.mjs';
 import { paymentEndpoint } from './config.js';
 import { attachRussianPhoneMask, formatRussianPhone } from './phone-mask.js';
 const mounted = new WeakMap();
-// Persistent accessible names and autofill hints; placeholders stay as visual hints only.
+// Accessible names and autofill hints; placeholders supply the visible field hints.
 const checkoutLabels = {
   name: ['Имя и фамилия', 'name'], email: ['Электронная почта', 'email'], phone: ['Телефон', 'tel'],
   address: ['Адрес доставки', 'shipping street-address'], comment: ['Комментарий к заказу', 'off'],
@@ -18,11 +18,7 @@ function describeCheckoutControls(form, controls) {
   const label = (control, text) => {
     if (!control || control.labels?.length || control.hasAttribute?.('aria-labelledby')) return;
     if (!control.id) control.id = `storefront-checkout-field-${++labelCount}`;
-    const node = document.createElement('label');
-    node.className = control.hidden ? 'storefront-visually-hidden' : 'storefront-checkout-label';
-    node.htmlFor = control.id;
-    node.textContent = text;
-    control.before(node);
+    control.setAttribute('aria-label', text);
   };
   for (const [key, [text, autocomplete]] of Object.entries(checkoutLabels)) {
     const control = controls[key];
@@ -108,6 +104,7 @@ export function initCheckout(form, getPromo, cartStore = { getItems, clear, repr
   const originalLabel = label?.textContent || 'купить';
   const notice = document.createElement('p');
   notice.setAttribute('role', 'status');
+  notice.hidden = true;
   notice.dataset && (notice.dataset.checkoutNotice = '');
   notice.style.margin = '12px 0';
   notice.style.width = '100%';

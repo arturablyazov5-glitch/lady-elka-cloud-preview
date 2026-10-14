@@ -3,6 +3,7 @@ export function describeLeadControl(control) {
       // Placeholder-only captured fields get a persistent (visually hidden) label and autofill hint.
       const autocomplete = { name: 'name', phone: 'tel', email: 'email', city: 'address-level2' }[control.dataset.leadField];
       if (autocomplete && !control.hasAttribute('autocomplete')) control.setAttribute('autocomplete', autocomplete);
+      if (control.dataset.leadField === 'phone' && control.closest('form[data-lead-type="question"]')) control.setAttribute('aria-label', 'Телефон');
       if (control.type !== 'checkbox' && !control.labels?.length && !control.hasAttribute('aria-label') && control.id && control.placeholder) {
         const label = document.createElement('label');
         label.className = 'storefront-visually-hidden'; label.htmlFor = control.id;

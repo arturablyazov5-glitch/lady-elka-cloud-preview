@@ -1,5 +1,13 @@
 // Interactions for the static storefront. No platform runtime is loaded.
 (() => {
+  const header = document.querySelector('.header');
+  const updateAnchorOffset = () => {
+    const position = header && getComputedStyle(header).position;
+    const height = header && ['fixed', 'sticky'].includes(position) ? header.getBoundingClientRect().height : 0;
+    document.documentElement.style.setProperty('--storefront-header-offset', `${height + 12}px`);
+  };
+  updateAnchorOffset();
+  if (header) new ResizeObserver(updateAnchorOffset).observe(header);
   const select = (id) => document.getElementById(id);
   // Delivery is below the fold; activate its responsive CSS background only near view.
   const deferredBackgrounds = document.querySelectorAll('[data-background-deferred]');
@@ -223,7 +231,7 @@
       return;
     }
     const upButton = target.closest('.up-button__footer');
-    if (upButton) { event.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    if (upButton) { event.preventDefault(); window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }); return; }
     const action = target.closest('[data-modal-open], [data-modal-close]');
     if (action) {
       const modal = select(action.dataset.modalOpen || action.dataset.modalClose);
@@ -354,13 +362,9 @@
     before.textContent = beforeText;
     const chunk = document.createElement('span');
     chunk.className = 'typer-chunk';
-    const reserve = document.createElement('span');
-    reserve.className = 'typer-reserve';
-    reserve.setAttribute('aria-hidden', 'true');
-    reserve.textContent = words.reduce((longest, word) => word.length > longest.length ? word : longest, '');
     const letters = document.createElement('span');
     letters.className = 'typer-letters';
-    chunk.append(reserve, letters);
+    chunk.append(letters);
     const after = document.createElement('span');
     after.className = 'typer-after';
     after.textContent = afterText;

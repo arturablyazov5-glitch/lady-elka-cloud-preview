@@ -334,19 +334,22 @@ function siteContacts(doc = globalThis.document) {
 var ERROR_COLOR = "#a4262c";
 var OK_COLOR = "#187742";
 function showMessage(notice, message, error = false) {
-  var _a;
+  var _a, _b;
   (_a = notice.setAttribute) == null ? void 0 : _a.call(notice, "role", error ? "alert" : "status");
   notice.textContent = message;
+  if ((_b = notice.hasAttribute) == null ? void 0 : _b.call(notice, "data-checkout-notice")) notice.hidden = !message;
   if (notice.style) notice.style.color = error ? ERROR_COLOR : OK_COLOR;
   if (notice.dataset) notice.dataset.state = message ? error ? "error" : "ok" : "";
 }
 function showFailure(notice, description, { action = null, prefix = "" } = {}) {
+  var _a, _b;
   showMessage(notice, "", true);
   const doc = notice.ownerDocument;
   if (notice.dataset) notice.dataset.failure = description.kind;
   const text = `${prefix}${description.text}`;
   if (!(doc == null ? void 0 : doc.createElement) || !doc.createTextNode) {
     notice.textContent = failureText({ ...description, text }, doc);
+    if ((_a = notice.hasAttribute) == null ? void 0 : _a.call(notice, "data-checkout-notice")) notice.hidden = false;
     return;
   }
   const parts = [doc.createTextNode(text)];
@@ -378,6 +381,7 @@ function showFailure(notice, description, { action = null, prefix = "" } = {}) {
     parts.push(button);
   }
   notice.append(...parts);
+  if ((_b = notice.hasAttribute) == null ? void 0 : _b.call(notice, "data-checkout-notice")) notice.hidden = false;
 }
 function keepFocus(container, button, notice) {
   var _a, _b, _c, _d, _e;
@@ -632,11 +636,7 @@ function describeCheckoutControls(form, controls) {
     var _a2, _b2;
     if (!control || ((_a2 = control.labels) == null ? void 0 : _a2.length) || ((_b2 = control.hasAttribute) == null ? void 0 : _b2.call(control, "aria-labelledby"))) return;
     if (!control.id) control.id = `storefront-checkout-field-${++labelCount}`;
-    const node = document2.createElement("label");
-    node.className = control.hidden ? "storefront-visually-hidden" : "storefront-checkout-label";
-    node.htmlFor = control.id;
-    node.textContent = text;
-    control.before(node);
+    control.setAttribute("aria-label", text);
   };
   for (const [key, [text, autocomplete]] of Object.entries(checkoutLabels)) {
     const control = controls[key];
@@ -738,6 +738,7 @@ function initCheckout(form, getPromo, cartStore = { getItems, clear, reprice }) 
   const originalLabel = (label == null ? void 0 : label.textContent) || "купить";
   const notice = document.createElement("p");
   notice.setAttribute("role", "status");
+  notice.hidden = true;
   notice.dataset && (notice.dataset.checkoutNotice = "");
   notice.style.margin = "12px 0";
   notice.style.width = "100%";
@@ -961,6 +962,7 @@ function describeLeadControl(control) {
   var _a;
   const autocomplete = { name: "name", phone: "tel", email: "email", city: "address-level2" }[control.dataset.leadField];
   if (autocomplete && !control.hasAttribute("autocomplete")) control.setAttribute("autocomplete", autocomplete);
+  if (control.dataset.leadField === "phone" && control.closest('form[data-lead-type="question"]')) control.setAttribute("aria-label", "Телефон");
   if (control.type !== "checkbox" && !((_a = control.labels) == null ? void 0 : _a.length) && !control.hasAttribute("aria-label") && control.id && control.placeholder) {
     const label = document.createElement("label");
     label.className = "storefront-visually-hidden";
