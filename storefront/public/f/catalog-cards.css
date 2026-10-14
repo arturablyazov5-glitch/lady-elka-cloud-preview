@@ -16,6 +16,7 @@
   box-shadow: 0 0 0 2px rgba(17, 131, 65, .12);
 }
 [data-storefront-product] .title-and-input { display: flex; flex-direction: column; gap: 24px; }
+[data-storefront-product] .input__product-wrapper { display: flex; flex-direction: column; gap: 12px; }
 [data-storefront-product] [data-storefront-diameter-row][hidden] { display: none !important; }
 [data-storefront-product] .input__catalog .down__img { pointer-events: none; }
 [data-storefront-product] .input__catalog .down__img .image__img {

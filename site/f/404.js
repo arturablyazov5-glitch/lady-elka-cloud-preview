@@ -1,15 +1,43 @@
 // Native interactions for the source 404 markup. No Taptop/analytics runtime.
 (() => {
-  if (window.innerWidth <= 768) {
-    const label = document.querySelector('[href="/catalog/landscape-gardening/"] .menu__link-text .text-block-wrap-div');
-    if (label) label.textContent = 'Ландшафтное озеленение';
-  }
+
+  // Catalog disclosure stays inside the existing mobile menu and its focus trap.
+  const catalogDropdowns = [...document.querySelectorAll('[data-catalog-dropdown]')];
+  const setCatalogOpen = (dropdown, open, focusToggle = false) => {
+    const toggle = dropdown.querySelector('[data-catalog-toggle]');
+    const links = dropdown.querySelector('[data-catalog-links]');
+    toggle.setAttribute('aria-expanded', String(open));
+    links.hidden = !open;
+    if (focusToggle) toggle.focus({ preventScroll: true });
+  };
+  catalogDropdowns.forEach(dropdown => {
+    const toggle = dropdown.querySelector('[data-catalog-toggle]');
+    toggle.addEventListener('click', () => setCatalogOpen(dropdown, toggle.getAttribute('aria-expanded') !== 'true'));
+    dropdown.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        event.preventDefault(); event.stopPropagation(); setCatalogOpen(dropdown, false, true);
+      } else if (event.target === toggle && event.key === 'ArrowDown') {
+        event.preventDefault(); setCatalogOpen(dropdown, true); dropdown.querySelector('a[href]')?.focus();
+      }
+    });
+    dropdown.addEventListener('focusout', event => {
+      if (!dropdown.contains(event.relatedTarget)) setCatalogOpen(dropdown, false);
+    });
+  });
+  document.addEventListener('click', event => catalogDropdowns.forEach(dropdown => {
+    if (!dropdown.contains(event.target) || event.target.closest('a[href]')) setCatalogOpen(dropdown, false);
+  }));
+
+
   const up = document.querySelector('.up-button');
   window.addEventListener('scroll', () => { up.style.display = window.scrollY > 100 ? '' : 'none'; }, { passive: true });
   const menu = document.querySelector('.menu');
   const fixed = menu.querySelector('.menu__fixed-wrapper');
+  menu.querySelector('.menu__burger-button')?.setAttribute('aria-expanded', 'false');
   const setMenu = open => {
     menu.classList.toggle('is-opened', open);
+    menu.querySelector('.menu__burger-button')?.setAttribute('aria-expanded', String(open));
+    if (!open) catalogDropdowns.forEach(dropdown => setCatalogOpen(dropdown, false));
     fixed.style.display = open ? 'flex' : '';
     document.documentElement.style.overflow = open ? 'hidden' : '';
   };
@@ -20,6 +48,7 @@
   };
   document.addEventListener('click', event => {
     const target = event.target;
+    if (target.closest('.menu a[href]')) setMenu(false);
     if (target.closest('.menu__burger-button')) setMenu(true);
     if (target.closest('.menu__close-button, .menu__overlay')) setMenu(false);
     if (target.closest('[data-action-element="inachtynm_0"]')) setModal(true);
