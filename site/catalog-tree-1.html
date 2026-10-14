@@ -38,7 +38,7 @@
 
  	    
 	
-<link rel="stylesheet" href="/assets/3bfee8b092ed4293568b1a2f69f24cdbaccd4d379dcfe508a83c98124e742ddc.css">	
+<link rel="stylesheet" href="/assets/f1d8024ae7f4e984c9feb24f5aace8b01e70fbec9b26495e6d1cd31a02291117.css">	
     
 
 
@@ -76,7 +76,59 @@
 <meta name="twitter:description" content="Дополнительный декор для вашего интерьера. Хвойная гирлянда 2.8 метра. Сумка для хранения ёлок">
 <meta name="twitter:image" content="https://lady-elka.ru/assets/e90571feec7bb4749132786760b2836b11ec6313bf4af07ae87390d7d6d2abbe.webp">
 <link rel="canonical" href="https://lady-elka.ru/catalog-tree/">
-<script src="/assets/6c424f942ac04509505faa042f378ef04c93f6789add41c3d0828562f78475d9.js" defer></script></head>
+<script src="/assets/b76b496431d9b36673d81f8c73feaee52a07b3bccdbaea3000018bb8e07eb4dd.js" defer></script><style>img[data-le-src]{color:transparent;font-size:0}</style><script data-le-image-loader>(function imageViewportLoader() {
+  const pending = new Set();
+  let scheduled = false;
+  const visible = image => {
+    if (!image.isConnected || !image.getClientRects().length) return false;
+    for (let node = image; node && node.nodeType === 1; node = node.parentElement) {
+      const style = getComputedStyle(node);
+      if (node.hidden || style.visibility === 'hidden' || style.display === 'none') return false;
+    }
+    return true;
+  };
+  const load = image => {
+    const background = image.hasAttribute('data-le-background');
+    if ((!image.hasAttribute('data-le-src') && !background) || !visible(image)) return;
+    const rect = image.getBoundingClientRect();
+    if (rect.bottom < -(background ? 800 : 400) || rect.top > innerHeight + (background ? 800 : 400) || rect.right < 0 || rect.left > innerWidth) return;
+    if (background) {
+      image.style.setProperty('--le-active-background', 'var(--le-deferred-background)');
+      image.removeAttribute('data-le-background');
+      pending.delete(image); observer?.unobserve(image); return;
+    }
+    image.loading = rect.top < innerHeight && rect.bottom > 0 ? 'eager' : 'lazy';
+    image.decoding = 'async';
+    // sizes/srcset precede src so the browser selects the existing responsive photo.
+    for (const name of ['sizes', 'srcset', 'src']) {
+      const value = image.getAttribute('data-le-' + name);
+      if (value !== null) image.setAttribute(name, value);
+      image.removeAttribute('data-le-' + name);
+    }
+    pending.delete(image); observer?.unobserve(image);
+  };
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
+    for (const entry of entries) if (entry.isIntersecting) load(entry.target);
+  }, { rootMargin: '800px 0px' }) : null;
+  function scan() {
+    scheduled = false;
+    for (const image of document.querySelectorAll('img[data-le-src],[data-le-background]')) {
+      if (!pending.has(image)) { pending.add(image); observer?.observe(image); }
+    }
+    for (const image of pending) {
+      if (!image.isConnected) { pending.delete(image); observer?.unobserve(image); }
+      else load(image);
+    }
+  }
+  function schedule() { if (!scheduled) { scheduled = true; requestAnimationFrame(scan); } }
+  new MutationObserver(schedule).observe(document.documentElement, { subtree: true, childList: true,
+    attributes: true, attributeFilter: ['data-le-src', 'hidden', 'class', 'style'] });
+  addEventListener('resize', schedule, { passive: true });
+  addEventListener('scroll', schedule, { passive: true });
+  document.addEventListener('DOMContentLoaded', scan, { once: true });
+  window.__LE_LOAD_VISIBLE_IMAGES__ = scan;
+  schedule();
+})();</script><noscript><style>img[data-le-src]{display:none}.fill__img,.doc__img,.question__img{--le-active-background:var(--le-deferred-background)}</style></noscript></head>
 <body>
 <div class='mosaic-wrap'>
 <div class='root root__main' id='ie2m0sbyz_0'>
@@ -117,7 +169,7 @@
 <div class='div div--u-im3bc3u4g item-wrapper__shop' id='im3bc3u4g_0'>
 <div class='div div--u-i09ij701w name-photo__shop' id='i09ij701w_0'>
 <div data-cart-photo class='image shop__img' id='izvtnjdgt_0'>
-<img src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' alt='' title='' data-size='480x480' data-origin-src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' class='image__img' id='iv8aqz582_0'  width="480" height="480" loading="lazy" decoding="async">
+<img data-le-src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' alt='' title='' data-size='480x480' data-origin-src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' class='image__img' id='iv8aqz582_0'  width="480" height="480" loading="lazy" decoding="async"><noscript><img src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' alt='' title='' data-size='480x480' data-origin-src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' class='image__img' id='iv8aqz582_0'  width="480" height="480" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-ir8em2vtp title-shop-wrapper' id='ir8em2vtp_0'>
 <div class='div div--u-iqlo6zgmt title-wrapper__catalog' id='iqlo6zgmt_0'>
@@ -157,7 +209,7 @@
 <div data-bag-wrapper class='div div--u-i0qf37n2s item-wrapper__shop' id='i0qf37n2s_0'>
 <div class='div div--u-ia0db5cwg name-photo__shop' id='ia0db5cwg_0'>
 <div data-bag-photo class='image shop__img' id='ii2pvn88r_0'>
-<img src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' alt='2025-10-21 07.01.53' title='' data-size='600x800' data-origin-src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' class='image__img' id='iam7w33aj_0'  width="225" height="300" loading="lazy" decoding="async">
+<img data-le-src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' alt='2025-10-21 07.01.53' title='' data-size='600x800' data-origin-src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' class='image__img' id='iam7w33aj_0'  width="225" height="300" loading="lazy" decoding="async"><noscript><img src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' alt='2025-10-21 07.01.53' title='' data-size='600x800' data-origin-src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' class='image__img' id='iam7w33aj_0'  width="225" height="300" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-i5cx5rvxq title-wrapper__catalog' id='i5cx5rvxq_0'>
 <div data-bag-title='Сумка для хранения' class='text color__h2 site__h3' id='irn4lxswr_0'>
@@ -513,7 +565,7 @@ WhatsApp
 </div><div class='collection catalog__wrapper' id='i9xueufy9_0'>
 <div role='list' class='collection__list list__catalog' id='ipljajajx_0'>
 <div role='listitem' class='collection__item product-card' id='isjt1amxf_77999130' data-storefront-product="5d">
-    <div class="image product__img" data-storefront-image style="--storefront-image-ratio:900/1200"><img class="image__img" src="/assets/a041df43e318dab257424b131c8fa06997bc44f654ca9d00cd0fc30e5aa0b87c.webp" alt="Венок" width="900" height="1200" fetchpriority="high" decoding="async" srcset="/assets/5a53fc5d639f2660277918e1a41ae2a3f5352054f803c8057c51135397ba2384.webp 180w, /assets/a041df43e318dab257424b131c8fa06997bc44f654ca9d00cd0fc30e5aa0b87c.webp 360w" sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/53db71a0d219a8a0ff23a0a33cef0caeb1de4924f29cbcc4b274260d3a5f0341.webp"><span data-storefront-photo-placeholder hidden>Нет фото</span></div>
+    <div class="image product__img" data-storefront-image style="--storefront-image-ratio:900/1200"><img class="image__img" data-le-src="/assets/a041df43e318dab257424b131c8fa06997bc44f654ca9d00cd0fc30e5aa0b87c.webp" alt="Венок" width="900" height="1200" decoding="async" data-le-srcset="/assets/5a53fc5d639f2660277918e1a41ae2a3f5352054f803c8057c51135397ba2384.webp 180w, /assets/a041df43e318dab257424b131c8fa06997bc44f654ca9d00cd0fc30e5aa0b87c.webp 360w" data-le-sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/53db71a0d219a8a0ff23a0a33cef0caeb1de4924f29cbcc4b274260d3a5f0341.webp"><noscript><img class="image__img" src="/assets/a041df43e318dab257424b131c8fa06997bc44f654ca9d00cd0fc30e5aa0b87c.webp" alt="Венок" width="900" height="1200" fetchpriority="high" decoding="async" srcset="/assets/5a53fc5d639f2660277918e1a41ae2a3f5352054f803c8057c51135397ba2384.webp 180w, /assets/a041df43e318dab257424b131c8fa06997bc44f654ca9d00cd0fc30e5aa0b87c.webp 360w" sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/53db71a0d219a8a0ff23a0a33cef0caeb1de4924f29cbcc4b274260d3a5f0341.webp"></noscript><span data-storefront-photo-placeholder hidden>Нет фото</span></div>
     <div class="div content__product div--u-io63gnvw2">
       <div class="div title-and-input"><div class="div title-and-opisanie">
         <div class="text color__h2 site-catalog__h1"><span class="text-block-wrap-div">Венок</span></div>
@@ -525,7 +577,7 @@ WhatsApp
       <a href="/catalog-tree/venok-naturalnyj/" class="button stroke-catalog__button"><span class="text-button"><span class="text-block-wrap-div">подробнее</span></span></a></div></div>
     </div><script type="application/json" data-storefront-variants>{"id":"5d","kind":"decor","title":"Венок","path":"/catalog-tree/venok-naturalnyj/","variants":[{"id":"5d:Зеленый:45 см","category":"Зеленый","size":"45 см","label":"45 см","price":2200,"description":"","photos":["/media/catalog-pinned/53db71a0d219a8a0ff23a0a33cef0caeb1de4924f29cbcc4b274260d3a5f0341.webp"],"options":{"category":"Зеленый","size":"45 см"},"image":"/media/catalog-pinned/53db71a0d219a8a0ff23a0a33cef0caeb1de4924f29cbcc4b274260d3a5f0341.webp"},{"id":"5d:Заснеженный:45 см","category":"Заснеженный","size":"45 см","label":"45 см","price":2600,"description":"","photos":["/media/catalog-pinned/53db71a0d219a8a0ff23a0a33cef0caeb1de4924f29cbcc4b274260d3a5f0341.webp"],"options":{"category":"Заснеженный","size":"45 см"},"image":"/media/catalog-pinned/53db71a0d219a8a0ff23a0a33cef0caeb1de4924f29cbcc4b274260d3a5f0341.webp"},{"id":"5d:Зеленый:60 см","category":"Зеленый","size":"60 см","label":"60 см","price":2900,"description":"","photos":["/media/catalog-pinned/53db71a0d219a8a0ff23a0a33cef0caeb1de4924f29cbcc4b274260d3a5f0341.webp"],"options":{"category":"Зеленый","size":"60 см"},"image":"/media/catalog-pinned/53db71a0d219a8a0ff23a0a33cef0caeb1de4924f29cbcc4b274260d3a5f0341.webp"},{"id":"5d:Заснеженный:60 см","category":"Заснеженный","size":"60 см","label":"60 см","price":3300,"description":"","photos":["/media/catalog-pinned/53db71a0d219a8a0ff23a0a33cef0caeb1de4924f29cbcc4b274260d3a5f0341.webp"],"options":{"category":"Заснеженный","size":"60 см"},"image":"/media/catalog-pinned/53db71a0d219a8a0ff23a0a33cef0caeb1de4924f29cbcc4b274260d3a5f0341.webp"}],"selectedVariant":{"id":"5d:Зеленый:45 см","category":"Зеленый","size":"45 см","label":"45 см","price":2200,"description":"","photos":["/media/catalog-pinned/53db71a0d219a8a0ff23a0a33cef0caeb1de4924f29cbcc4b274260d3a5f0341.webp"],"options":{"category":"Зеленый","size":"45 см"},"image":"/media/catalog-pinned/53db71a0d219a8a0ff23a0a33cef0caeb1de4924f29cbcc4b274260d3a5f0341.webp"}}</script></div>
 <div role='listitem' class='collection__item product-card' id='isjt1amxf_77997131' data-storefront-product="3d">
-    <div class="image product__img" data-storefront-image style="--storefront-image-ratio:960/1280"><img class="image__img" src="/assets/aa1da460e5b9433ee45c3bc7ef3d5a6bf4aedf8daded8f4a5ca741b4868ba948.webp" alt="Хвойная гирлянда 2.8 метра" width="960" height="1280" decoding="async" srcset="/assets/9a5a6dff75bb50dff9c43fff7edd608e3b0e2015f492082a5c01649de651a7ce.webp 180w, /assets/aa1da460e5b9433ee45c3bc7ef3d5a6bf4aedf8daded8f4a5ca741b4868ba948.webp 360w" sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/faa6ad8e1c8c7e8f9e6d3c72945a2d9e8f79dca8779a5cb8f559fb61ab9079b9.webp"><span data-storefront-photo-placeholder hidden>Нет фото</span></div>
+    <div class="image product__img" data-storefront-image style="--storefront-image-ratio:960/1280"><img class="image__img" data-le-src="/assets/aa1da460e5b9433ee45c3bc7ef3d5a6bf4aedf8daded8f4a5ca741b4868ba948.webp" alt="Хвойная гирлянда 2.8 метра" width="960" height="1280" decoding="async" data-le-srcset="/assets/9a5a6dff75bb50dff9c43fff7edd608e3b0e2015f492082a5c01649de651a7ce.webp 180w, /assets/aa1da460e5b9433ee45c3bc7ef3d5a6bf4aedf8daded8f4a5ca741b4868ba948.webp 360w" data-le-sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/faa6ad8e1c8c7e8f9e6d3c72945a2d9e8f79dca8779a5cb8f559fb61ab9079b9.webp"><noscript><img class="image__img" src="/assets/aa1da460e5b9433ee45c3bc7ef3d5a6bf4aedf8daded8f4a5ca741b4868ba948.webp" alt="Хвойная гирлянда 2.8 метра" width="960" height="1280" decoding="async" srcset="/assets/9a5a6dff75bb50dff9c43fff7edd608e3b0e2015f492082a5c01649de651a7ce.webp 180w, /assets/aa1da460e5b9433ee45c3bc7ef3d5a6bf4aedf8daded8f4a5ca741b4868ba948.webp 360w" sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/faa6ad8e1c8c7e8f9e6d3c72945a2d9e8f79dca8779a5cb8f559fb61ab9079b9.webp"></noscript><span data-storefront-photo-placeholder hidden>Нет фото</span></div>
     <div class="div content__product div--u-io63gnvw2">
       <div class="div title-and-input"><div class="div title-and-opisanie">
         <div class="text color__h2 site-catalog__h1"><span class="text-block-wrap-div">Хвойная гирлянда 2.8 метра</span></div>
@@ -537,7 +589,7 @@ WhatsApp
       <a href="/catalog-tree/hvojnaya-girlyanda-2.8-metra/" class="button stroke-catalog__button"><span class="text-button"><span class="text-block-wrap-div">подробнее</span></span></a></div></div>
     </div><script type="application/json" data-storefront-variants>{"id":"3d","kind":"decor","title":"Хвойная гирлянда 2.8 метра","path":"/catalog-tree/hvojnaya-girlyanda-2.8-metra/","variants":[{"id":"3d::","category":"","size":"","label":"","price":5500,"description":"Пушистая гирлянда со светлыми кончиками","photos":["/media/catalog-pinned/faa6ad8e1c8c7e8f9e6d3c72945a2d9e8f79dca8779a5cb8f559fb61ab9079b9.webp"],"options":{"category":"","size":""},"image":"/media/catalog-pinned/faa6ad8e1c8c7e8f9e6d3c72945a2d9e8f79dca8779a5cb8f559fb61ab9079b9.webp"}],"selectedVariant":{"id":"3d::","category":"","size":"","label":"","price":5500,"description":"Пушистая гирлянда со светлыми кончиками","photos":["/media/catalog-pinned/faa6ad8e1c8c7e8f9e6d3c72945a2d9e8f79dca8779a5cb8f559fb61ab9079b9.webp"],"options":{"category":"","size":""},"image":"/media/catalog-pinned/faa6ad8e1c8c7e8f9e6d3c72945a2d9e8f79dca8779a5cb8f559fb61ab9079b9.webp"}}</script></div>
 <div role='listitem' class='collection__item product-card' id='isjt1amxf_77921132' data-storefront-product="4d">
-    <div class="image product__img" data-storefront-image style="--storefront-image-ratio:600/800"><img class="image__img" src="/assets/7df6db6d2e6da2d1086cfb119a986c2e67994bff2dc13b6c4832dd3a52a38abe.webp" alt="Сумка для хранения ёлок" width="600" height="800" decoding="async" srcset="/assets/c84143d04744300472734f1642a9401c4e7564cf5d0a46a72b698504287c1b96.webp 180w, /assets/7df6db6d2e6da2d1086cfb119a986c2e67994bff2dc13b6c4832dd3a52a38abe.webp 360w" sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/017dd0646fdb1978c5917686f793970aa6b64eb721882a3916dc7034eb9f21a2.webp"><span data-storefront-photo-placeholder hidden>Нет фото</span></div>
+    <div class="image product__img" data-storefront-image style="--storefront-image-ratio:600/800"><img class="image__img" data-le-src="/assets/7df6db6d2e6da2d1086cfb119a986c2e67994bff2dc13b6c4832dd3a52a38abe.webp" alt="Сумка для хранения ёлок" width="600" height="800" decoding="async" data-le-srcset="/assets/c84143d04744300472734f1642a9401c4e7564cf5d0a46a72b698504287c1b96.webp 180w, /assets/7df6db6d2e6da2d1086cfb119a986c2e67994bff2dc13b6c4832dd3a52a38abe.webp 360w" data-le-sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/017dd0646fdb1978c5917686f793970aa6b64eb721882a3916dc7034eb9f21a2.webp"><noscript><img class="image__img" src="/assets/7df6db6d2e6da2d1086cfb119a986c2e67994bff2dc13b6c4832dd3a52a38abe.webp" alt="Сумка для хранения ёлок" width="600" height="800" decoding="async" srcset="/assets/c84143d04744300472734f1642a9401c4e7564cf5d0a46a72b698504287c1b96.webp 180w, /assets/7df6db6d2e6da2d1086cfb119a986c2e67994bff2dc13b6c4832dd3a52a38abe.webp 360w" sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/017dd0646fdb1978c5917686f793970aa6b64eb721882a3916dc7034eb9f21a2.webp"></noscript><span data-storefront-photo-placeholder hidden>Нет фото</span></div>
     <div class="div content__product div--u-io63gnvw2">
       <div class="div title-and-input"><div class="div title-and-opisanie">
         <div class="text color__h2 site-catalog__h1"><span class="text-block-wrap-div">Сумка для хранения ёлок</span></div>
@@ -549,7 +601,7 @@ WhatsApp
       <a href="/catalog-tree/sumka-dlya-hraneniya-yelok/" class="button stroke-catalog__button"><span class="text-button"><span class="text-block-wrap-div">подробнее</span></span></a></div></div>
     </div><script type="application/json" data-storefront-variants>{"id":"4d","kind":"decor","title":"Сумка для хранения ёлок","path":"/catalog-tree/sumka-dlya-hraneniya-yelok/","variants":[{"id":"4d::120х40х40","category":"","size":"120х40х40","label":"120х40х40","price":1700,"description":"","photos":["/media/catalog-pinned/017dd0646fdb1978c5917686f793970aa6b64eb721882a3916dc7034eb9f21a2.webp"],"options":{"category":"","size":"120х40х40"},"image":"/media/catalog-pinned/017dd0646fdb1978c5917686f793970aa6b64eb721882a3916dc7034eb9f21a2.webp"},{"id":"4d::120х40х60 (+200 ₽)","category":"","size":"120х40х60","label":"120х40х60 (+200 ₽)","price":1900,"description":"","photos":["/media/catalog-pinned/017dd0646fdb1978c5917686f793970aa6b64eb721882a3916dc7034eb9f21a2.webp"],"options":{"category":"","size":"120х40х60"},"image":"/media/catalog-pinned/017dd0646fdb1978c5917686f793970aa6b64eb721882a3916dc7034eb9f21a2.webp"}],"selectedVariant":{"id":"4d::120х40х40","category":"","size":"120х40х40","label":"120х40х40","price":1700,"description":"","photos":["/media/catalog-pinned/017dd0646fdb1978c5917686f793970aa6b64eb721882a3916dc7034eb9f21a2.webp"],"options":{"category":"","size":"120х40х40"},"image":"/media/catalog-pinned/017dd0646fdb1978c5917686f793970aa6b64eb721882a3916dc7034eb9f21a2.webp"}}</script></div>
 <div role='listitem' class='collection__item product-card' id='isjt1amxf_77555133' data-storefront-product="2d">
-    <div class="image product__img" data-storefront-image style="--storefront-image-ratio:896/1168"><img class="image__img" src="/assets/c7e00e788193ead9dadeddf358a6587ef82ced11d5e9e2ca32e25b8d0debed3a.webp" alt="Настольная ёлка Веста" width="896" height="1168" loading="lazy" decoding="async" srcset="/assets/5f6568e80d91348d6aeb5cf30d654ea0776fa58033a7f31fa93d0384eb2f038c.webp 184w, /assets/c7e00e788193ead9dadeddf358a6587ef82ced11d5e9e2ca32e25b8d0debed3a.webp 368w" sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/e5239a94903a9d0d3b7bce01d9300f8046173445e408bd2ce77b3379aeff816c.webp"><span data-storefront-photo-placeholder hidden>Нет фото</span></div>
+    <div class="image product__img" data-storefront-image style="--storefront-image-ratio:896/1168"><img class="image__img" data-le-src="/assets/c7e00e788193ead9dadeddf358a6587ef82ced11d5e9e2ca32e25b8d0debed3a.webp" alt="Настольная ёлка Веста" width="896" height="1168" loading="lazy" decoding="async" data-le-srcset="/assets/5f6568e80d91348d6aeb5cf30d654ea0776fa58033a7f31fa93d0384eb2f038c.webp 184w, /assets/c7e00e788193ead9dadeddf358a6587ef82ced11d5e9e2ca32e25b8d0debed3a.webp 368w" data-le-sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/e5239a94903a9d0d3b7bce01d9300f8046173445e408bd2ce77b3379aeff816c.webp"><noscript><img class="image__img" src="/assets/c7e00e788193ead9dadeddf358a6587ef82ced11d5e9e2ca32e25b8d0debed3a.webp" alt="Настольная ёлка Веста" width="896" height="1168" loading="lazy" decoding="async" srcset="/assets/5f6568e80d91348d6aeb5cf30d654ea0776fa58033a7f31fa93d0384eb2f038c.webp 184w, /assets/c7e00e788193ead9dadeddf358a6587ef82ced11d5e9e2ca32e25b8d0debed3a.webp 368w" sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/e5239a94903a9d0d3b7bce01d9300f8046173445e408bd2ce77b3379aeff816c.webp"></noscript><span data-storefront-photo-placeholder hidden>Нет фото</span></div>
     <div class="div content__product div--u-io63gnvw2">
       <div class="div title-and-input"><div class="div title-and-opisanie">
         <div class="text color__h2 site-catalog__h1"><span class="text-block-wrap-div">Настольная ёлка Веста</span></div>
@@ -561,7 +613,7 @@ WhatsApp
       <a href="/catalog-tree/nastolnaya-elka-vesta/" class="button stroke-catalog__button"><span class="text-button"><span class="text-block-wrap-div">подробнее</span></span></a></div></div>
     </div><script type="application/json" data-storefront-variants>{"id":"2d","kind":"decor","title":"Настольная ёлка Веста","path":"/catalog-tree/nastolnaya-elka-vesta/","variants":[{"id":"2d::","category":"","size":"","label":"","price":2200,"description":"Миниатюрная ёлка Веста дополнит ваш праздничный интерьер","photos":["/media/catalog-pinned/e5239a94903a9d0d3b7bce01d9300f8046173445e408bd2ce77b3379aeff816c.webp"],"options":{"category":"","size":""},"image":"/media/catalog-pinned/e5239a94903a9d0d3b7bce01d9300f8046173445e408bd2ce77b3379aeff816c.webp"}],"selectedVariant":{"id":"2d::","category":"","size":"","label":"","price":2200,"description":"Миниатюрная ёлка Веста дополнит ваш праздничный интерьер","photos":["/media/catalog-pinned/e5239a94903a9d0d3b7bce01d9300f8046173445e408bd2ce77b3379aeff816c.webp"],"options":{"category":"","size":""},"image":"/media/catalog-pinned/e5239a94903a9d0d3b7bce01d9300f8046173445e408bd2ce77b3379aeff816c.webp"}}</script></div>
 <div role='listitem' class='collection__item product-card' id='isjt1amxf_77547134' data-storefront-product="1d">
-    <div class="image product__img" data-storefront-image style="--storefront-image-ratio:1536/2048"><img class="image__img" src="/assets/43d32a3484d76fa073a26341bdedbb32b781303b91aa341c82621e72cc63aecd.webp" alt="Корзина под ёлку" width="1536" height="2048" loading="lazy" decoding="async" srcset="/assets/4d5201b056ad8b503756c25cf261c3af050e60133f6c69f9137ac4bae9f24131.webp 180w, /assets/43d32a3484d76fa073a26341bdedbb32b781303b91aa341c82621e72cc63aecd.webp 360w" sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/0d7c082c98d17ac26c65694a06c887d5f50bc92cb2065c0489e608c3730e2bf7.webp"><span data-storefront-photo-placeholder hidden>Нет фото</span></div>
+    <div class="image product__img" data-storefront-image style="--storefront-image-ratio:1536/2048"><img class="image__img" data-le-src="/assets/43d32a3484d76fa073a26341bdedbb32b781303b91aa341c82621e72cc63aecd.webp" alt="Корзина под ёлку" width="1536" height="2048" loading="lazy" decoding="async" data-le-srcset="/assets/4d5201b056ad8b503756c25cf261c3af050e60133f6c69f9137ac4bae9f24131.webp 180w, /assets/43d32a3484d76fa073a26341bdedbb32b781303b91aa341c82621e72cc63aecd.webp 360w" data-le-sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/0d7c082c98d17ac26c65694a06c887d5f50bc92cb2065c0489e608c3730e2bf7.webp"><noscript><img class="image__img" src="/assets/43d32a3484d76fa073a26341bdedbb32b781303b91aa341c82621e72cc63aecd.webp" alt="Корзина под ёлку" width="1536" height="2048" loading="lazy" decoding="async" srcset="/assets/4d5201b056ad8b503756c25cf261c3af050e60133f6c69f9137ac4bae9f24131.webp 180w, /assets/43d32a3484d76fa073a26341bdedbb32b781303b91aa341c82621e72cc63aecd.webp 360w" sizes="(max-width: 600px) 100vw, 360px" data-full-src="/media/catalog-pinned/0d7c082c98d17ac26c65694a06c887d5f50bc92cb2065c0489e608c3730e2bf7.webp"></noscript><span data-storefront-photo-placeholder hidden>Нет фото</span></div>
     <div class="div content__product div--u-io63gnvw2">
       <div class="div title-and-input"><div class="div title-and-opisanie">
         <div class="text color__h2 site-catalog__h1"><span class="text-block-wrap-div">Корзина под ёлку</span></div>
@@ -689,7 +741,7 @@ WhatsApp
 </div>
 </div>
 </div>
-<div class='div div--u-ikrk2l5ca question__img' id='ikrk2l5ca_0'>
+<div class='div div--u-ikrk2l5ca question__img' id='ikrk2l5ca_0' data-le-background>
 <div class='div text-time__billet' id='ir4g95t94_0'>
 <div class='text color__h2 site__h3' id='i9b1r3fqv_0'>
 <span class='text-block-wrap-div'>Евгения</span>
@@ -710,7 +762,7 @@ WhatsApp
 <div class='div left-column__footer div--u-i5e7ip8p8' id='i5e7ip8p8_0'>
 <a href='/' class='link-block link-block--u-i548c1nmk wrapper-logo__footer' id='i548c1nmk_0'>
 <div class='image logo__img' id='i1xerw96c_0'>
-<img src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' alt='Frame 62285 (1)' title='' data-size='895x895' data-origin-src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' class='image__img image__img--s2-if2a0c6le' id='if2a0c6le_0'  width="100" height="100" loading="lazy" decoding="async">
+<img data-le-src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' alt='Frame 62285 (1)' title='' data-size='895x895' data-origin-src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' class='image__img image__img--s2-if2a0c6le' id='if2a0c6le_0'  width="100" height="100" loading="lazy" decoding="async"><noscript><img src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' alt='Frame 62285 (1)' title='' data-size='895x895' data-origin-src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' class='image__img image__img--s2-if2a0c6le' id='if2a0c6le_0'  width="100" height="100" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='text white-color site__h4 text--u-i0z38hfms' id='i0z38hfms_0'>
 <span class='text-block-wrap-div'>Невероятно красивые<br>литые ели</span>
@@ -951,7 +1003,7 @@ WhatsApp
 <span class='text-block-wrap-div'>Разработка сайта: Mansurov</span>
 </a>
 <div class='image image--u-igyqdxj7r' id='igyqdxj7r_0'>
-<img src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' alt='horizontal logos' title='' data-size='3056x238' data-origin-src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' class='image__img image__img--s2-isukkvfjx' id='isukkvfjx_0'  width="3056" height="238" loading="lazy" decoding="async">
+<img data-le-src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' alt='horizontal logos' title='' data-size='3056x238' data-origin-src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' class='image__img image__img--s2-isukkvfjx' id='isukkvfjx_0'  width="3056" height="238" loading="lazy" decoding="async"><noscript><img src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' alt='horizontal logos' title='' data-size='3056x238' data-origin-src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' class='image__img image__img--s2-isukkvfjx' id='isukkvfjx_0'  width="3056" height="238" loading="lazy" decoding="async"></noscript>
 </div>
 <button role='button' class='up-button up-button__footer site__h5 up-button--u-itaqinwlk' id='itaqinwlk_0'>
 <span class='text text--u-i1yg6dh1b' id='i1yg6dh1b_0'>

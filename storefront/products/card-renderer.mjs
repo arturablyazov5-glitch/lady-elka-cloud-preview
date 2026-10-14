@@ -1,3 +1,4 @@
+import { deferredImageAttributes } from './lazy-images.mjs';
 import { pagePath } from '../url-path.mjs';
 import { imagePreviewAttributes } from './image-preview.mjs';
 import { catalogPhotos, escapeHtml as escape, jsonForHtml, money, presentProduct, productTitle } from './presentation.mjs';
@@ -9,7 +10,7 @@ const attributeOf = (tag, name) => new RegExp(`\\s${name}=(["'])(.*?)\\1`, 'i').
 // Re-rendering a card in the browser (catalog-sync) keeps the loading hints/size of the same photo.
 function inheritedImageAttributes(template, image) {
   // Match the original photo URL directly or via data-full-src (build-time preview thumbnails).
-  const tag = (template.match(/<img\b[^>]*>/gi) || []).find(candidate => [attributeOf(candidate, 'src'), attributeOf(candidate, 'data-full-src')]
+  const tag = (template.match(/<img\b[^>]*>/gi) || []).find(candidate => [attributeOf(candidate, 'src'), attributeOf(candidate, 'data-le-src'), attributeOf(candidate, 'data-full-src')]
     .some(value => value?.replaceAll('&amp;', '&') === image));
   if (!tag) return null;
   return Object.fromEntries(['width', 'height', 'loading', 'fetchpriority'].map(name => [name, attributeOf(tag, name)]).filter(([, value]) => value));
@@ -19,10 +20,11 @@ export function productImageHtml(image, title, template = '') {
   const inherited = inheritedImageAttributes(template, image);
   const preview = imagePreviewAttributes(image);
   const size = inherited?.width ? inherited : imageSizeResolver?.(image) || (preview.width ? preview : null);
-  const loading = inherited ? inherited.loading : 'lazy';
+  const loading = 'lazy';
   const hints = `${size ? ` width="${Number(size.width)}" height="${Number(size.height)}"` : ''}${loading ? ` loading="${escape(loading)}"` : ''}${inherited?.fetchpriority ? ` fetchpriority="${escape(inherited.fetchpriority)}"` : ''} decoding="async"`;
-  const previewHints = Object.entries(preview).filter(([key]) => !['src', 'width', 'height'].includes(key)).map(([key, value]) => ` ${key}="${escape(value)}"`).join('');
-  return `<img class="image__img" src="${escape(preview.src)}" alt="${escape(title)}"${hints}${previewHints}><span data-storefront-photo-placeholder hidden>Нет фото</span>`;
+  const previewHints = Object.entries(deferredImageAttributes(preview)).filter(([key]) => !['data-le-src', 'width', 'height'].includes(key)).map(([key, value]) => ` ${key}="${escape(value)}"`).join('');
+  const fallbackHints = Object.entries(preview).filter(([key]) => !['src', 'width', 'height'].includes(key)).map(([key, value]) => ` ${key}="${escape(value)}"`).join('');
+  return `<img class="image__img" data-le-src="${escape(preview.src)}" alt="${escape(title)}"${hints}${previewHints}><noscript><img class="image__img" src="${escape(preview.src)}" alt="${escape(title)}"${hints}${fallbackHints}></noscript><span data-storefront-photo-placeholder hidden>Нет фото</span>`;
 }
 
 function imageRatioStyle(image, template) {

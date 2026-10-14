@@ -523,6 +523,11 @@
     });
   }
 
+  // storefront/products/lazy-images.mjs
+  function deferredImageAttributes(attributes) {
+    return Object.fromEntries(Object.entries(attributes).map(([key, value]) => [["src", "srcset", "sizes"].includes(key) ? `data-le-${key}` : key, value]));
+  }
+
   // storefront/products/image-preview.mjs
   var buildMap;
   function previewImage(src) {
@@ -545,6 +550,7 @@
 
   // storefront/client/product-image.js
   function setProductImage(root, src, title) {
+    var _a;
     const container = root.querySelector("[data-storefront-image]");
     if (!container) return;
     let image = container.querySelector("img");
@@ -566,10 +572,15 @@
       image.decoding = "async";
       container.prepend(image);
     }
-    const attributes = root.querySelector("[data-storefront-gallery-root]") ? { src } : imagePreviewAttributes(src);
-    for (const name of ["srcset", "sizes", "data-full-src"]) if (!(name in attributes)) image.removeAttribute(name);
+    const main = root.querySelector("[data-storefront-gallery-root]");
+    const attributes = main ? { src } : deferredImageAttributes(imagePreviewAttributes(src));
+    if (main) image.loading = "eager";
+    else image.loading = "lazy";
+    for (const name of ["srcset", "sizes", "data-le-srcset", "data-le-sizes"]) if (!(name in attributes)) image.removeAttribute(name);
+    for (const name of ["data-full-src"]) if (!(name in attributes)) image.removeAttribute(name);
     for (const [name, value] of Object.entries(attributes)) if (image.getAttribute(name) !== String(value)) image.setAttribute(name, value);
     image.alt = title || "";
+    (_a = window.__LE_LOAD_VISIBLE_IMAGES__) == null ? void 0 : _a.call(window);
   }
 
   // storefront/client/custom-select.js
@@ -784,7 +795,7 @@
       img.className = "image__img";
       img.loading = "lazy";
       img.decoding = "async";
-      for (const [name, value] of Object.entries(imagePreviewAttributes(src, true))) img.setAttribute(name, value);
+      for (const [name, value] of Object.entries(deferredImageAttributes(imagePreviewAttributes(src, true)))) img.setAttribute(name, value);
       img.alt = product.title;
       div.append(img);
       return div;
@@ -1076,10 +1087,11 @@
     document.body.append(overlay);
     let photos = [], index = 0;
     const image = overlay.querySelector("img");
+    image.decoding = "async";
     const show = () => {
-      var _a, _b, _c;
-      image.src = ((_a = photos[index]) == null ? void 0 : _a.dataset.fullSrc) || ((_b = photos[index]) == null ? void 0 : _b.src) || "";
-      image.alt = ((_c = photos[index]) == null ? void 0 : _c.alt) || "";
+      var _a, _b, _c, _d;
+      image.src = ((_a = photos[index]) == null ? void 0 : _a.dataset.fullSrc) || ((_b = photos[index]) == null ? void 0 : _b.dataset.leSrc) || ((_c = photos[index]) == null ? void 0 : _c.src) || "";
+      image.alt = ((_d = photos[index]) == null ? void 0 : _d.alt) || "";
     };
     const close = () => {
       overlay.hidden = true;
@@ -1278,7 +1290,7 @@
     return (_a = new RegExp(`\\s${name}=(["'])(.*?)\\1`, "i").exec(tag)) == null ? void 0 : _a[2];
   };
   function inheritedImageAttributes(template, image) {
-    const tag = (template.match(/<img\b[^>]*>/gi) || []).find((candidate) => [attributeOf(candidate, "src"), attributeOf(candidate, "data-full-src")].some((value) => (value == null ? void 0 : value.replaceAll("&amp;", "&")) === image));
+    const tag = (template.match(/<img\b[^>]*>/gi) || []).find((candidate) => [attributeOf(candidate, "src"), attributeOf(candidate, "data-le-src"), attributeOf(candidate, "data-full-src")].some((value) => (value == null ? void 0 : value.replaceAll("&amp;", "&")) === image));
     if (!tag) return null;
     return Object.fromEntries(["width", "height", "loading", "fetchpriority"].map((name) => [name, attributeOf(tag, name)]).filter(([, value]) => value));
   }
@@ -1287,10 +1299,11 @@
     const inherited = inheritedImageAttributes(template, image);
     const preview = imagePreviewAttributes(image);
     const size = (inherited == null ? void 0 : inherited.width) ? inherited : (imageSizeResolver == null ? void 0 : imageSizeResolver(image)) || (preview.width ? preview : null);
-    const loading = inherited ? inherited.loading : "lazy";
+    const loading = "lazy";
     const hints = `${size ? ` width="${Number(size.width)}" height="${Number(size.height)}"` : ""}${loading ? ` loading="${escapeHtml(loading)}"` : ""}${(inherited == null ? void 0 : inherited.fetchpriority) ? ` fetchpriority="${escapeHtml(inherited.fetchpriority)}"` : ""} decoding="async"`;
-    const previewHints = Object.entries(preview).filter(([key]) => !["src", "width", "height"].includes(key)).map(([key, value]) => ` ${key}="${escapeHtml(value)}"`).join("");
-    return `<img class="image__img" src="${escapeHtml(preview.src)}" alt="${escapeHtml(title)}"${hints}${previewHints}><span data-storefront-photo-placeholder hidden>Нет фото</span>`;
+    const previewHints = Object.entries(deferredImageAttributes(preview)).filter(([key]) => !["data-le-src", "width", "height"].includes(key)).map(([key, value]) => ` ${key}="${escapeHtml(value)}"`).join("");
+    const fallbackHints = Object.entries(preview).filter(([key]) => !["src", "width", "height"].includes(key)).map(([key, value]) => ` ${key}="${escapeHtml(value)}"`).join("");
+    return `<img class="image__img" data-le-src="${escapeHtml(preview.src)}" alt="${escapeHtml(title)}"${hints}${previewHints}><noscript><img class="image__img" src="${escapeHtml(preview.src)}" alt="${escapeHtml(title)}"${hints}${fallbackHints}></noscript><span data-storefront-photo-placeholder hidden>Нет фото</span>`;
   }
   function imageRatioStyle(image, template) {
     const inherited = inheritedImageAttributes(template, image);

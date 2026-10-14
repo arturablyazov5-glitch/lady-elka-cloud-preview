@@ -4,8 +4,8 @@ export function initGallery() {
   overlay.innerHTML = '<button type="button" data-gallery-close aria-label="Закрыть"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button><button type="button" data-gallery-prev aria-label="Предыдущее фото"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><img alt=""><button type="button" data-gallery-next aria-label="Следующее фото"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>';
   document.body.append(overlay);
   let photos = [], index = 0;
-  const image = overlay.querySelector('img');
-  const show = () => { image.src = photos[index]?.dataset.fullSrc || photos[index]?.src || ''; image.alt = photos[index]?.alt || ''; };
+  const image = overlay.querySelector('img'); image.decoding = 'async';
+  const show = () => { image.src = photos[index]?.dataset.fullSrc || photos[index]?.dataset.leSrc || photos[index]?.src || ''; image.alt = photos[index]?.alt || ''; };
   const close = () => { overlay.hidden = true; document.body.style.overflow = ''; };
   document.addEventListener('click', event => {
     const source = event.target.closest('[data-storefront-gallery-root] img, [data-storefront-gallery] img');

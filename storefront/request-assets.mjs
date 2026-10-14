@@ -5,6 +5,7 @@ import { join, extname } from 'node:path';
 import { createHash } from 'node:crypto';
 import { constants } from 'node:fs';
 import * as esbuild from 'esbuild';
+import { deferPageImages, deferBackgroundCSS } from './products/lazy-images.mjs';
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 export async function optimizeRequests(target) {
   await mkdir(join(target, 'assets'), { recursive: true });
@@ -80,11 +81,12 @@ export async function optimizeRequests(target) {
     // Encoding/minifying only: no coverage-based rule removal (hidden modals,
     // responsive rules and keyboard states remain part of the stylesheet).
     css = (await esbuild.transform(css, { loader: 'css', minify: true, charset: 'utf8', legalComments: 'none' })).code;
+    css = deferBackgroundCSS(css);
     html = html.replace('<!-- request-budget-css -->', `<link rel="stylesheet" href="${await emit(css, 'css')}">`);
     html = html.replace(/<script\b[^>]*src=['"]([^'"]+)['"][^>]*><\/script>/gi, (tag, url) => scriptPaths.has(url) ? '' : url === '/search.js' ? `<script src="${searchPath}" defer></script>` : tag);
     // The same shared bundle (config/data/runtime) is reused across every page.
     html = html.replace(/<\/head>/i, `<script src="${runtime}" defer></script></head>`);
-    await writeFile(join(target, file), html);
+    await writeFile(join(target, file), deferPageImages(html));
   }
   await writeFile(join(target, 'request-assets.json'), JSON.stringify({ runtime, demand: demandPath, search: searchPath, assets: Object.fromEntries(mapping) }, null, 2));
 }

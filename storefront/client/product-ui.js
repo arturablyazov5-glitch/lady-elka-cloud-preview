@@ -1,3 +1,4 @@
+import { deferredImageAttributes } from '../products/lazy-images.mjs';
 import { imagePreviewAttributes } from '../products/image-preview.mjs';
 import { setProductImage } from './product-image.js';
 import { closeDropdownIfDetached, enhanceSelect } from './custom-select.js';
@@ -16,7 +17,7 @@ function gallery(root, product, variant) {
   if (!list) return;
   list.replaceChildren(...(variant.photos || []).slice(1).map(src => {
     const div = document.createElement('div'); div.className = 'image product__img-dop__cms';
-    const img = document.createElement('img'); img.className = 'image__img'; img.loading = 'lazy'; img.decoding = 'async'; for (const [name, value] of Object.entries(imagePreviewAttributes(src, true))) img.setAttribute(name, value); img.alt = product.title;
+    const img = document.createElement('img'); img.className = 'image__img'; img.loading = 'lazy'; img.decoding = 'async'; for (const [name, value] of Object.entries(deferredImageAttributes(imagePreviewAttributes(src, true)))) img.setAttribute(name, value); img.alt = product.title;
     div.append(img); return div;
   }));
   if (section) section.hidden = (variant.photos || []).length <= 1;

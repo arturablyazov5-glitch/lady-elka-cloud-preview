@@ -36,7 +36,7 @@
 
  	    
 	
-<link rel="stylesheet" href="/assets/9f3872d1633004384848e43061d0d1ba2bfcc997c63786737988853274ae4486.css">	
+<link rel="stylesheet" href="/assets/906b7a529a188bcfc934f84887c3bbb704874df8d9007db85acfb4f50a0f0054.css">	
     
 
 
@@ -74,7 +74,59 @@
 <meta name="twitter:description" content="Искусственные ёлки, которые не отличишь от настоящих. С 2018 года производим премиальные модели: классические зелёные, заснеженные и со встроенной подсветкой. Реалистичная хвоя, надёжный каркас, безопасные материалы. Служат от 10 лет — одна покупка вместо ежегодной гонки з а ёлкой. Или свяжитесь с">
 <meta name="twitter:image" content="https://lady-elka.ru/assets/e90571feec7bb4749132786760b2836b11ec6313bf4af07ae87390d7d6d2abbe.webp">
 <link rel="canonical" href="https://lady-elka.ru/o-nas/">
-<script src="/assets/6c424f942ac04509505faa042f378ef04c93f6789add41c3d0828562f78475d9.js" defer></script></head>
+<script src="/assets/b76b496431d9b36673d81f8c73feaee52a07b3bccdbaea3000018bb8e07eb4dd.js" defer></script><style>img[data-le-src]{color:transparent;font-size:0}</style><script data-le-image-loader>(function imageViewportLoader() {
+  const pending = new Set();
+  let scheduled = false;
+  const visible = image => {
+    if (!image.isConnected || !image.getClientRects().length) return false;
+    for (let node = image; node && node.nodeType === 1; node = node.parentElement) {
+      const style = getComputedStyle(node);
+      if (node.hidden || style.visibility === 'hidden' || style.display === 'none') return false;
+    }
+    return true;
+  };
+  const load = image => {
+    const background = image.hasAttribute('data-le-background');
+    if ((!image.hasAttribute('data-le-src') && !background) || !visible(image)) return;
+    const rect = image.getBoundingClientRect();
+    if (rect.bottom < -(background ? 800 : 400) || rect.top > innerHeight + (background ? 800 : 400) || rect.right < 0 || rect.left > innerWidth) return;
+    if (background) {
+      image.style.setProperty('--le-active-background', 'var(--le-deferred-background)');
+      image.removeAttribute('data-le-background');
+      pending.delete(image); observer?.unobserve(image); return;
+    }
+    image.loading = rect.top < innerHeight && rect.bottom > 0 ? 'eager' : 'lazy';
+    image.decoding = 'async';
+    // sizes/srcset precede src so the browser selects the existing responsive photo.
+    for (const name of ['sizes', 'srcset', 'src']) {
+      const value = image.getAttribute('data-le-' + name);
+      if (value !== null) image.setAttribute(name, value);
+      image.removeAttribute('data-le-' + name);
+    }
+    pending.delete(image); observer?.unobserve(image);
+  };
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
+    for (const entry of entries) if (entry.isIntersecting) load(entry.target);
+  }, { rootMargin: '800px 0px' }) : null;
+  function scan() {
+    scheduled = false;
+    for (const image of document.querySelectorAll('img[data-le-src],[data-le-background]')) {
+      if (!pending.has(image)) { pending.add(image); observer?.observe(image); }
+    }
+    for (const image of pending) {
+      if (!image.isConnected) { pending.delete(image); observer?.unobserve(image); }
+      else load(image);
+    }
+  }
+  function schedule() { if (!scheduled) { scheduled = true; requestAnimationFrame(scan); } }
+  new MutationObserver(schedule).observe(document.documentElement, { subtree: true, childList: true,
+    attributes: true, attributeFilter: ['data-le-src', 'hidden', 'class', 'style'] });
+  addEventListener('resize', schedule, { passive: true });
+  addEventListener('scroll', schedule, { passive: true });
+  document.addEventListener('DOMContentLoaded', scan, { once: true });
+  window.__LE_LOAD_VISIBLE_IMAGES__ = scan;
+  schedule();
+})();</script><noscript><style>img[data-le-src]{display:none}.fill__img,.doc__img,.question__img{--le-active-background:var(--le-deferred-background)}</style></noscript></head>
 <body><div data-cart-popup class='pop-up pop-up--u-ier1m2br4' id='ier1m2br4_0' role="dialog" aria-modal="true" aria-label="Корзина и оформление заказа" aria-hidden="true">
 <div class='pop-up__overlay overlay-blur' id='inb336jpo_0' data-modal-close="ier1m2br4_0"></div>
 <div class='pop-up__outside-close-button pop-up__outside-close-button--u-ibf3z95e1 pop-up__outside-close-button--s2-ibf3z95e1' id='ibf3z95e1_0' data-modal-close="ier1m2br4_0">
@@ -94,7 +146,7 @@
 <div class='div div--u-im3bc3u4g item-wrapper__shop' id='im3bc3u4g_0'>
 <div class='div div--u-i09ij701w name-photo__shop' id='i09ij701w_0'>
 <div data-cart-photo class='image shop__img' id='izvtnjdgt_0'>
-<img src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' alt='' title='' data-size='480x480' data-origin-src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' class='image__img' id='iv8aqz582_0'  width="480" height="480" loading="lazy" decoding="async">
+<img data-le-src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' alt='' title='' data-size='480x480' data-origin-src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' class='image__img' id='iv8aqz582_0'  width="480" height="480" loading="lazy" decoding="async"><noscript><img src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' alt='' title='' data-size='480x480' data-origin-src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' class='image__img' id='iv8aqz582_0'  width="480" height="480" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-ir8em2vtp title-shop-wrapper' id='ir8em2vtp_0'>
 <div class='div div--u-iqlo6zgmt title-wrapper__catalog' id='iqlo6zgmt_0'>
@@ -134,7 +186,7 @@
 <div data-bag-wrapper class='div div--u-i0qf37n2s item-wrapper__shop' id='i0qf37n2s_0'>
 <div class='div div--u-ia0db5cwg name-photo__shop' id='ia0db5cwg_0'>
 <div data-bag-photo class='image shop__img' id='ii2pvn88r_0'>
-<img src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' alt='2025-10-21 07.01.53' title='' data-size='600x800' data-origin-src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' class='image__img' id='iam7w33aj_0'  width="225" height="300" loading="lazy" decoding="async">
+<img data-le-src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' alt='2025-10-21 07.01.53' title='' data-size='600x800' data-origin-src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' class='image__img' id='iam7w33aj_0'  width="225" height="300" loading="lazy" decoding="async"><noscript><img src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' alt='2025-10-21 07.01.53' title='' data-size='600x800' data-origin-src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' class='image__img' id='iam7w33aj_0'  width="225" height="300" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-i5cx5rvxq title-wrapper__catalog' id='i5cx5rvxq_0'>
 <div data-bag-title='Сумка для хранения' class='text color__h2 site__h3' id='irn4lxswr_0'>
@@ -758,7 +810,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-iv9bxr6m4' id='iv9bxr6m4_0'>
 <div class='blocklist__item billet__about blocklist__item--s2-ik3kgt5u1' id='ik3kgt5u1_0'>
 <div class='image billet__img-about' id='il2tbi9lw_0'>
-<img src='/assets/5ec58a6e14e542318f1a75d62f97575ed919aca976a9ce2eccfdfa22842645ed.webp' alt='busts-in-silhouette_1f465' title='' class='image__img' id='idg91udb8_0'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/5ec58a6e14e542318f1a75d62f97575ed919aca976a9ce2eccfdfa22842645ed.webp' alt='busts-in-silhouette_1f465' title='' class='image__img' id='idg91udb8_0'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/5ec58a6e14e542318f1a75d62f97575ed919aca976a9ce2eccfdfa22842645ed.webp' alt='busts-in-silhouette_1f465' title='' class='image__img' id='idg91udb8_0'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-it95nwrf8 text-wrapper__about' id='it95nwrf8_0'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-ij1yf90ei' id='ij1yf90ei_0'>
@@ -773,7 +825,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-iv9bxr6m4' id='iv9bxr6m4_1'>
 <div class='blocklist__item billet__about blocklist__item--s2-ik3kgt5u1' id='ik3kgt5u1_1'>
 <div class='image billet__img-about' id='il2tbi9lw_1'>
-<img src='/assets/4688de23b9e43f73c1c0f9c0805b09857607b933197b1a82c982d0cd3a40fe2a.webp' alt='handshake_1f91d' title='' class='image__img' id='idg91udb8_1'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/4688de23b9e43f73c1c0f9c0805b09857607b933197b1a82c982d0cd3a40fe2a.webp' alt='handshake_1f91d' title='' class='image__img' id='idg91udb8_1'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/4688de23b9e43f73c1c0f9c0805b09857607b933197b1a82c982d0cd3a40fe2a.webp' alt='handshake_1f91d' title='' class='image__img' id='idg91udb8_1'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-it95nwrf8 text-wrapper__about' id='it95nwrf8_1'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-ij1yf90ei' id='ij1yf90ei_1'>
@@ -788,7 +840,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-iv9bxr6m4' id='iv9bxr6m4_2'>
 <div class='blocklist__item billet__about blocklist__item--s2-ik3kgt5u1' id='ik3kgt5u1_2'>
 <div class='image billet__img-about' id='il2tbi9lw_2'>
-<img src='/assets/ae65878ccf033ea9292d4cb0387af4a80ad0c319f684dbada76f8ae591a99b36.webp' alt='sports-medal_1f3c5' title='' class='image__img' id='idg91udb8_2'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/ae65878ccf033ea9292d4cb0387af4a80ad0c319f684dbada76f8ae591a99b36.webp' alt='sports-medal_1f3c5' title='' class='image__img' id='idg91udb8_2'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/ae65878ccf033ea9292d4cb0387af4a80ad0c319f684dbada76f8ae591a99b36.webp' alt='sports-medal_1f3c5' title='' class='image__img' id='idg91udb8_2'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-it95nwrf8 text-wrapper__about' id='it95nwrf8_2'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-ij1yf90ei' id='ij1yf90ei_2'>
@@ -803,7 +855,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-iv9bxr6m4' id='iv9bxr6m4_3'>
 <div class='blocklist__item billet__about blocklist__item--s2-ik3kgt5u1' id='ik3kgt5u1_3'>
 <div class='image billet__img-about' id='il2tbi9lw_3'>
-<img src='/assets/bd424bbf6020ab8e045243dc486f97a95b5253b2a896b1992421798757ea679b.webp' alt='factory_1f3ed' title='' class='image__img' id='idg91udb8_3'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/bd424bbf6020ab8e045243dc486f97a95b5253b2a896b1992421798757ea679b.webp' alt='factory_1f3ed' title='' class='image__img' id='idg91udb8_3'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/bd424bbf6020ab8e045243dc486f97a95b5253b2a896b1992421798757ea679b.webp' alt='factory_1f3ed' title='' class='image__img' id='idg91udb8_3'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-it95nwrf8 text-wrapper__about' id='it95nwrf8_3'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-ij1yf90ei' id='ij1yf90ei_3'>
@@ -818,7 +870,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-iv9bxr6m4' id='iv9bxr6m4_4'>
 <div class='blocklist__item billet__about blocklist__item--s2-ik3kgt5u1' id='ik3kgt5u1_4'>
 <div class='image billet__img-about' id='il2tbi9lw_4'>
-<img src='/assets/bb3c905a25c7dcb7b41d9a5883f46891c3a6883f3b209a70fd6cbc3e4c3681f7.webp' alt='hourglass-not-done_23f3' title='' class='image__img' id='idg91udb8_4'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/bb3c905a25c7dcb7b41d9a5883f46891c3a6883f3b209a70fd6cbc3e4c3681f7.webp' alt='hourglass-not-done_23f3' title='' class='image__img' id='idg91udb8_4'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/bb3c905a25c7dcb7b41d9a5883f46891c3a6883f3b209a70fd6cbc3e4c3681f7.webp' alt='hourglass-not-done_23f3' title='' class='image__img' id='idg91udb8_4'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-it95nwrf8 text-wrapper__about' id='it95nwrf8_4'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-ij1yf90ei' id='ij1yf90ei_4'>
@@ -833,7 +885,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-iv9bxr6m4' id='iv9bxr6m4_5'>
 <div class='blocklist__item billet__about blocklist__item--s2-ik3kgt5u1' id='ik3kgt5u1_5'>
 <div class='image billet__img-about' id='il2tbi9lw_5'>
-<img src='/assets/aaee15fcb9bb4085c7dc2304f68dbdce49909519665361dca11497e4255b557e.webp' alt='paw-prints_1f43e' title='' class='image__img' id='idg91udb8_5'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/aaee15fcb9bb4085c7dc2304f68dbdce49909519665361dca11497e4255b557e.webp' alt='paw-prints_1f43e' title='' class='image__img' id='idg91udb8_5'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/aaee15fcb9bb4085c7dc2304f68dbdce49909519665361dca11497e4255b557e.webp' alt='paw-prints_1f43e' title='' class='image__img' id='idg91udb8_5'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-it95nwrf8 text-wrapper__about' id='it95nwrf8_5'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-ij1yf90ei' id='ij1yf90ei_5'>
@@ -879,7 +931,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-itokpkdxs' id='itokpkdxs_0'>
 <div class='blocklist__item billet__about blocklist__item--s2-ioo34292p' id='ioo34292p_0'>
 <div class='image billet__img-about' id='ipr5d75wq_0'>
-<img src='/assets/053397862a87a2f0d9549550bf94a1d9e9667e5511f7730fccadb5c058121e64.webp' alt='christmas-tree_1f384' title='' class='image__img' id='inzrksv8x_0'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/053397862a87a2f0d9549550bf94a1d9e9667e5511f7730fccadb5c058121e64.webp' alt='christmas-tree_1f384' title='' class='image__img' id='inzrksv8x_0'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/053397862a87a2f0d9549550bf94a1d9e9667e5511f7730fccadb5c058121e64.webp' alt='christmas-tree_1f384' title='' class='image__img' id='inzrksv8x_0'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-i2cvshdkm text-wrapper__about' id='i2cvshdkm_0'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-iorew7nty' id='iorew7nty_0'>
@@ -894,7 +946,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-itokpkdxs' id='itokpkdxs_1'>
 <div class='blocklist__item billet__about blocklist__item--s2-ioo34292p' id='ioo34292p_1'>
 <div class='image billet__img-about' id='ipr5d75wq_1'>
-<img src='/assets/1af60b0cd265d7c42666b52f07321fdd8a852ed778b605cd2c66ba35db0a014f.webp' alt='repeat-button_1f501' title='' class='image__img' id='inzrksv8x_1'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/1af60b0cd265d7c42666b52f07321fdd8a852ed778b605cd2c66ba35db0a014f.webp' alt='repeat-button_1f501' title='' class='image__img' id='inzrksv8x_1'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/1af60b0cd265d7c42666b52f07321fdd8a852ed778b605cd2c66ba35db0a014f.webp' alt='repeat-button_1f501' title='' class='image__img' id='inzrksv8x_1'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-i2cvshdkm text-wrapper__about' id='i2cvshdkm_1'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-iorew7nty' id='iorew7nty_1'>
@@ -909,7 +961,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-itokpkdxs' id='itokpkdxs_2'>
 <div class='blocklist__item billet__about blocklist__item--s2-ioo34292p' id='ioo34292p_2'>
 <div class='image billet__img-about' id='ipr5d75wq_2'>
-<img src='/assets/68df95959fc3d29a1e089977cb3d5e3991cd4c3da57b71f62478404e80113ed8.webp' alt='hammer-and-wrench_1f6e0-fe0f' title='' class='image__img' id='inzrksv8x_2'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/68df95959fc3d29a1e089977cb3d5e3991cd4c3da57b71f62478404e80113ed8.webp' alt='hammer-and-wrench_1f6e0-fe0f' title='' class='image__img' id='inzrksv8x_2'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/68df95959fc3d29a1e089977cb3d5e3991cd4c3da57b71f62478404e80113ed8.webp' alt='hammer-and-wrench_1f6e0-fe0f' title='' class='image__img' id='inzrksv8x_2'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-i2cvshdkm text-wrapper__about' id='i2cvshdkm_2'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-iorew7nty' id='iorew7nty_2'>
@@ -924,7 +976,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-itokpkdxs' id='itokpkdxs_3'>
 <div class='blocklist__item billet__about blocklist__item--s2-ioo34292p' id='ioo34292p_3'>
 <div class='image billet__img-about' id='ipr5d75wq_3'>
-<img src='/assets/26b84a532bcc8e48ae2c1907d46dec72776375c8be0d116cafc10a3be748c697.webp' alt='sparkles_2728' title='' class='image__img' id='inzrksv8x_3'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/26b84a532bcc8e48ae2c1907d46dec72776375c8be0d116cafc10a3be748c697.webp' alt='sparkles_2728' title='' class='image__img' id='inzrksv8x_3'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/26b84a532bcc8e48ae2c1907d46dec72776375c8be0d116cafc10a3be748c697.webp' alt='sparkles_2728' title='' class='image__img' id='inzrksv8x_3'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-i2cvshdkm text-wrapper__about' id='i2cvshdkm_3'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-iorew7nty' id='iorew7nty_3'>
@@ -968,7 +1020,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-ibmrysy6p' id='ibmrysy6p_0'>
 <div class='blocklist__item billet__about blocklist__item--s2-isgool3u1' id='isgool3u1_0'>
 <div class='image billet__img-about' id='iizlxh4n5_0'>
-<img src='/assets/c030763fad2a90b35f702726dfdb428cd9ad811c41c1a6bfb0eb01b04b695150.webp' alt='package_1f4e6' title='' class='image__img' id='i1ivkenop_0'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/c030763fad2a90b35f702726dfdb428cd9ad811c41c1a6bfb0eb01b04b695150.webp' alt='package_1f4e6' title='' class='image__img' id='i1ivkenop_0'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/c030763fad2a90b35f702726dfdb428cd9ad811c41c1a6bfb0eb01b04b695150.webp' alt='package_1f4e6' title='' class='image__img' id='i1ivkenop_0'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-igwo3r1n3 text-wrapper__about' id='igwo3r1n3_0'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-i1zyrw4cd' id='i1zyrw4cd_0'>
@@ -983,7 +1035,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-ibmrysy6p' id='ibmrysy6p_1'>
 <div class='blocklist__item billet__about blocklist__item--s2-isgool3u1' id='isgool3u1_1'>
 <div class='image billet__img-about' id='iizlxh4n5_1'>
-<img src='/assets/ff43b484cf88951f28c4daccbc0c8293843d8955018b70139c2777f7aab5cff6.webp' alt='artist-palette_1f3a8' title='' class='image__img' id='i1ivkenop_1'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/ff43b484cf88951f28c4daccbc0c8293843d8955018b70139c2777f7aab5cff6.webp' alt='artist-palette_1f3a8' title='' class='image__img' id='i1ivkenop_1'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/ff43b484cf88951f28c4daccbc0c8293843d8955018b70139c2777f7aab5cff6.webp' alt='artist-palette_1f3a8' title='' class='image__img' id='i1ivkenop_1'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-igwo3r1n3 text-wrapper__about' id='igwo3r1n3_1'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-i1zyrw4cd' id='i1zyrw4cd_1'>
@@ -998,7 +1050,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-ibmrysy6p' id='ibmrysy6p_2'>
 <div class='blocklist__item billet__about blocklist__item--s2-isgool3u1' id='isgool3u1_2'>
 <div class='image billet__img-about' id='iizlxh4n5_2'>
-<img src='/assets/329ee3d3911db8d7610e495f5c4334f529e3f4bafd27cef1ea5c0778a7c35ef6.webp' alt='office-building_1f3e2' title='' class='image__img' id='i1ivkenop_2'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/329ee3d3911db8d7610e495f5c4334f529e3f4bafd27cef1ea5c0778a7c35ef6.webp' alt='office-building_1f3e2' title='' class='image__img' id='i1ivkenop_2'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/329ee3d3911db8d7610e495f5c4334f529e3f4bafd27cef1ea5c0778a7c35ef6.webp' alt='office-building_1f3e2' title='' class='image__img' id='i1ivkenop_2'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-igwo3r1n3 text-wrapper__about' id='igwo3r1n3_2'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-i1zyrw4cd' id='i1zyrw4cd_2'>
@@ -1013,7 +1065,7 @@ WhatsApp
 <div class='blocklist__item-wrapper blocklist__item-wrapper--s2-ibmrysy6p' id='ibmrysy6p_3'>
 <div class='blocklist__item billet__about blocklist__item--s2-isgool3u1' id='isgool3u1_3'>
 <div class='image billet__img-about' id='iizlxh4n5_3'>
-<img src='/assets/6250afd8bce3df1aa2f3f1a90bad8dace87a274a56109c0b52e794b07b22ea80.webp' alt='circus-tent_1f3aa' title='' class='image__img' id='i1ivkenop_3'  width="160" height="160" loading="lazy" decoding="async">
+<img data-le-src='/assets/6250afd8bce3df1aa2f3f1a90bad8dace87a274a56109c0b52e794b07b22ea80.webp' alt='circus-tent_1f3aa' title='' class='image__img' id='i1ivkenop_3'  width="160" height="160" loading="lazy" decoding="async"><noscript><img src='/assets/6250afd8bce3df1aa2f3f1a90bad8dace87a274a56109c0b52e794b07b22ea80.webp' alt='circus-tent_1f3aa' title='' class='image__img' id='i1ivkenop_3'  width="160" height="160" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-igwo3r1n3 text-wrapper__about' id='igwo3r1n3_3'>
 <div class='blocklist__text-title color__h2 site__h2 blocklist__text-title--u-i1zyrw4cd' id='i1zyrw4cd_3'>
@@ -1217,7 +1269,7 @@ WhatsApp
 <div class='div left-column__footer div--u-i5e7ip8p8' id='i5e7ip8p8_0'>
 <a href='/' class='link-block link-block--u-i548c1nmk wrapper-logo__footer' id='i548c1nmk_0'>
 <div class='image logo__img' id='i1xerw96c_0'>
-<img src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' alt='Frame 62285 (1)' title='' data-size='895x895' data-origin-src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' class='image__img image__img--s2-if2a0c6le' id='if2a0c6le_0'  width="100" height="100" loading="lazy" decoding="async">
+<img data-le-src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' alt='Frame 62285 (1)' title='' data-size='895x895' data-origin-src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' class='image__img image__img--s2-if2a0c6le' id='if2a0c6le_0'  width="100" height="100" loading="lazy" decoding="async"><noscript><img src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' alt='Frame 62285 (1)' title='' data-size='895x895' data-origin-src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' class='image__img image__img--s2-if2a0c6le' id='if2a0c6le_0'  width="100" height="100" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='text white-color site__h4 text--u-i0z38hfms' id='i0z38hfms_0'>
 <span class='text-block-wrap-div'>Невероятно красивые<br>литые ели</span>
@@ -1458,7 +1510,7 @@ WhatsApp
 <span class='text-block-wrap-div'>Разработка сайта: Mansurov</span>
 </a>
 <div class='image image--u-igyqdxj7r' id='igyqdxj7r_0'>
-<img src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' alt='horizontal logos' title='' data-size='3056x238' data-origin-src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' class='image__img image__img--s2-isukkvfjx' id='isukkvfjx_0'  width="3056" height="238" loading="lazy" decoding="async">
+<img data-le-src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' alt='horizontal logos' title='' data-size='3056x238' data-origin-src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' class='image__img image__img--s2-isukkvfjx' id='isukkvfjx_0'  width="3056" height="238" loading="lazy" decoding="async"><noscript><img src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' alt='horizontal logos' title='' data-size='3056x238' data-origin-src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' class='image__img image__img--s2-isukkvfjx' id='isukkvfjx_0'  width="3056" height="238" loading="lazy" decoding="async"></noscript>
 </div>
 <button role='button' class='up-button up-button__footer site__h5 up-button--u-itaqinwlk' id='itaqinwlk_0'>
 <span class='text text--u-i1yg6dh1b' id='i1yg6dh1b_0'>

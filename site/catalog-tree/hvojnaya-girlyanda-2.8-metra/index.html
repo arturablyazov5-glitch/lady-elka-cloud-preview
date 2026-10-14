@@ -39,7 +39,7 @@
 
  	    
 	
-<link rel="stylesheet" href="/assets/18f35bcbc25bd660486761cde71bfc7a404931be39afe8e83ae649bfa3ba4529.css">	
+<link rel="stylesheet" href="/assets/479f4fd6e5713493947fcb2c2de723d1678114d296f67d5a26b08217ed2d1bfc.css">	
     
 
 
@@ -77,7 +77,59 @@
 <meta name="twitter:description" content="Пушистая гирлянда со светлыми кончиками">
 <meta name="twitter:image" content="https://lady-elka.ru/media/catalog-pinned/faa6ad8e1c8c7e8f9e6d3c72945a2d9e8f79dca8779a5cb8f559fb61ab9079b9.webp">
 <link rel="canonical" href="https://lady-elka.ru/catalog-tree/hvojnaya-girlyanda-2.8-metra/">
-<script src="/assets/6c424f942ac04509505faa042f378ef04c93f6789add41c3d0828562f78475d9.js" defer></script></head>
+<script src="/assets/b76b496431d9b36673d81f8c73feaee52a07b3bccdbaea3000018bb8e07eb4dd.js" defer></script><style>img[data-le-src]{color:transparent;font-size:0}</style><script data-le-image-loader>(function imageViewportLoader() {
+  const pending = new Set();
+  let scheduled = false;
+  const visible = image => {
+    if (!image.isConnected || !image.getClientRects().length) return false;
+    for (let node = image; node && node.nodeType === 1; node = node.parentElement) {
+      const style = getComputedStyle(node);
+      if (node.hidden || style.visibility === 'hidden' || style.display === 'none') return false;
+    }
+    return true;
+  };
+  const load = image => {
+    const background = image.hasAttribute('data-le-background');
+    if ((!image.hasAttribute('data-le-src') && !background) || !visible(image)) return;
+    const rect = image.getBoundingClientRect();
+    if (rect.bottom < -(background ? 800 : 400) || rect.top > innerHeight + (background ? 800 : 400) || rect.right < 0 || rect.left > innerWidth) return;
+    if (background) {
+      image.style.setProperty('--le-active-background', 'var(--le-deferred-background)');
+      image.removeAttribute('data-le-background');
+      pending.delete(image); observer?.unobserve(image); return;
+    }
+    image.loading = rect.top < innerHeight && rect.bottom > 0 ? 'eager' : 'lazy';
+    image.decoding = 'async';
+    // sizes/srcset precede src so the browser selects the existing responsive photo.
+    for (const name of ['sizes', 'srcset', 'src']) {
+      const value = image.getAttribute('data-le-' + name);
+      if (value !== null) image.setAttribute(name, value);
+      image.removeAttribute('data-le-' + name);
+    }
+    pending.delete(image); observer?.unobserve(image);
+  };
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
+    for (const entry of entries) if (entry.isIntersecting) load(entry.target);
+  }, { rootMargin: '800px 0px' }) : null;
+  function scan() {
+    scheduled = false;
+    for (const image of document.querySelectorAll('img[data-le-src],[data-le-background]')) {
+      if (!pending.has(image)) { pending.add(image); observer?.observe(image); }
+    }
+    for (const image of pending) {
+      if (!image.isConnected) { pending.delete(image); observer?.unobserve(image); }
+      else load(image);
+    }
+  }
+  function schedule() { if (!scheduled) { scheduled = true; requestAnimationFrame(scan); } }
+  new MutationObserver(schedule).observe(document.documentElement, { subtree: true, childList: true,
+    attributes: true, attributeFilter: ['data-le-src', 'hidden', 'class', 'style'] });
+  addEventListener('resize', schedule, { passive: true });
+  addEventListener('scroll', schedule, { passive: true });
+  document.addEventListener('DOMContentLoaded', scan, { once: true });
+  window.__LE_LOAD_VISIBLE_IMAGES__ = scan;
+  schedule();
+})();</script><noscript><style>img[data-le-src]{display:none}.fill__img,.doc__img,.question__img{--le-active-background:var(--le-deferred-background)}</style></noscript></head>
 <body>
 <div class='mosaic-wrap'>
 <div class='root root__main' id='i2vrkd8i8_0'>
@@ -110,7 +162,7 @@
 </div>
 </div>
 <div class='image image--u-i95cujeh0' id='i95cujeh0_0'>
-<img src='/assets/5c76cb83c50726625862f26f4dabc16f5d17e3359539e50c017b312056970ab8.jpg' alt='bed138c6ad8295ade091527175o9 - materialy-dlya-tvorchestva-vetka-elovaya-vetochka-eli-iskusst' title='' data-size='1500x1128' data-origin-src='/assets/5c76cb83c50726625862f26f4dabc16f5d17e3359539e50c017b312056970ab8.jpg' class='image__img' id='indmcwibe_0'  width="1500" height="1128" loading="lazy" decoding="async">
+<img data-le-src='/assets/5c76cb83c50726625862f26f4dabc16f5d17e3359539e50c017b312056970ab8.jpg' alt='bed138c6ad8295ade091527175o9 - materialy-dlya-tvorchestva-vetka-elovaya-vetochka-eli-iskusst' title='' data-size='1500x1128' data-origin-src='/assets/5c76cb83c50726625862f26f4dabc16f5d17e3359539e50c017b312056970ab8.jpg' class='image__img' id='indmcwibe_0'  width="1500" height="1128" loading="lazy" decoding="async"><noscript><img src='/assets/5c76cb83c50726625862f26f4dabc16f5d17e3359539e50c017b312056970ab8.jpg' alt='bed138c6ad8295ade091527175o9 - materialy-dlya-tvorchestva-vetka-elovaya-vetochka-eli-iskusst' title='' data-size='1500x1128' data-origin-src='/assets/5c76cb83c50726625862f26f4dabc16f5d17e3359539e50c017b312056970ab8.jpg' class='image__img' id='indmcwibe_0'  width="1500" height="1128" loading="lazy" decoding="async"></noscript>
 </div>
 </div>
 </div><div class='pop-up rec__popup' id='inachtynm_0'>
@@ -150,7 +202,7 @@
 <div class='div div--u-im3bc3u4g item-wrapper__shop' id='im3bc3u4g_0'>
 <div class='div div--u-i09ij701w name-photo__shop' id='i09ij701w_0'>
 <div data-cart-photo class='image shop__img' id='izvtnjdgt_0'>
-<img src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' alt='' title='' data-size='480x480' data-origin-src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' class='image__img' id='iv8aqz582_0'  width="480" height="480" loading="lazy" decoding="async">
+<img data-le-src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' alt='' title='' data-size='480x480' data-origin-src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' class='image__img' id='iv8aqz582_0'  width="480" height="480" loading="lazy" decoding="async"><noscript><img src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' alt='' title='' data-size='480x480' data-origin-src='/assets/453d96689d3968cc83c8ed10211c0bb1fea2382f8386d69d7d33d062fab00d7d.png' class='image__img' id='iv8aqz582_0'  width="480" height="480" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-ir8em2vtp title-shop-wrapper' id='ir8em2vtp_0'>
 <div class='div div--u-iqlo6zgmt title-wrapper__catalog' id='iqlo6zgmt_0'>
@@ -190,7 +242,7 @@
 <div data-bag-wrapper class='div div--u-i0qf37n2s item-wrapper__shop' id='i0qf37n2s_0'>
 <div class='div div--u-ia0db5cwg name-photo__shop' id='ia0db5cwg_0'>
 <div data-bag-photo class='image shop__img' id='ii2pvn88r_0'>
-<img src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' alt='2025-10-21 07.01.53' title='' data-size='600x800' data-origin-src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' class='image__img' id='iam7w33aj_0'  width="225" height="300" loading="lazy" decoding="async">
+<img data-le-src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' alt='2025-10-21 07.01.53' title='' data-size='600x800' data-origin-src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' class='image__img' id='iam7w33aj_0'  width="225" height="300" loading="lazy" decoding="async"><noscript><img src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' alt='2025-10-21 07.01.53' title='' data-size='600x800' data-origin-src='/assets/1f69bbb27b3eaeb6610db54624284354ad75022c8c7bdf8024178729d2d2a7bb.webp' class='image__img' id='iam7w33aj_0'  width="225" height="300" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='div div--u-i5cx5rvxq title-wrapper__catalog' id='i5cx5rvxq_0'>
 <div data-bag-title='Сумка для хранения' class='text color__h2 site__h3' id='irn4lxswr_0'>
@@ -675,7 +727,7 @@ WhatsApp
 </div>
 </div>
 </div>
-<div class='div div--u-ikrk2l5ca question__img' id='ikrk2l5ca_0'>
+<div class='div div--u-ikrk2l5ca question__img' id='ikrk2l5ca_0' data-le-background>
 <div class='div text-time__billet' id='ir4g95t94_0'>
 <div class='text color__h2 site__h3' id='i9b1r3fqv_0'>
 <span class='text-block-wrap-div'>Евгения</span>
@@ -696,7 +748,7 @@ WhatsApp
 <div class='div left-column__footer div--u-i5e7ip8p8' id='i5e7ip8p8_0'>
 <a href='/' class='link-block link-block--u-i548c1nmk wrapper-logo__footer' id='i548c1nmk_0'>
 <div class='image logo__img' id='i1xerw96c_0'>
-<img src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' alt='Frame 62285 (1)' title='' data-size='895x895' data-origin-src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' class='image__img image__img--s2-if2a0c6le' id='if2a0c6le_0'  width="100" height="100" loading="lazy" decoding="async">
+<img data-le-src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' alt='Frame 62285 (1)' title='' data-size='895x895' data-origin-src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' class='image__img image__img--s2-if2a0c6le' id='if2a0c6le_0'  width="100" height="100" loading="lazy" decoding="async"><noscript><img src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' alt='Frame 62285 (1)' title='' data-size='895x895' data-origin-src='/assets/264af5ab2347ba7e7686c8ed6fbcc9955e7e6cb1046f0b6d69c73305a39b4380.png' class='image__img image__img--s2-if2a0c6le' id='if2a0c6le_0'  width="100" height="100" loading="lazy" decoding="async"></noscript>
 </div>
 <div class='text white-color site__h4 text--u-i0z38hfms' id='i0z38hfms_0'>
 <span class='text-block-wrap-div'>Невероятно красивые<br>литые ели</span>
@@ -937,7 +989,7 @@ WhatsApp
 <span class='text-block-wrap-div'>Разработка сайта: Mansurov</span>
 </a>
 <div class='image image--u-igyqdxj7r' id='igyqdxj7r_0'>
-<img src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' alt='horizontal logos' title='' data-size='3056x238' data-origin-src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' class='image__img image__img--s2-isukkvfjx' id='isukkvfjx_0'  width="3056" height="238" loading="lazy" decoding="async">
+<img data-le-src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' alt='horizontal logos' title='' data-size='3056x238' data-origin-src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' class='image__img image__img--s2-isukkvfjx' id='isukkvfjx_0'  width="3056" height="238" loading="lazy" decoding="async"><noscript><img src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' alt='horizontal logos' title='' data-size='3056x238' data-origin-src='/assets/893549efd7a206f6aee0e6251a3a2657ce922346919d422a62b5bdb54b353f5a.png' class='image__img image__img--s2-isukkvfjx' id='isukkvfjx_0'  width="3056" height="238" loading="lazy" decoding="async"></noscript>
 </div>
 <button role='button' class='up-button up-button__footer site__h5 up-button--u-itaqinwlk' id='itaqinwlk_0'>
 <span class='text text--u-i1yg6dh1b' id='i1yg6dh1b_0'>

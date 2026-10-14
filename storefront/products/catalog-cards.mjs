@@ -13,15 +13,6 @@ const products = treeProducts(await loadFeed('trees'));
 const decor = decorProducts(await loadFeed('decor'));
 const buildRoot = process.env.LE_BUILD_TARGET || join(root, 'dist');
 setImageSizeResolver(url => localImageSize(url, buildRoot));
-// Catalog pages: the first row of cards is above the fold (LCP candidate), the rest load lazily.
-const EAGER_CARDS = 3;
-function eagerFirstCards(html) {
-  let index = 0;
-  return html.replace(/(<div\b[^>]*data-storefront-image[^>]*>)(<img\b[^>]*>)/g, (match, container, image) => {
-    if (index++ >= EAGER_CARDS) return match;
-    return container + image.replace(/\sloading="lazy"/, '').replace(/\sdecoding="async"/, index === 1 ? ' fetchpriority="high" decoding="async"' : ' decoding="async"');
-  });
-}
 
 function closingDiv(html, from) {
   const tags = /<\/?div\b[^>]*>/g;
@@ -74,7 +65,6 @@ for (const path of ['catalog', 'catalog/landscape-gardening', 'catalog-tree', ''
   }
   result = result.slice(0, lastEnd) + appended.join('') + result.slice(lastEnd) + html.slice(cursor);
   if (appended.length) console.log(`${path}: ${appended.length} new catalog cards appended`);
-  if (['catalog', 'catalog/landscape-gardening', 'catalog-tree', 'catalog-decor', 'catalog-tree-1'].includes(path)) result = eagerFirstCards(result);
   await writeFile(file, result);
   console.log(`${path}: ${generated} catalog cards generated from offline snapshot`);
 }
