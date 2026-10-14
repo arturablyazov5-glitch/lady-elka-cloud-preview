@@ -1,0 +1,10 @@
+{
+  "pointer": null,
+  "blog": false,
+  "qa": {
+    "orderId": "LE-1791947999640-QA2-614a25",
+    "path": "/qa/payment/",
+    "amount": 1,
+    "correction": "replacement QA entry; server fixed one-ruble order and 24-hour session"
+  }
+}
