@@ -128,11 +128,40 @@
   };
   document.querySelectorAll('.pop-up').forEach(describeModal);
   // Mobile menu: named burger with state; focus moves into the opened menu and back to the burger.
+
+  // Catalog disclosure stays inside the existing mobile menu and its focus trap.
+  const catalogDropdowns = [...document.querySelectorAll('[data-catalog-dropdown]')];
+  const setCatalogOpen = (dropdown, open, focusToggle = false) => {
+    const toggle = dropdown.querySelector('[data-catalog-toggle]');
+    const links = dropdown.querySelector('[data-catalog-links]');
+    toggle.setAttribute('aria-expanded', String(open));
+    links.hidden = !open;
+    if (focusToggle) toggle.focus({ preventScroll: true });
+  };
+  catalogDropdowns.forEach(dropdown => {
+    const toggle = dropdown.querySelector('[data-catalog-toggle]');
+    toggle.addEventListener('click', () => setCatalogOpen(dropdown, toggle.getAttribute('aria-expanded') !== 'true'));
+    dropdown.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        event.preventDefault(); event.stopPropagation(); setCatalogOpen(dropdown, false, true);
+      } else if (event.target === toggle && event.key === 'ArrowDown') {
+        event.preventDefault(); setCatalogOpen(dropdown, true); dropdown.querySelector('a[href]')?.focus();
+      }
+    });
+    dropdown.addEventListener('focusout', event => {
+      if (!dropdown.contains(event.relatedTarget)) setCatalogOpen(dropdown, false);
+    });
+  });
+  document.addEventListener('click', event => catalogDropdowns.forEach(dropdown => {
+    if (!dropdown.contains(event.target) || event.target.closest('a[href]')) setCatalogOpen(dropdown, false);
+  }));
+
   const menuBackground = new WeakMap();
   const setMenu = (menu, open, { moveFocus = false } = {}) => {
     if (!menu) return;
     const wasOpen = menu.classList.contains('is-opened');
     menu.classList.toggle('is-opened', open);
+    if (!open) catalogDropdowns.filter(dropdown => menu.contains(dropdown)).forEach(dropdown => setCatalogOpen(dropdown, false));
     const burger = menu.querySelector('.menu__burger-button');
     burger?.setAttribute('aria-expanded', String(open));
     burger?.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');

@@ -1,3 +1,6 @@
+import { applyHeaderNav } from '../components/header-nav.mjs';
+import { createHash } from 'node:crypto';
+import { mkdir } from 'node:fs/promises';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
@@ -54,7 +57,14 @@ location ~* \\.(css|js|json|csv|xml|txt)$ {
 export async function buildHosting(target) {
   const redirects = JSON.parse(await readFile(new URL('../config/redirects.json', import.meta.url), 'utf8'));
   // Dedicated source copy; keep 404 independent of other pages and their CSS.
-  const html = await readFile(new URL('./404.html', import.meta.url), 'utf8');
+  let html = applyHeaderNav(await readFile(new URL('./404.html', import.meta.url), 'utf8'));
+  await mkdir(join(target, 'assets'), { recursive: true });
+  for (const extension of ['css', 'js']) {
+    const bytes = await readFile(join(target, 'f', '404.' + extension));
+    const url = '/assets/' + createHash('sha256').update(bytes).digest('hex') + '.' + extension;
+    await writeFile(join(target, url), bytes);
+    html = html.replaceAll('/f/404.' + extension, url);
+  }
   await writeFile(join(target, '404.html'), html);
   await writeFile(join(target, '.htaccess'), `# Generated from storefront/config/redirects.json; document root is built dist.
 Options -MultiViews

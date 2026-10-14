@@ -1,3 +1,4 @@
+import { applyHeaderNav } from './components/header-nav.mjs';
 import { pagePath } from './url-path.mjs';
 import { buildThumbnails } from './products/build-thumbnails.mjs';
 import { setPreviewImages, imagePreviewAttributes } from './products/image-preview.mjs';
@@ -513,7 +514,7 @@ async function finalizePages(directory) {
     if (entry.isDirectory()) await finalizePages(path);
     else if (entry.name.endsWith('.html')) {
       const route = '/' + relative(target, path).replace(/(?:\/)?index\.html$/, '').replace(/\.html$/, '').replace(/\/$/, '');
-      let html = normalizePageURLs(applySEO(await readFile(path, 'utf8'), route));
+      let html = applyHeaderNav(normalizePageURLs(applySEO(await readFile(path, 'utf8'), route)));
       const canonical = /<link rel="canonical" href="([^"]+)">/.exec(html)?.[1];
       pageCanonicals.set(route, canonical);
       if (!/<meta name="robots" content="noindex,/i.test(html) && canonicalPath(route) === pagePath(route)) {
