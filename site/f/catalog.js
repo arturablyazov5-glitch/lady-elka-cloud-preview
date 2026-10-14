@@ -742,6 +742,28 @@
     return first ? Object.fromEntries(variantDimensions(product).map((key) => [key, first.options[key]])) : {};
   }
 
+  // storefront/products/type-query.mjs
+  var treeTypeIdentifiers = [
+    ["green", "Зелёная"],
+    ["snow", "Заснеженная"],
+    ["lit", "С освещением"],
+    ["snow-lit", "Заснеженная с освещением"],
+    ["thuja", "Туя"]
+  ];
+  var normalizeTreeType = (value) => String(value).normalize("NFC").trim().toLocaleLowerCase("ru-RU");
+  function typeSlug(category) {
+    var _a;
+    return ((_a = treeTypeIdentifiers.find(([, name]) => normalizeTreeType(name) === normalizeTreeType(category))) == null ? void 0 : _a[0]) || null;
+  }
+  function categoryFromType(product, value) {
+    if (!value || product.kind !== "tree") return null;
+    const normalizeTreeTyped = normalizeTreeType(value);
+    const entry = treeTypeIdentifiers.find(([slug, name]) => normalizeTreeTyped === slug || normalizeTreeTyped === normalizeTreeType(name));
+    if (!entry) return null;
+    const matches = [...new Set(product.variants.map((v) => v.options.category))].filter((category) => normalizeTreeType(category) === normalizeTreeType(entry[1]));
+    return matches.length === 1 ? matches[0] : null;
+  }
+
   // storefront/client/product-ui.js
   var money = (value) => `${Number(value || 0).toLocaleString("ru-RU")} ₽`;
   var setText = (root, selector, value) => {
@@ -773,6 +795,18 @@
     let product = initialProduct;
     let dimensions = variantDimensions(product);
     let selection = initialSelection(product);
+    const sharesType = product.kind === "tree" && !root.querySelector("[data-storefront-variants]") && Boolean(document.querySelector("[data-storefront-page-product]"));
+    function restoreType() {
+      selection = initialSelection(product);
+      const category = categoryFromType(product, new URL(location.href).searchParams.get("type"));
+      if (category && dimensions.includes("category")) {
+        selection.category = category;
+        for (const later of dimensions.slice(dimensions.indexOf("category") + 1)) {
+          selection[later] = availableOptions(product, later, selection)[0];
+        }
+      }
+    }
+    if (sharesType) restoreType();
     const collectSelects = () => Object.fromEntries(dimensions.map((key) => [key, root.querySelector(`[data-storefront-option="${key}"]`) || (key === "category" ? root.querySelector("[data-storefront-category]") : root.querySelector("[data-storefront-variant]"))]));
     let selects = collectSelects();
     const customSelects = new Map(Object.entries(selects).filter(([, select]) => select).map(([key, select]) => [key, enhanceSelect(select)]));
@@ -833,6 +867,14 @@
       selection[key] = event.target.value;
       for (const later of dimensions.slice(dimensions.indexOf(key) + 1)) selection[later] = availableOptions(product, later, selection)[0];
       render();
+      if (sharesType && key === "category" && selectedVariant) {
+        const slug = typeSlug(selectedVariant.options.category);
+        if (slug) {
+          const url = new URL(location.href);
+          url.searchParams.set("type", slug);
+          history.replaceState(history.state, "", url);
+        }
+      }
     });
     buy == null ? void 0 : buy.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
@@ -848,6 +890,14 @@
       }
       add(product, selectedVariant);
     });
+    if (sharesType) {
+      render();
+      window.addEventListener("popstate", () => {
+        if (!root.isConnected) return;
+        restoreType();
+        render();
+      });
+    }
     return (nextProduct) => {
       const previousSelection = selection;
       product = { ...nextProduct, staticDescription: product.staticDescription };
