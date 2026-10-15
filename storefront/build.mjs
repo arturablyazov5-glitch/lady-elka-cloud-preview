@@ -507,6 +507,16 @@ function normalizePageURLs(html) {
     return quote + normalized + quote;
   });
 }
+// Keep the published social destinations in one place; rewrite href values only.
+const socialDestinations = {
+  'https://www.instagram.com/sale.elka.ru?igsh=MW8zaHVqbXY1eGVxdg==': 'https://instagram.com/lady_elka.ru?exln=aG5teWx3ZGZ3enE0',
+  'https://www.instagram.com/lady_elka.ru?igsh=MWV0ZHdhejQxYjE4aw==': 'https://instagram.com/lady_elka.ru?exln=aG5teWx3ZGZ3enE0',
+  'https://youtube.com/@sale-elki1497?si=A4jQuOEGEgSTAR6C': 'https://youtube.com/@lady-elka?si=pS-B5WV2TfygvnP8',
+};
+function rewriteSocialDestinations(html) {
+  return html.replace(/(\bhref=)(['"])([^'"]*)\2/gi, (attribute, prefix, quote, href) =>
+    socialDestinations[href] ? prefix + quote + socialDestinations[href] + quote : attribute);
+}
 const indexedTitles = new Map(), pageCanonicals = new Map();
 async function finalizePages(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -537,7 +547,7 @@ async function finalizePages(directory) {
         return tag;
       });
       html = html.replace(/<\/head>/i, '<script src="/f/metrika.js" defer></script></head>');
-      await writeFile(path, html);
+      await writeFile(path, rewriteSocialDestinations(html));
     }
   }
 }
@@ -550,7 +560,7 @@ for (const [, url] of sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)) {
 }
 await writeFile(join(target, 'sitemap.xml'), sitemap);
 await (await import('./hosting/build.mjs')).buildHosting(target);
-await writeFile(join(target, '404.html'), normalizePageURLs(await readFile(join(target, '404.html'), 'utf8')));
+await writeFile(join(target, '404.html'), rewriteSocialDestinations(normalizePageURLs(await readFile(join(target, '404.html'), 'utf8'))));
 const serviceWorkerEnabled = mode === 'production' && option('service-worker') !== 'off';
 if (serviceWorkerEnabled && option('service-worker') !== 'kill') {
   const runtimePath = join(target, 'f/site-runtime.js');
