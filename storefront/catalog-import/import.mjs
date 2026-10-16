@@ -81,13 +81,29 @@ export async function readCandidate(manifestPath) {
   }
   return {manifest,feeds};
 }
-export async function fetchPublic(name,{fetchImpl=fetch,maxBytes=2_000_000,timeout=15000,direct=false}={}) {
+// Retry only the read operation; publication is never repeated here.
+export async function fetchPublic(name,{retryDelayMs=5000,sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms)),...options}={}) {
+  try { return await fetchPublicOnce(name,options); }
+  catch(error) {
+    if (!error.retryable && error.name!=='TimeoutError') throw error;
+    console.warn(`Catalog feed ${name}: temporary read failure; retrying once in ${retryDelayMs}ms`);
+    await sleep(retryDelayMs);
+    return fetchPublicOnce(name,options);
+  }
+}
+async function fetchPublicOnce(name,{fetchImpl=fetch,maxBytes=2_000_000,timeout=15000,direct=false}={}) {
   const config=await readFile(resolve(zone,'../../src/catalog/config.js'),'utf8');
   const key={trees:'SHEET_CSV_URL',decor:'DECOR_SHEET_CSV_URL',promos:'PROMO_SHEET_CSV_URL'}[name];
   const storageURL=config.match(new RegExp(`export const ${key} = '([^']+)'`))?.[1];
   if(storageURL!==`https://mgnotvaahftrbifqtahf.supabase.co/storage/v1/object/public/le-catalog-feeds/${name}.csv`) throw new Error('Public feed URL not proven');
   const url=direct ? `https://mgnotvaahftrbifqtahf.supabase.co/functions/v1/catalog/feeds/${name}.csv` : storageURL;
-  const response=await fetchImpl(url,{method:'GET',redirect:'error',signal:AbortSignal.timeout(timeout),headers:{Accept:'text/csv','Cache-Control':'no-cache'}});
+  let response;
+  try { response=await fetchImpl(url,{method:'GET',redirect:'error',signal:AbortSignal.timeout(timeout),headers:{Accept:'text/csv','Cache-Control':'no-cache'}}); }
+  catch(error) { if(error.name==='TimeoutError' || error instanceof TypeError) error.retryable=true; throw error; }
+  if([408,429,500,502,503,504].includes(response.status)) {
+    await response.body?.cancel();
+    throw Object.assign(new Error(`Unavailable ${name}: HTTP ${response.status}`),{retryable:true});
+  }
   if(!response.ok || !response.body || !/^(text\/csv|text\/plain|application\/octet-stream)/i.test(response.headers.get('content-type')||'')) throw new Error(`Unavailable ${name}: HTTP ${response.status}`);
   const reader=response.body.getReader();let bytes=0;const chunks=[];
   try {while(true) {const {done,value}=await reader.read();if(done)break;bytes+=value.length;if(bytes>maxBytes)throw new Error('Response byte limit');chunks.push(Buffer.from(value));}} finally {await reader.cancel();}
