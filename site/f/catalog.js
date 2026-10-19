@@ -827,6 +827,7 @@
   }
 
   // storefront/client/product-ui.js
+  var viewedProducts = /* @__PURE__ */ new Set();
   var money = (value) => `${Number(value || 0).toLocaleString("ru-RU")} ₽`;
   var setText = (root, selector, value) => {
     const node = root.querySelector(selector);
@@ -877,11 +878,17 @@
     const analyticsProduct = () => ecommerceProduct({ ...product, productId: product.id, variantId: selectedVariant == null ? void 0 : selectedVariant.id, price: selectedVariant == null ? void 0 : selectedVariant.price });
     if (selectedVariant) {
       const page = !root.querySelector("[data-storefront-variants]");
-      if (page) sendEcommerce("detail", [analyticsProduct()]);
-      else if (typeof IntersectionObserver !== "undefined") {
+      const viewKey = `${page ? "detail" : "impressions"}:${product.kind}:${product.id}`;
+      if (page && !viewedProducts.has(viewKey)) {
+        viewedProducts.add(viewKey);
+        sendEcommerce("detail", [analyticsProduct()]);
+      } else if (!page && typeof IntersectionObserver !== "undefined") {
         const observer = new IntersectionObserver((entries) => {
           if (entries.some((entry) => entry.isIntersecting)) {
-            sendEcommerce("impressions", [{ ...analyticsProduct(), list: location.pathname }]);
+            if (!viewedProducts.has(viewKey)) {
+              viewedProducts.add(viewKey);
+              sendEcommerce("impressions", [{ ...analyticsProduct(), list: location.pathname }]);
+            }
             observer.disconnect();
           }
         });

@@ -6,6 +6,7 @@ import { closeDropdownIfDetached, enhanceSelect } from './custom-select.js';
 import { availableOptions, initialSelection, resolveVariant, variantDimensions } from '../products/variants.mjs';
 import { categoryFromType, typeSlug } from '../products/type-query.mjs';
 import { add } from './cart-store.js';
+const viewedProducts = new Set();
 const money = value => `${Number(value || 0).toLocaleString('ru-RU')} ₽`;
 const setText = (root, selector, value) => {
   const node = root.querySelector(selector);
@@ -50,11 +51,18 @@ function bind(root, initialProduct) {
   const analyticsProduct = () => ecommerceProduct({ ...product, productId: product.id, variantId: selectedVariant?.id, price: selectedVariant?.price });
   if (selectedVariant) {
     const page = !root.querySelector('[data-storefront-variants]');
-    if (page) sendEcommerce('detail', [analyticsProduct()]);
-    else if (typeof IntersectionObserver !== 'undefined') {
+    const viewKey = `${page ? 'detail' : 'impressions'}:${product.kind}:${product.id}`;
+    if (page && !viewedProducts.has(viewKey)) {
+      viewedProducts.add(viewKey);
+      sendEcommerce('detail', [analyticsProduct()]);
+    }
+    else if (!page && typeof IntersectionObserver !== 'undefined') {
       const observer = new IntersectionObserver(entries => {
         if (entries.some(entry => entry.isIntersecting)) {
-          sendEcommerce('impressions', [{ ...analyticsProduct(), list: location.pathname }]);
+          if (!viewedProducts.has(viewKey)) {
+            viewedProducts.add(viewKey);
+            sendEcommerce('impressions', [{ ...analyticsProduct(), list: location.pathname }]);
+          }
           observer.disconnect();
         }
       });
