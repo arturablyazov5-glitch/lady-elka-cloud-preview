@@ -1,3 +1,4 @@
+import { sendEcommerce, ecommerceProduct } from './ecommerce.js';
 import { deferredImageAttributes } from '../products/lazy-images.mjs';
 import { imagePreviewAttributes } from '../products/image-preview.mjs';
 import { setProductImage } from './product-image.js';
@@ -46,6 +47,24 @@ function bind(root, initialProduct) {
   const customSelects = new Map(Object.entries(selects).filter(([, select]) => select).map(([key, select]) => [key, enhanceSelect(select)]));
   let selectedVariant = resolveVariant(product, selection);
   const buy = root.querySelector('.buy-btn');
+  const analyticsProduct = () => ecommerceProduct({ ...product, productId: product.id, variantId: selectedVariant?.id, price: selectedVariant?.price });
+  if (selectedVariant) {
+    const page = !root.querySelector('[data-storefront-variants]');
+    if (page) sendEcommerce('detail', [analyticsProduct()]);
+    else if (typeof IntersectionObserver !== 'undefined') {
+      const observer = new IntersectionObserver(entries => {
+        if (entries.some(entry => entry.isIntersecting)) {
+          sendEcommerce('impressions', [{ ...analyticsProduct(), list: location.pathname }]);
+          observer.disconnect();
+        }
+      });
+      observer.observe(root);
+    }
+    root.addEventListener('click', event => {
+      if (event.target.closest('a[href]') && !event.target.closest('.buy-btn'))
+        sendEcommerce('click', [analyticsProduct()]);
+    });
+  }
   function render() {
     for (const key of dimensions) {
       const select = selects[key]; if (!select) continue;

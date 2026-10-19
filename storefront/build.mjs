@@ -547,7 +547,7 @@ async function finalizePages(directory) {
         return tag;
       });
       html = html.replace(/<\/head>/i, '<script src="/f/metrika.js" defer></script></head>');
-      if (mode === 'production') html = html.replace(/<body\b[^>]*>/i, '      html = html.replace(/<\/head>/i, '<script src="/f/metrika.js" defer></script></head>');<noscript><div><img src="https://mc.yandex.ru/watch/113669509" style="position:absolute; left:-9999px;" alt="" /></div></noscript>');
+      if (mode === 'production') html = html.replace(/<body\b[^>]*>/i, '$&<noscript><div><img src="https://mc.yandex.ru/watch/113669509" style="position:absolute; left:-9999px;" alt="" /></div></noscript>');
       await writeFile(path, rewriteSocialDestinations(html));
     }
   }

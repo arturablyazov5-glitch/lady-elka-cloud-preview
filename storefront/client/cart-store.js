@@ -1,3 +1,4 @@
+import { sendEcommerce, ecommerceProduct } from './ecommerce.js';
 import { cartSubtotal } from '../../supabase/functions/_shared/product-rules.mjs';
 
 const KEY = 'lady_elka_cart_v2';
@@ -30,18 +31,24 @@ export const subscribe = listener => { listeners.add(listener); return () => lis
 export function add(product, variant) {
   if (!variant || !(variant.price > 0)) return;
   const existing = items.find(item => item.productId === product.id && item.variantId === variant.id);
+  const before = existing?.quantity || 0;
   if (existing) existing.quantity = Math.min(99, existing.quantity + 1);
   else items.push({ productId: product.id, variantId: variant.id, kind: product.kind,
     title: product.title, options: { ...variant.options }, price: variant.price,
     quantity: 1, image: variant.image || '', path: product.path || '' });
   commit();
+  const item = items.find(row => row.productId === product.id && row.variantId === variant.id);
+  if (item.quantity > before) sendEcommerce('add', [ecommerceProduct(item, item.quantity - before)]);
 }
 export function setQuantity(productId, variantId, quantity) {
   const item = items.find(row => row.productId === productId && row.variantId === variantId);
   if (!item || !Number.isFinite(quantity)) return;
+  const before = item.quantity;
   if (quantity <= 0) items = items.filter(row => row !== item);
   else item.quantity = Math.min(99, Math.floor(quantity));
   commit();
+  const delta = (quantity <= 0 ? 0 : item.quantity) - before;
+  if (delta) sendEcommerce(delta > 0 ? 'add' : 'remove', [ecommerceProduct(item, Math.abs(delta))]);
 }
 export function remove(productId, variantId) { setQuantity(productId, variantId, 0); }
 export function increment(productId, variantId) {

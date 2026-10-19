@@ -32,6 +32,50 @@
     mod
   ));
 
+  // storefront/client/ecommerce.js
+  var sentPurchases = /* @__PURE__ */ new Set();
+  function sendEcommerce(action, products, actionField) {
+    try {
+      if (!products.length || typeof window === "undefined") return false;
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ ecommerce: { currencyCode: "RUB", [action]: action === "impressions" ? products : { products, ...actionField ? { actionField } : {} } } });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  function ecommerceProduct(item, quantity) {
+    return {
+      id: String(item.productId || item.id),
+      ...item.title ? { name: item.title } : {},
+      brand: "Lady Elka",
+      category: item.kind === "decor" ? "Декор" : "Ёлки",
+      variant: String(item.variantId || ""),
+      price: Number(item.price),
+      ...quantity === void 0 ? {} : { quantity }
+    };
+  }
+  function trackPurchase(payload, orderId = payload.orderId) {
+    var _a, _b;
+    try {
+      const key = "lady_elka_ecommerce_purchase:" + orderId;
+      if (!orderId || sentPurchases.has(key)) return;
+      try {
+        if ((_a = globalThis.localStorage) == null ? void 0 : _a.getItem(key)) return;
+      } catch {
+      }
+      const field = { id: String(orderId), revenue: Number(payload.amount) };
+      if (payload.promoCode) field.coupon = payload.promoCode;
+      if (!sendEcommerce("purchase", payload.items.map((item) => ecommerceProduct(item, item.quantity)), field)) return;
+      sentPurchases.add(key);
+      try {
+        (_b = globalThis.localStorage) == null ? void 0 : _b.setItem(key, "1");
+      } catch {
+      }
+    } catch {
+    }
+  }
+
   // storefront/client/config.js
   function config() {
     const value = globalThis.__LE_STOREFRONT_CONFIG__;
@@ -172,6 +216,7 @@
         const result = await request(endpoint + "?action=order-status", pending.payload, { timeoutMs: 2e4 });
         if (result.ok !== true || result.orderId !== oid || typeof result.paid !== "boolean") throw new Error("Unconfirmed order status");
         if (result.paid === true && result.status === "paid") {
+          trackPurchase(pending.payload, oid);
           title.textContent = "Заказ оплачен";
           message.textContent = "Заказ № " + oid + " оплачен. Мы скоро свяжемся с вами.";
           try {
@@ -440,7 +485,8 @@
   };
   function add(product, variant) {
     if (!variant || !(variant.price > 0)) return;
-    const existing = items.find((item) => item.productId === product.id && item.variantId === variant.id);
+    const existing = items.find((item2) => item2.productId === product.id && item2.variantId === variant.id);
+    const before = (existing == null ? void 0 : existing.quantity) || 0;
     if (existing) existing.quantity = Math.min(99, existing.quantity + 1);
     else items.push({
       productId: product.id,
@@ -454,13 +500,18 @@
       path: product.path || ""
     });
     commit();
+    const item = items.find((row) => row.productId === product.id && row.variantId === variant.id);
+    if (item.quantity > before) sendEcommerce("add", [ecommerceProduct(item, item.quantity - before)]);
   }
   function setQuantity(productId2, variantId, quantity) {
     const item = items.find((row) => row.productId === productId2 && row.variantId === variantId);
     if (!item || !Number.isFinite(quantity)) return;
+    const before = item.quantity;
     if (quantity <= 0) items = items.filter((row) => row !== item);
     else item.quantity = Math.min(99, Math.floor(quantity));
     commit();
+    const delta = (quantity <= 0 ? 0 : item.quantity) - before;
+    if (delta) sendEcommerce(delta > 0 ? "add" : "remove", [ecommerceProduct(item, Math.abs(delta))]);
   }
   function remove(productId2, variantId) {
     setQuantity(productId2, variantId, 0);
@@ -823,6 +874,24 @@
     const customSelects = new Map(Object.entries(selects).filter(([, select]) => select).map(([key, select]) => [key, enhanceSelect(select)]));
     let selectedVariant = resolveVariant(product, selection);
     const buy = root.querySelector(".buy-btn");
+    const analyticsProduct = () => ecommerceProduct({ ...product, productId: product.id, variantId: selectedVariant == null ? void 0 : selectedVariant.id, price: selectedVariant == null ? void 0 : selectedVariant.price });
+    if (selectedVariant) {
+      const page = !root.querySelector("[data-storefront-variants]");
+      if (page) sendEcommerce("detail", [analyticsProduct()]);
+      else if (typeof IntersectionObserver !== "undefined") {
+        const observer = new IntersectionObserver((entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            sendEcommerce("impressions", [{ ...analyticsProduct(), list: location.pathname }]);
+            observer.disconnect();
+          }
+        });
+        observer.observe(root);
+      }
+      root.addEventListener("click", (event) => {
+        if (event.target.closest("a[href]") && !event.target.closest(".buy-btn"))
+          sendEcommerce("click", [analyticsProduct()]);
+      });
+    }
     function render() {
       var _a, _b;
       for (const key of dimensions) {

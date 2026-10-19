@@ -1,3 +1,47 @@
+// storefront/client/ecommerce.js
+var sentPurchases = /* @__PURE__ */ new Set();
+function sendEcommerce(action, products, actionField) {
+  try {
+    if (!products.length || typeof window === "undefined") return false;
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ ecommerce: { currencyCode: "RUB", [action]: action === "impressions" ? products : { products, ...actionField ? { actionField } : {} } } });
+    return true;
+  } catch {
+    return false;
+  }
+}
+function ecommerceProduct(item, quantity) {
+  return {
+    id: String(item.productId || item.id),
+    ...item.title ? { name: item.title } : {},
+    brand: "Lady Elka",
+    category: item.kind === "decor" ? "Декор" : "Ёлки",
+    variant: String(item.variantId || ""),
+    price: Number(item.price),
+    ...quantity === void 0 ? {} : { quantity }
+  };
+}
+function trackPurchase(payload, orderId = payload.orderId) {
+  var _a, _b;
+  try {
+    const key = "lady_elka_ecommerce_purchase:" + orderId;
+    if (!orderId || sentPurchases.has(key)) return;
+    try {
+      if ((_a = globalThis.localStorage) == null ? void 0 : _a.getItem(key)) return;
+    } catch {
+    }
+    const field = { id: String(orderId), revenue: Number(payload.amount) };
+    if (payload.promoCode) field.coupon = payload.promoCode;
+    if (!sendEcommerce("purchase", payload.items.map((item) => ecommerceProduct(item, item.quantity)), field)) return;
+    sentPurchases.add(key);
+    try {
+      (_b = globalThis.localStorage) == null ? void 0 : _b.setItem(key, "1");
+    } catch {
+    }
+  } catch {
+  }
+}
+
 // supabase/functions/_shared/product-rules.mjs
 var ACTIVE_VALUES = /* @__PURE__ */ new Set(["1", "true", "t", "да", "yes", "y", "on", "ok", "✓"]);
 var TREE_CATEGORY_ORDER = ["Зелёная", "С освещением", "Заснеженная", "Заснеженная с освещением"];
@@ -908,6 +952,7 @@ function initCheckout(form, getPromo, cartStore = { getItems, clear, reprice }) 
       const url = paymentMethod === "cash_on_delivery" ? `${ENDPOINT}?action=create-cod-order` : ENDPOINT;
       const result = await postJson(url, payload, { timeoutMs: 3e4 });
       if (result.paid === true) {
+        trackPurchase(payload, result.orderId || payload.orderId);
         clear2();
         pending = null;
         savePending();
@@ -918,6 +963,7 @@ function initCheckout(form, getPromo, cartStore = { getItems, clear, reprice }) 
       }
       if (paymentMethod === "cash_on_delivery") {
         if (!result.ok || !result.orderId) throw new Error("Подтверждение заказа не получено");
+        trackPurchase(payload, result.orderId);
         clear2();
         pending = null;
         savePending();

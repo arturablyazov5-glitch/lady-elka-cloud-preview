@@ -1,3 +1,4 @@
+import { trackPurchase } from './ecommerce.js';
 import { paymentEndpoint } from './config.js';
 import { postJson } from './request-errors.js';
 const pendingKey = 'lady_elka_pending_order_v1';
@@ -34,6 +35,7 @@ export function initPaymentReturn(cart, {document:doc=document, location:loc=loc
       const result=await request(endpoint+'?action=order-status',pending.payload,{timeoutMs:20000});
       if (result.ok!==true || result.orderId!==oid || typeof result.paid!=='boolean')throw new Error('Unconfirmed order status');
       if(result.paid===true && result.status==='paid') {
+        trackPurchase(pending.payload, oid);
         title.textContent='Заказ оплачен';message.textContent='Заказ № '+oid+' оплачен. Мы скоро свяжемся с вами.';
         // Do not erase products added/changed after going to the bank.
         try {storage.setItem(receiptKey,JSON.stringify(pending));} catch {}

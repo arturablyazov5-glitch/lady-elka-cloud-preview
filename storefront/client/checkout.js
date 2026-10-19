@@ -1,3 +1,4 @@
+import { trackPurchase } from './ecommerce.js';
 import { getItems, clear, reprice } from './cart-store.js';
 import { postJson, describeFailure, showMessage, showFailure, holdSubmit, keepFocus, RequestFailure } from './request-errors.js';
 import { buildOrderPayload } from './order-payload.js';
@@ -211,6 +212,7 @@ export function initCheckout(form, getPromo, cartStore = { getItems, clear, repr
       const url = paymentMethod === 'cash_on_delivery' ? `${ENDPOINT}?action=create-cod-order` : ENDPOINT;
       const result = await postJson(url, payload, { timeoutMs: 30000 });
       if (result.paid === true) {
+        trackPurchase(payload, result.orderId || payload.orderId);
         clear();
         pending = null;
         savePending();
@@ -221,6 +223,7 @@ export function initCheckout(form, getPromo, cartStore = { getItems, clear, repr
       }
       if (paymentMethod === 'cash_on_delivery') {
         if (!result.ok || !result.orderId) throw new Error('Подтверждение заказа не получено');
+        trackPurchase(payload, result.orderId);
         clear();
         pending = null;
         savePending();
