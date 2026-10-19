@@ -1,6 +1,6 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { dirname, join, resolve, sep } from 'node:path';
-const allowedExternalResources = new Set(['https://mc.yandex.ru/metrika/tag.js?id=104963244']);
+const allowedExternalResources = new Set(['https://mc.yandex.ru/metrika/tag.js?id=113669509', 'https://mc.yandex.ru/watch/113669509']);
 export async function validateBuildAssets(root) {
   const errors = new Set();
   async function check(value, file, css = false) {
