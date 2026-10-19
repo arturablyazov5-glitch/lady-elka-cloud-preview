@@ -33,11 +33,19 @@ export function debit(previous, current) {
 }
 const money = value => value.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ₽';
 const date = value => new Date(value).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+export const setupMessage = '<b>Lady Elka · Timeweb</b>\n\n'
+  + '✅ <b>Еженедельный отчёт подключён</b>\n\n'
+  + '<b>Когда</b>\nПо понедельникам, около 10:00 МСК.\n\n'
+  + '<b>Первый отчёт</b>\nВ следующий понедельник.\n\n'
+  + 'Начальный замер сохранён.\n\n'
+  + 'Если в аккаунте появятся другие сервисы, бот сообщит, что расчёт требует проверки.';
 export function message(previous, current) {
   const amount = debit(previous, current);
-  return `Lady Elka — расходы Timeweb\n${date(previous.at)} — ${date(current.at)} МСК\n\n`
-    + (amount >= 0 ? `Списано за период: ${money(amount)}.` : `Возвраты/корректировки превысили списания на ${money(-amount)}.`)
-    + '\nСумма учитывает возвраты и корректировки; пополнения исключены.\nСайт — единственный сервис аккаунта на проверенных срезах.';
+  return '<b>Lady Elka · Timeweb</b>\n\n'
+    + `<b>Период</b>\n${date(previous.at)} — ${date(current.at)} МСК\n\n`
+    + (amount >= 0 ? `<b>Списано: ${money(amount)}</b>` : `<b>Возвраты и корректировки: +${money(-amount)}</b>`)
+    + '\n\nПополнения не учитываются. Возвраты и корректировки учтены.\n'
+    + 'Сайт — единственный сервис аккаунта на проверенных срезах.';
 }
 async function api(path, token, request) {
   let response;
@@ -53,7 +61,7 @@ async function telegram(text, env, request) {
   try {
     response = await request(`https://api.telegram.org/bot${env.TG_BOT_TOKEN}/sendMessage`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(15000),
-      body: JSON.stringify({ chat_id: chat, text, disable_web_page_preview: true }),
+      body: JSON.stringify({ chat_id: chat, text, parse_mode: 'HTML', disable_web_page_preview: true }),
     }); result = await response.json();
   } catch { throw Error('Telegram delivery ambiguous; automatic resend refused'); }
   if (!response.ok || !result.ok || result.result?.chat?.type !== 'private') throw Error('Telegram delivery not confirmed');
@@ -77,16 +85,14 @@ export async function run({ env = process.env, request = fetch, now = new Date()
   catch (error) {
     if (error.message !== 'OTHER_SERVICES') throw error;
     state ||= { v: 1 }; state.blocked = true; await save();
-    await telegram('Lady Elka — расчёт расходов Timeweb приостановлен: изменился список сервисов аккаунта. Общие списания не приписаны сайту. Нужна проверка.', env, request);
+    await telegram('<b>Lady Elka · Timeweb</b>\n\n<b>Расчёт расходов приостановлен</b>\n\nИзменился список сервисов аккаунта.\nОбщие списания не приписаны сайту.\n\nНужна проверка.', env, request);
     throw Error('Site-only billing requires review: service inventory changed');
   }
   if (state?.blocked) throw Error('Billing attribution was blocked; manual review required');
   const week = new Date(now); week.setUTCHours(0, 0, 0, 0); week.setUTCDate(week.getUTCDate() - (week.getUTCDay() + 6) % 7);
   const period = week.toISOString().slice(0, 10);
   if (!bootstrap && state.lastPeriod === period) { console.log('Weekly report already delivered'); return; }
-  const text = bootstrap
-    ? 'Lady Elka — еженедельный отчёт Timeweb подключён.\nПо понедельникам, около 10:00 МСК, буду присылать списания по сайту за период с предыдущего замера. Начальный замер сохранён; первый отчёт придёт в следующий понедельник.\nЕсли в аккаунте появятся другие сервисы, расчёт будет остановлен для проверки.'
-    : message(state.snapshot, current);
+  const text = bootstrap ? setupMessage : message(state.snapshot, current);
   const previous = state;
   state = { ...state, v: 1, delivery: 'pending' }; await save();
   const messageId = await telegram(text, env, request); // Never retry an ambiguous send.
