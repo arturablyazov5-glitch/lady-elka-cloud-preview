@@ -1,0 +1,55 @@
+name: Weekly Timeweb cost report
+on:
+  schedule:
+    - cron: '0 7 * * 1' # Monday 10:00 Europe/Moscow. GitHub may start later.
+  workflow_dispatch:
+    inputs:
+      bootstrap:
+        description: Initialize the first billing snapshot (refuses to overwrite existing state)
+        type: boolean
+        default: false
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: lady-elka-weekly-timeweb-report
+  cancel-in-progress: false
+jobs:
+  report:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      REPORT_STATE_PATH: .timeweb-report/state.enc
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify calculation and privacy safeguards
+        run: node --test scripts/timeweb-report/report.test.mjs
+      - name: Restore encrypted previous snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/timeweb-report/restore.mjs
+      - name: Send private weekly report or initialize baseline
+        env:
+          TIMEWEB_API_TOKEN: ${{ secrets.TIMEWEB_API_TOKEN }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          LE_SYNC_TG_CHAT_ID: ${{ secrets.LE_SYNC_TG_CHAT_ID }}
+          BOOTSTRAP: ${{ inputs.bootstrap || false }}
+        run: |
+          if [ "$BOOTSTRAP" = true ]; then
+            node scripts/timeweb-report/report.mjs --bootstrap
+          else
+            node scripts/timeweb-report/report.mjs
+          fi
+      - name: Preserve encrypted state even after ambiguous delivery
+        if: always() && hashFiles('.timeweb-report/state.enc') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: timeweb-weekly-state
+          path: .timeweb-report/state.enc
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 90
