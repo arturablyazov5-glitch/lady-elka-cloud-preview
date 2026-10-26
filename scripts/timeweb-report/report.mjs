@@ -33,19 +33,15 @@ export function debit(previous, current) {
 }
 const money = value => value.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ₽';
 const date = value => new Date(value).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-export const setupMessage = '<b>Lady Elka · Timeweb</b>\n\n'
-  + '✅ <b>Еженедельный отчёт подключён</b>\n\n'
-  + '<b>Когда</b>\nПо понедельникам, около 10:00 МСК.\n\n'
-  + '<b>Первый отчёт</b>\nВ следующий понедельник.\n\n'
-  + 'Начальный замер сохранён.\n\n'
-  + 'Если в аккаунте появятся другие сервисы, бот сообщит, что расчёт требует проверки.';
+const day = value => new Date(value).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', day: 'numeric', month: 'long' });
+export const setupMessage = '✅ <b>Отчёт по Timeweb подключён</b>\n\n'
+  + 'Буду присылать расходы на хостинг по понедельникам, около 10:00. Первый отчёт — в следующий понедельник.';
 export function message(previous, current) {
   const amount = debit(previous, current);
-  return '<b>Lady Elka · Timeweb</b>\n\n'
-    + `<b>Период</b>\n${date(previous.at)} — ${date(current.at)} МСК\n\n`
-    + (amount >= 0 ? `<b>Списано: ${money(amount)}</b>` : `<b>Возвраты и корректировки: +${money(-amount)}</b>`)
-    + '\n\nПополнения не учитываются. Возвраты и корректировки учтены.\n'
-    + 'Сайт — единственный сервис аккаунта на проверенных срезах.';
+  const period = `${day(previous.at)} — ${day(current.at)}`;
+  return amount >= 0
+    ? `<b>Timeweb за неделю: ${money(amount)}</b>\n${period}`
+    : `<b>Timeweb за неделю: вернули ${money(-amount)}</b>\n${period}`;
 }
 async function api(path, token, request) {
   let response;
@@ -85,7 +81,7 @@ export async function run({ env = process.env, request = fetch, now = new Date()
   catch (error) {
     if (error.message !== 'OTHER_SERVICES') throw error;
     state ||= { v: 1 }; state.blocked = true; await save();
-    await telegram('<b>Lady Elka · Timeweb</b>\n\n<b>Расчёт расходов приостановлен</b>\n\nИзменился список сервисов аккаунта.\nОбщие списания не приписаны сайту.\n\nНужна проверка.', env, request);
+    await telegram('⚠️ <b>Отчёт по Timeweb приостановлен</b>\n\nВ аккаунте изменился список сервисов, поэтому не могу точно посчитать расходы сайта. Нужно проверить.', env, request);
     throw Error('Site-only billing requires review: service inventory changed');
   }
   if (state?.blocked) throw Error('Billing attribution was blocked; manual review required');
