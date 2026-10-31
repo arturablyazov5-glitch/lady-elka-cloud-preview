@@ -643,7 +643,7 @@
     control.menu.hidden = true;
     control.trigger.setAttribute("aria-expanded", "false");
     control.wrapper.classList.remove("dd-open");
-    if (control.menu.parentElement === document.body) control.wrapper.append(control.menu);
+    if (control.menu.parentElement !== control.wrapper) control.wrapper.append(control.menu);
     if (activeDropdown === control) activeDropdown = null;
     if (focusTrigger && control.trigger.isConnected) control.trigger.focus();
   }
@@ -669,14 +669,15 @@
   function openDropdown(control, focusSelected = false) {
     if (activeDropdown && activeDropdown !== control) closeDropdown(activeDropdown);
     control.menu.hidden = false;
-    document.body.append(control.menu);
+    (control.wrapper.closest('[role="dialog"]') || document.body).append(control.menu);
     activeDropdown = control;
     control.trigger.setAttribute("aria-expanded", "true");
     control.wrapper.classList.add("dd-open");
     positionDropdown(control);
     if (focusSelected) {
       const selected = control.menu.querySelector('[aria-selected="true"]') || control.menu.querySelector('[role="option"]');
-      selected == null ? void 0 : selected.focus();
+      selected == null ? void 0 : selected.focus({ preventScroll: true });
+      selected == null ? void 0 : selected.scrollIntoView({ block: "nearest" });
     }
   }
   function installDropdownDismissal() {
@@ -685,7 +686,10 @@
     document.addEventListener("pointerdown", (event) => {
       if (activeDropdown && !activeDropdown.wrapper.contains(event.target) && !activeDropdown.menu.contains(event.target)) closeDropdown();
     }, true);
-    window.addEventListener("scroll", () => closeDropdown(), true);
+    window.addEventListener("scroll", (event) => {
+      if (activeDropdown == null ? void 0 : activeDropdown.menu.contains(event.target)) return;
+      closeDropdown();
+    }, true);
     window.addEventListener("resize", () => closeDropdown());
   }
   function enhanceSelect(select, { wrapper = select.closest(".input__catalog"), valueNode = null } = {}) {
@@ -746,7 +750,11 @@
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
         openDropdown(control, true);
-      } else if (event.key === "Escape" && activeDropdown === control) closeDropdown(control);
+      } else if (event.key === "Escape" && activeDropdown === control) {
+        event.preventDefault();
+        event.stopPropagation();
+        closeDropdown(control);
+      }
     });
     menu.addEventListener("click", (event) => {
       const option = event.target.closest('[role="option"]');
@@ -768,6 +776,7 @@
       else if (event.key === "End") next = options.length - 1;
       else if (event.key === "Escape") {
         event.preventDefault();
+        event.stopPropagation();
         closeDropdown(control, true);
         return;
       } else if (event.key === "Tab") {
@@ -1259,13 +1268,43 @@
     for (const input of [min, max]) input == null ? void 0 : input.addEventListener("input", () => formatAmountInput(input));
     const heights = [...new Set(cards.flatMap(({ product }) => product.variants.map((variant) => Number(variant.height)).filter(Boolean)))].sort((a, b) => a - b);
     if (height) height.replaceChildren(new Option("ЛЮБАЯ ВЫСОТА", ""), ...heights.map((value) => new Option(`${value} см`, String(value))));
+    const panel = category.closest(".js-filter-panel") || category.parentElement;
+    for (const [input, label2] of [[min, "Цена от"], [max, "Цена до"]]) {
+      input == null ? void 0 : input.setAttribute("aria-label", label2);
+    }
+    const groups = /* @__PURE__ */ new Map();
+    for (const item of cards) {
+      const parent = item.card.parentElement;
+      if (!groups.has(parent)) {
+        const empty = document.createElement("section");
+        empty.className = "storefront-filter-empty";
+        empty.hidden = true;
+        const title = document.createElement("h2");
+        title.textContent = "Товары не найдены";
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "button standart-catalog__button-2";
+        const buttonLabel = document.createElement("span");
+        buttonLabel.className = "text-button";
+        buttonLabel.textContent = "Сбросить фильтры";
+        button.append(buttonLabel);
+        button.addEventListener("click", resetFilters);
+        empty.append(title, button);
+        item.card.before(empty);
+        groups.set(parent, { items: [], empty });
+      }
+      groups.get(parent).items.push(item);
+    }
+    const allPrices = cards.flatMap(({ product }) => product.variants.map((v) => Number(v.price))).filter((v) => v > 0);
     const categoryDropdown = enhanceFilterSelect(category, "Категория");
     const heightDropdown = enhanceFilterSelect(height, "Высота");
     function apply() {
       const selectedCategory = normalize(category.value) === normalize("Любая категория") ? "" : normalize(category.value);
       const selectedHeight = Number((height == null ? void 0 : height.value) || 0);
       const lower = number(min == null ? void 0 : min.value), upper = number(max == null ? void 0 : max.value);
+      const invalidRange = Boolean(lower && upper && lower > upper);
       const relevantPrices = [];
+      for (const input of [min, max]) input == null ? void 0 : input.setAttribute("aria-invalid", String(invalidRange));
       for (const { card, product } of cards) {
         const matching = matchingVariants(product, { category: selectedCategory, height: selectedHeight });
         relevantPrices.push(...matching.map((variant) => Number(variant.price)));
@@ -1283,12 +1322,18 @@
           variantSelect.dispatchEvent(new Event("change", { bubbles: true }));
         }
       }
-      if (min) min.placeholder = relevantPrices.length ? money3(Math.min(...relevantPrices)) : "";
-      if (max) max.placeholder = relevantPrices.length ? money3(Math.max(...relevantPrices)) : "";
+      const categoryPrices = cards.flatMap(({ product }) => matchingVariants(product, { category: selectedCategory }).map((v) => Number(v.price)));
+      const priceHints = relevantPrices.length ? relevantPrices : categoryPrices.length ? categoryPrices : allPrices;
+      if (min) min.placeholder = priceHints.length ? money3(Math.min(...priceHints)) : "Без минимума";
+      if (max) max.placeholder = priceHints.length ? money3(Math.max(...priceHints)) : "Без максимума";
+      for (const { items: items2, empty } of groups.values()) {
+        empty.hidden = items2.some(({ card }) => card.style.display !== "none");
+      }
     }
     for (const input of [category, height, min, max]) input == null ? void 0 : input.addEventListener((input == null ? void 0 : input.tagName) === "SELECT" ? "change" : "input", apply);
-    reset == null ? void 0 : reset.addEventListener("click", (event) => {
-      event.preventDefault();
+    function resetFilters(event) {
+      var _a;
+      event == null ? void 0 : event.preventDefault();
       category.selectedIndex = 0;
       if (height) height.value = "";
       if (min) min.value = "";
@@ -1296,7 +1341,11 @@
       categoryDropdown == null ? void 0 : categoryDropdown.sync();
       heightDropdown == null ? void 0 : heightDropdown.sync();
       apply();
-    });
+      if ((event == null ? void 0 : event.currentTarget) === reset) {
+        (_a = panel.querySelector(".pop-up__inside-close-button[data-modal-close]")) == null ? void 0 : _a.click();
+      }
+    }
+    reset == null ? void 0 : reset.addEventListener("click", resetFilters);
     apply();
   }
 

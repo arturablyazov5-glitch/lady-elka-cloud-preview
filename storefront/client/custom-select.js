@@ -7,7 +7,7 @@ function closeDropdown(control = activeDropdown, focusTrigger = false) {
   control.menu.hidden = true;
   control.trigger.setAttribute('aria-expanded', 'false');
   control.wrapper.classList.remove('dd-open');
-  if (control.menu.parentElement === document.body) control.wrapper.append(control.menu);
+  if (control.menu.parentElement !== control.wrapper) control.wrapper.append(control.menu);
   if (activeDropdown === control) activeDropdown = null;
   if (focusTrigger && control.trigger.isConnected) control.trigger.focus();
 }
@@ -31,14 +31,16 @@ function positionDropdown(control) {
 function openDropdown(control, focusSelected = false) {
   if (activeDropdown && activeDropdown !== control) closeDropdown(activeDropdown);
   control.menu.hidden = false;
-  document.body.append(control.menu);
+  // Keep dialog options inside its focus trap and inert boundary.
+  (control.wrapper.closest('[role="dialog"]') || document.body).append(control.menu);
   activeDropdown = control;
   control.trigger.setAttribute('aria-expanded', 'true');
   control.wrapper.classList.add('dd-open');
   positionDropdown(control);
   if (focusSelected) {
     const selected = control.menu.querySelector('[aria-selected="true"]') || control.menu.querySelector('[role="option"]');
-    selected?.focus();
+    selected?.focus({ preventScroll: true });
+    selected?.scrollIntoView({ block: 'nearest' });
   }
 }
 
@@ -48,7 +50,10 @@ function installDropdownDismissal() {
   document.addEventListener('pointerdown', event => {
     if (activeDropdown && !activeDropdown.wrapper.contains(event.target) && !activeDropdown.menu.contains(event.target)) closeDropdown();
   }, true);
-  window.addEventListener('scroll', () => closeDropdown(), true);
+  window.addEventListener('scroll', event => {
+    if (activeDropdown?.menu.contains(event.target)) return;
+    closeDropdown();
+  }, true);
   window.addEventListener('resize', () => closeDropdown());
 }
 
@@ -97,7 +102,9 @@ export function enhanceSelect(select, { wrapper = select.closest('.input__catalo
   trigger.addEventListener('keydown', event => {
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault(); openDropdown(control, true);
-    } else if (event.key === 'Escape' && activeDropdown === control) closeDropdown(control);
+    } else if (event.key === 'Escape' && activeDropdown === control) {
+      event.preventDefault(); event.stopPropagation(); closeDropdown(control);
+    }
   });
   menu.addEventListener('click', event => {
     const option = event.target.closest('[role="option"]');
@@ -116,7 +123,7 @@ export function enhanceSelect(select, { wrapper = select.closest('.input__catalo
     else if (event.key === 'ArrowUp') next = Math.max(0, current - 1);
     else if (event.key === 'Home') next = 0;
     else if (event.key === 'End') next = options.length - 1;
-    else if (event.key === 'Escape') { event.preventDefault(); closeDropdown(control, true); return; }
+    else if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeDropdown(control, true); return; }
     else if (event.key === 'Tab') { closeDropdown(control); return; }
     else return;
     event.preventDefault(); options[next]?.focus();

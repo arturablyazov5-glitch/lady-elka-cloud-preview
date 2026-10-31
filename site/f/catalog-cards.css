@@ -41,6 +41,20 @@
 .storefront-select-option-label { color: inherit; }
 .storefront-select-option-check { display: none; }
 .filter-select { position: relative; min-width: 0; cursor: pointer; }
+.storefront-filter-empty[hidden] { display: none !important; }
+.storefront-filter-empty {
+  box-sizing: border-box; width: 100%; grid-column: 1 / -1; flex: 0 0 100%;
+  padding: 48px 24px; border-radius: 28px; background: #fff; text-align: center;
+  color: #272b30;
+}
+.storefront-filter-empty h2 { margin: 0 0 24px; font: inherit; font-size: 28px; font-weight: 600; }
+.storefront-filter-empty button {
+  min-height: 48px; color: #fff; cursor: pointer;
+}
+.storefront-filter-empty button:focus-visible { outline: 2px solid #118341; outline-offset: 3px; }
+.js-filter-panel input[aria-invalid="true"] { border-color: #b42318; }
+.js-filter-panel input::placeholder { color: #6c6c6c; opacity: 1; }
+.js-filter-panel .filter__popup { box-sizing: border-box; max-height: calc(100dvh - 40px); overflow-y: auto; }
 .filter-select .storefront-select-trigger {
   position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; padding: 0;
   border: 0; border-radius: inherit; background: transparent; cursor: pointer;

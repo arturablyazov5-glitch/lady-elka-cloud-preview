@@ -58,13 +58,43 @@ export function initFilter() {
   for (const input of [min, max]) input?.addEventListener('input', () => formatAmountInput(input));
   const heights = [...new Set(cards.flatMap(({ product }) => product.variants.map(variant => Number(variant.height)).filter(Boolean)))].sort((a, b) => a - b);
   if (height) height.replaceChildren(new Option('ЛЮБАЯ ВЫСОТА', ''), ...heights.map(value => new Option(`${value} см`, String(value))));
+  const panel = category.closest('.js-filter-panel') || category.parentElement;
+  for (const [input, label] of [[min, 'Цена от'], [max, 'Цена до']]) {
+    input?.setAttribute('aria-label', label);
+  }
+  const groups = new Map();
+  for (const item of cards) {
+    const parent = item.card.parentElement;
+    if (!groups.has(parent)) {
+      const empty = document.createElement('section');
+      empty.className = 'storefront-filter-empty';
+      empty.hidden = true;
+      const title = document.createElement('h2');
+      title.textContent = 'Товары не найдены';
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'button standart-catalog__button-2';
+      const buttonLabel = document.createElement('span');
+      buttonLabel.className = 'text-button';
+      buttonLabel.textContent = 'Сбросить фильтры';
+      button.append(buttonLabel);
+      button.addEventListener('click', resetFilters);
+      empty.append(title, button);
+      item.card.before(empty);
+      groups.set(parent, { items: [], empty });
+    }
+    groups.get(parent).items.push(item);
+  }
+  const allPrices = cards.flatMap(({ product }) => product.variants.map(v => Number(v.price))).filter(v => v > 0);
   const categoryDropdown = enhanceFilterSelect(category, 'Категория');
   const heightDropdown = enhanceFilterSelect(height, 'Высота');
   function apply() {
     const selectedCategory = normalize(category.value) === normalize('Любая категория') ? '' : normalize(category.value);
     const selectedHeight = Number(height?.value || 0);
     const lower = number(min?.value), upper = number(max?.value);
+    const invalidRange = Boolean(lower && upper && lower > upper);
     const relevantPrices = [];
+    for (const input of [min, max]) input?.setAttribute('aria-invalid', String(invalidRange));
     for (const { card, product } of cards) {
       const matching = matchingVariants(product, { category: selectedCategory, height: selectedHeight });
       relevantPrices.push(...matching.map(variant => Number(variant.price)));
@@ -82,12 +112,19 @@ export function initFilter() {
         variantSelect.dispatchEvent(new Event('change', { bubbles: true }));
       }
     }
-    if (min) min.placeholder = relevantPrices.length ? money(Math.min(...relevantPrices)) : '';
-    if (max) max.placeholder = relevantPrices.length ? money(Math.max(...relevantPrices)) : '';
+    // No matching height must not erase the price hints. Fall back to this
+    // category, then to the full catalog; these are hints, never active limits.
+    const categoryPrices = cards.flatMap(({ product }) => matchingVariants(product, { category: selectedCategory }).map(v => Number(v.price)));
+    const priceHints = relevantPrices.length ? relevantPrices : categoryPrices.length ? categoryPrices : allPrices;
+    if (min) min.placeholder = priceHints.length ? money(Math.min(...priceHints)) : 'Без минимума';
+    if (max) max.placeholder = priceHints.length ? money(Math.max(...priceHints)) : 'Без максимума';
+    for (const { items, empty } of groups.values()) {
+      empty.hidden = items.some(({ card }) => card.style.display !== 'none');
+    }
   }
   for (const input of [category, height, min, max]) input?.addEventListener(input?.tagName === 'SELECT' ? 'change' : 'input', apply);
-  reset?.addEventListener('click', event => {
-    event.preventDefault();
+  function resetFilters(event) {
+    event?.preventDefault();
     category.selectedIndex = 0;
     if (height) height.value = '';
     if (min) min.value = '';
@@ -95,6 +132,10 @@ export function initFilter() {
     categoryDropdown?.sync();
     heightDropdown?.sync();
     apply();
-  });
+    if (event?.currentTarget === reset) {
+      panel.querySelector('.pop-up__inside-close-button[data-modal-close]')?.click();
+    }
+  }
+  reset?.addEventListener('click', resetFilters);
   apply();
 }
