@@ -6,12 +6,11 @@ import { tmpdir } from 'node:os';
 import { syncCatalog } from '../catalog-sync.mjs';
 import { readPointer, defaultPointerPath } from '../../storefront/products/snapshot-acceptance.mjs';
 import { readFeedsOf } from './snapshot.mjs';
-import { pinMedia } from './media.mjs';
 const baseline = await readFeedsOf(readPointer().manifestPath), basePointer = await readFile(defaultPointerPath);
 const inputs = Object.fromEntries(['trees','decor','promos'].map(n=>[n,{...baseline.manifest.feeds[n],text:baseline.feeds[n]}]));
 test('blog-only change rebuilds with current catalog pointer, publishes, then activates blog; pointer untouched', async () => {
   const work = await mkdtemp(join(tmpdir(), 'le-sync-blog-')), pointerPath = join(work, 'active.json'); await writeFile(pointerPath, basePointer);
-  const media = await pinMedia(baseline.feeds, { refreshRemote: false }), seen = [];
+  const media = { ...JSON.parse(await readFile(readPointer().mediaPath, 'utf8')), failures: [] }, seen = [];
   const base = { fetchInputs: async () => inputs, pinMedia: async () => media, notify: async m => { seen.push(['notify', m]); return { sent: true }; },
     build: async ({ output, pointerPath: p, blogSnapshot }) => { seen.push(['build', p, blogSnapshot]); await mkdir(output); await writeFile(join(output, 'product-routes.json'), '[]'); },
     publish: async () => { seen.push(['publish']); return { method: 'dir' }; }, activateBlog: async f => { seen.push(['activate', f]); } };
