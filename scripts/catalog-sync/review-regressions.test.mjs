@@ -56,7 +56,23 @@ test('1 process SIGKILL recovery and SIGTERM work/lock cleanup; TTL foreign/lega
  }
  const lock=join(dir,'foreign');await fs.mkdir(lock);await fs.writeFile(join(lock,'owner.json'),JSON.stringify({hostname:'other-host',pid:1,heartbeat:Date.now()-10000}));const lease=await acquireLock(lock,{ttl:100});await lease.release();await fs.mkdir(lock);await fs.utimes(lock,new Date(0),new Date(0));const legacy=await acquireLock(lock,{ttl:100});await legacy.release();
 }));
-test('1 heartbeat and contention do not steal a live lease',async()=>isolated(async dir=>{const p=join(dir,'lock');const lease=await acquireLock(p,{heartbeatMs:5});const a=JSON.parse(await fs.readFile(join(p,'owner.json')));await pause(20);const b=JSON.parse(await fs.readFile(join(p,'owner.json')));assert.ok(b.heartbeat>a.heartbeat);const results=await Promise.allSettled(Array.from({length:5},()=>acquireLock(p)));assert.ok(results.every(r=>r.status==='rejected'&&r.reason.code==='SYNC_BUSY'));await lease.release();}));
+test('1 heartbeat and contention do not steal a live lease',async()=>isolated(async dir=>{
+ const path=join(dir,'lock');
+ const lease=await acquireLock(path,{heartbeatMs:5});
+ try{
+   const readOwner=async()=>JSON.parse(await fs.readFile(join(path,'owner.json'),'utf8'));
+   const initial=await readOwner();
+   let latest=initial;
+   const deadline=Date.now()+5000;
+   while(latest.heartbeat<=initial.heartbeat && Date.now()<deadline){
+     await pause(10);
+     latest=await readOwner();
+   }
+   assert.ok(latest.heartbeat>initial.heartbeat);
+   const results=await Promise.allSettled(Array.from({length:5},()=>acquireLock(path)));
+   assert.ok(results.every(r=>r.status==='rejected'&&r.reason.code==='SYNC_BUSY'));
+ }finally{await lease.release();}
+}));
 test('2 same URL replacement changes sha; corrupted local cache cannot mask deletion',async()=>{const b=manifest.assets.find(a=>a.contentType==='image/webp'&&a.sha256!==photo.sha256);const bytes=await fs.readFile(join(repoRoot,b.localPath));const m=await pinMedia(feedsFor(photo.rawURL),{fetchImpl:async()=>new Response(bytes,{headers:{'content-type':'image/webp',etag:'"changed"'}})});assert.equal(m.assets[0].sha256,b.sha256);assert.equal(m.summary.downloaded,1);const missing=await pinMedia(feedsFor(photo.rawURL),{fetchImpl:async()=>new Response(null,{status:404})});assert.equal(missing.failures.length,1);});
 test('3 SSH publication plan has link-dest and cleanup after atomic switch; failed upload never switches',async()=>{const env={LE_DEPLOY_RSYNC_TARGET:'fixture@host:/srv/site',LE_DEPLOY_KEEP_RELEASES:'5'};const plan=await publish('/fixture',{method:'rsync',env,planOnly:true});assert.ok(plan.commands[1][1].includes('--link-dest=/srv/site'));assert.match(plan.commands[2][1].at(-1),/mv -Tf/);assert.match(plan.commands[3][1].at(-1),/tail -n \+6/);const calls=[];await assert.rejects(publish('/fixture',{method:'rsync',env,runImpl:async(cmd,args)=>{calls.push([cmd,args]);if(cmd==='rsync')throw Error('upload failure');}}),/upload failure/);assert.ok(!calls.some(([,a])=>a.at(-1).includes('mv -Tf')));assert.match(calls.at(-1)[1].at(-1),/rm -rf/);});
 test('5 old incomplete deterministic candidate is quarantined and same data builds again',async()=>isolated(async(dir,p)=>{
