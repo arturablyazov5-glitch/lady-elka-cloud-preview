@@ -6,6 +6,7 @@ import {tmpdir,hostname} from 'node:os';
 import {randomUUID} from 'node:crypto';
 import {runInNewContext} from 'node:vm';
 import {syncCatalog} from '../catalog-sync.mjs';
+import {loadFeed,setPreviewInput,validateActiveSnapshot} from '../../storefront/products/build-feed.mjs';
 import {readPointer,defaultPointerPath,repoRoot} from '../../storefront/products/snapshot-acceptance.mjs';
 import {readFeedsOf} from './snapshot.mjs';
 import {pinMedia} from './media.mjs';
@@ -90,6 +91,6 @@ test('2 unchanged runs retain validators durably, downloading once across repeat
 test('6 snapshot validates with unpinned inactive reference while active media remains mandatory',async()=>isolated(async(dir,p)=>{
  const rows=csvRecords(base.feeds.trees),headers=Object.keys(rows[0]),row=rows.find(r=>r.active==='FALSE');assert.ok(row);row.photos=photo.rawURL.replace(/[^/]+$/,'cccccccccccccccccccccccccccccccc.webp');
  const feeds={...base.feeds,trees:[headers.map(quote).join(','),...rows.map(r=>headers.map(k=>quote(r[k])).join(','))].join('\n')};let id;
- try{const m=await pinMedia(feeds,{extraManifests:[readPointer().mediaPath],cachePath:join(dir,'cache.json'),refreshRemote:false,fetchImpl:async()=>{throw Error('unexpected network')}});assert.deepEqual(m.failures,[]);assert.equal(m.references.find(r=>r.url===row.photos).mediaStatus,'skipped-inactive');const result=await syncCatalog({pointerPath:p},{...deps,fetchInputs:async()=>inputs(feeds),pinMedia:async()=>m,build:async({output,pointerPath})=>{id=readPointer(pointerPath).id;await fs.mkdir(output);await fs.writeFile(join(output,'product-routes.json'),'[]');}});assert.equal(result.status,'dry-run');}
+ try{const m=await pinMedia(feeds,{extraManifests:[readPointer().mediaPath],cachePath:join(dir,'cache.json'),refreshRemote:false,fetchImpl:async()=>{throw Error('unexpected network')}});assert.deepEqual(m.failures,[]);assert.equal(m.references.find(r=>r.url===row.photos).mediaStatus,'skipped-inactive');const result=await syncCatalog({pointerPath:p},{...deps,fetchInputs:async()=>inputs(feeds),pinMedia:async()=>m,build:async({output,pointerPath})=>{const pointer=readPointer(pointerPath);id=pointer.id;setPreviewInput(await validateActiveSnapshot(pointer));try{const built=await loadFeed('trees');assert.equal(built[rows.indexOf(row)].photos,'');}finally{setPreviewInput(null);}await fs.mkdir(output);await fs.writeFile(join(output,'product-routes.json'),'[]');}});assert.equal(result.status,'dry-run');}
  finally{if(id){await fs.rm(join(snapshotsRoot,id),{recursive:true,force:true});await fs.rm(join(repoRoot,'storefront/catalog-import/candidates',id),{recursive:true,force:true});}}
 }));

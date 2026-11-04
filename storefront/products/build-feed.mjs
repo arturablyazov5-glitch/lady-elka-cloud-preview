@@ -34,7 +34,10 @@ export async function loadFeed(name, manifestPath = previewInput?.manifestPath |
   // Order/placeholder filtering follows catalogPhotos on the raw URLs, then each URL is replaced by its pinned path.
   return rows.map(row => row.photos === undefined ? row : {
     ...row,
-    photos: pinPhotos(row.photos, url => previewInput.mapping.get(url)?.url),
+    photos: pinPhotos(
+      isCatalogActive(row.active) ? row.photos : row.photos.split('|').filter(url => previewInput.mapping.has(url.trim())).join('|'),
+      url => previewInput.mapping.get(url)?.url,
+    ),
   });
 }
 export async function pinnedPreviewMedia() {
