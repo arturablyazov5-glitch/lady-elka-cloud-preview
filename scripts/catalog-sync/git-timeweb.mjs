@@ -55,7 +55,7 @@ export async function waitActive(sha,id,{env=process.env,apiImpl=api,pause=sleep
  }
  throw Error('Timeweb timeout after 15 minutes; no restart attempted. Pending deployment requires inspection');
 }
-export async function smoke({fetchImpl=fetch,site=join(ROOT,'site'),base='https://arturablyazov5-glitch-lady-elka-cloud-preview-3626.twc1.net'}={}){
+export async function smoke({fetchImpl=fetch,site=join(ROOT,'site'),base='https://lady-elka.ru'}={}){
  for(const [url,file,status] of [['/','index.html',200],['/catalog/','catalog/index.html',200],['/sw.js','sw.js',200],['/zzz-check','404.html',404],['/sitemap.xml','sitemap.xml',200]]) {
   const r=await fetchImpl(base+url,{redirect:'error',signal:AbortSignal.timeout(30000),headers:{'Cache-Control':'no-cache'}});
   if(r.status!==status)throw Error(`Smoke ${url}: HTTP ${r.status}`);
