@@ -973,7 +973,14 @@ function initCheckout(form, getPromo, cartStore = { getItems, clear, reprice }) 
         return;
       }
       if (!result.url) throw new Error("Ссылка оплаты не получена");
-      location.assign(result.url);
+      const paymentUrl = new URL(result.url);
+      if (paymentUrl.protocol !== "https:" && paymentUrl.origin !== location.origin) throw new Error("Получена неверная ссылка на оплату");
+      const paymentLink = document.createElement("a");
+      paymentLink.href = paymentUrl.href;
+      paymentLink.textContent = "Перейти к оплате";
+      show("Если страница банка не открылась автоматически, нажмите «Перейти к оплате» ниже. ");
+      notice.appendChild(paymentLink);
+      location.assign(paymentUrl.href);
     } catch (error) {
       failure = error;
     } finally {
