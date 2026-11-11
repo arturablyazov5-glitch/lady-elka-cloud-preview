@@ -119,7 +119,11 @@ const blogRecords = await buildBlog(blogSnapshot, { source, target });
 // Runtime and HTML share guarded bundled data; autosync updates the whole artifact.
 const thumbnails = await buildThumbnails(target, await pinnedPreviewMedia());
 setPreviewImages(thumbnails);
-const artifactEndpoints = (preview || active) ? { ...endpointConfig, thumbnails, mediaMap: '/media/catalog-pinned/map.json', catalog: Object.fromEntries(['trees', 'decor', 'promos'].map(name => [name, `/__offline/catalog/${name}.csv`])) }
+const artifactEndpoints = (preview || active) ? { ...endpointConfig, thumbnails, mediaMap: '/media/catalog-pinned/map.json', catalog: {
+    trees: '/__offline/catalog/trees.csv',
+    decor: '/__offline/catalog/decor.csv',
+    promos: mode === 'production' ? endpointConfig.catalog.promos : '/__offline/catalog/promos.csv',
+  } }
   : { ...endpointConfig, mediaMap: '/media/catalog-pinned/map.json' };
 await writeFile(join(target, 'f', 'storefront-config.js'), `window.__LE_STOREFRONT_CONFIG__=${JSON.stringify(artifactEndpoints)};\n`);
 await mkdir(join(target, 'media/catalog-pinned'), { recursive: true });

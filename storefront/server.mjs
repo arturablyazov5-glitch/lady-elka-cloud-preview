@@ -8,7 +8,7 @@ import { resolve, extname, sep, join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { csvRecords } from '../supabase/functions/_shared/product-rules.mjs';
 import { readFeedText } from './products/build-feed.mjs';
-import { configScript } from './config/runtime.mjs';
+import { configScript, runtimeConfig } from './config/runtime.mjs';
 if (!process.argv.includes('--mode=preview')) throw new Error('Explicit --mode=preview required; capture and upstream fallback are disabled');
 const artifact = process.argv.find(arg => arg.startsWith('--artifact='))?.slice(11) || 'preview';
 if (!['preview', 'production'].includes(artifact)) throw new Error('Unknown artifact');
@@ -77,7 +77,9 @@ if (rootArg || artifactManifest.bundled) {
   }
   for (const name of ['trees', 'decor', 'promos']) {
     const relative = `__offline/catalog/${name}.csv`, entry = proof.feeds?.[name];
-    if (entry?.path !== relative || manifest.endpoints.catalog?.[name] !== '/' + relative)
+    const endpoint = manifest.endpoints.catalog?.[name];
+    const livePromo = name === 'promos' && manifest.mode === 'production' && endpoint === runtimeConfig('production').catalog.promos;
+    if (entry?.path !== relative || (endpoint !== '/' + relative && !livePromo))
       throw new Error(`Invalid ${name} feed manifest/path`);
     const bytes = await verify(entry);
     const rows = csvRecords(bytes.toString('utf8'));
