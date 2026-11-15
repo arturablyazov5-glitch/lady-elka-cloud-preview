@@ -1368,6 +1368,12 @@
     }).join("|");
   }
   var productTitle = (product, route) => String((product == null ? void 0 : product.title) || "").trim() || (route == null ? void 0 : route.liveTitle) || "";
+  function scopedTreeProduct(product, scope) {
+    const category = ((product == null ? void 0 : product.variants) || []).map((variant) => variant.category).find((name) => typeSlug(name) === scope);
+    const variants = category ? product.variants.filter((variant) => variant.category === category) : [];
+    if (!variants.length) return null;
+    return { ...product, title: `${String(product.title || "").trim()} ${category.toLocaleLowerCase("ru")}`, variants };
+  }
   function presentProduct(product, route) {
     const kind = route.kind;
     const variants = product.variants.map((variant) => {
@@ -1626,15 +1632,20 @@
         card.remove();
         continue;
       }
+      const scoped = card.dataset.searchScope && kind === "tree" ? scopedTreeProduct(source, card.dataset.searchScope) : source;
+      if (!scoped) {
+        card.remove();
+        continue;
+      }
       const opening = rootOpening(card);
       if (!opening) {
         card.remove();
         continue;
       }
       const path = ((_c = card.querySelector("a.stroke-catalog__button[href]")) == null ? void 0 : _c.getAttribute("href")) || "/catalog/";
-      const route = { id: source.id, kind, path, liveTitle: source.title };
+      const route = { id: source.id, kind, path, liveTitle: scoped.title };
       const template = card.outerHTML;
-      const html = kind === "decor" ? decorCardHtml(opening, source, route, template) : cardHtml(opening, source, route, template);
+      const html = kind === "decor" ? decorCardHtml(opening, scoped, route, template) : cardHtml(opening, scoped, route, template);
       const holder = document.createElement("template");
       holder.innerHTML = html.trim();
       const updated = holder.content.firstElementChild;

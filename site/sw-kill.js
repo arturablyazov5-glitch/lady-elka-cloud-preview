@@ -1,4 +1,4 @@
-const LE_SW_CONFIG = {"release":"d8fa014e2e83beae9b2765529a088e0cad7ae799b840de9b7b8c54b1c80b1f7e","kill":true,"assets":{}};
+const LE_SW_CONFIG = {"release":"840b337718dc25aeae1a7a537636791d8869ea71f3b81d21ec288d94b7b6c05c","kill":true,"assets":{}};
 /* Generated /sw.js prepends LE_SW_CONFIG. Only content-addressed static assets
    belong here. No precache, no API/HTML storage, no background revalidation. */
 const { kill, assets } = LE_SW_CONFIG;
