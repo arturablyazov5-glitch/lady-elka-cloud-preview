@@ -1,3 +1,4 @@
+import { imagePreviewAttributes } from './image-preview.mjs';
 import { availableOptions, initialSelection, variantDimensions } from './variants.mjs';
 import { escapeHtml as escape, jsonForHtml, money } from './presentation.mjs';
 import { localImageSize } from './image-size.mjs';
@@ -74,7 +75,10 @@ function gallery(product, variant) {
   const photos = variant?.photos || [];
   return `<div class="div div--u-ib8vguv7t dop__img__cms" data-storefront-gallery-section${photos.length > 1 ? '' : ' hidden'}>
     <div class="text site__h3 color__h3"><span class="text-block-wrap-div">Ещё фото</span></div>
-    <div class="div div--u-iybiwde7h dop__img__cms" data-storefront-gallery>${photos.slice(1).map(src => `<div class="image product__img-dop__cms"><img class="image__img" src="${escape(src)}" alt="${escape(product.title)}"${intrinsicSize(src)} loading="lazy" decoding="async"></div>`).join('')}</div>
+    <div class="div div--u-iybiwde7h dop__img__cms" data-storefront-gallery>${photos.slice(1).map(src => {
+      const preview = imagePreviewAttributes(src, true);
+      const responsive = preview.srcset ? ` srcset="${escape(preview.srcset)}" sizes="${escape(preview.sizes)}"` : '';
+      return `<div class="image product__img-dop__cms"><img class="image__img" src="${escape(preview.src)}"${responsive} data-full-src="${escape(src)}" alt="${escape(product.title)}"${intrinsicSize(src)} loading="lazy" decoding="async"></div>`; }).join('')}</div>
   </div>`;
 }
 

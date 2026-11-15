@@ -26,8 +26,7 @@
     event.preventDefault(); event.stopPropagation();
     location.assign(card.dataset.searchPath);
   });
-  fetch('/search-index.json')
-    .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); })
+  Promise.resolve(LE_SEARCH_INDEX)
     .then(index => {
       const matches = terms.length ? index.map(item => {
         const title = normalized(item.title);

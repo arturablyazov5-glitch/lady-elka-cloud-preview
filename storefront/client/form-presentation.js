@@ -1,14 +1,12 @@
 // Presentation is eager; submission/checkout logic remains in the demand chunk.
 export function describeLeadControl(control) {
-      // Placeholder-only captured fields get a persistent (visually hidden) label and autofill hint.
+      // Placeholder-only captured fields get an accessible name and autofill hint.
       const autocomplete = { name: 'name', phone: 'tel', email: 'email', city: 'address-level2' }[control.dataset.leadField];
       if (autocomplete && !control.hasAttribute('autocomplete')) control.setAttribute('autocomplete', autocomplete);
       if (control.dataset.leadField === 'phone' && control.closest('form[data-lead-type="question"]')) control.setAttribute('aria-label', 'Телефон');
-      if (control.type !== 'checkbox' && !control.labels?.length && !control.hasAttribute('aria-label') && control.id && control.placeholder) {
-        const label = document.createElement('label');
-        label.className = 'storefront-visually-hidden'; label.htmlFor = control.id;
-        label.textContent = control.placeholder.replace(/\*+\s*$/, '').trim();
-        control.before(label);
+      if (control.type !== 'checkbox' && !control.labels?.length && !control.hasAttribute('aria-label') && !control.hasAttribute('aria-labelledby')) {
+        const name = control.placeholder?.replace(/\*+\s*$/, '').trim();
+        if (name) control.setAttribute('aria-label', name);
       }
       if (control.type !== 'checkbox') control.maxLength = { name: 120, phone: 40, email: 200, comment: 1500, city: 100, business: 200 }[control.dataset.leadField] || 200;
 }

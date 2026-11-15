@@ -1,3 +1,4 @@
+import { previewImage } from '../products/image-preview.mjs';
 import { getItems, setQuantity, remove, subscribe } from './cart-store.js';
 import { discountTotal } from './order-payload.js';
 import { cartSubtotal, lineTotal } from '../../supabase/functions/_shared/product-rules.mjs';
@@ -21,9 +22,10 @@ export function initCart(getPromo) {
     const items = getItems(), promo = getPromo();
     list.innerHTML = items.length ? items.map((item, index) => {
       const height = item.options.height ? `${item.options.height} см.` : (item.options.size || '');
+      const photo = previewImage(item.image)?.[240]?.url || item.image;
       const category = item.options.category || '';
       return `<div class="div div--u-im3bc3u4g item-wrapper__shop" data-cart-index="${index}">
-      <div class="div div--u-i09ij701w name-photo__shop"><div class="image shop__img"><img class="image__img" src="${esc(item.image)}" alt=""></div>
+      <div class="div div--u-i09ij701w name-photo__shop"><div class="image shop__img"><img class="image__img" data-le-src="${esc(photo)}" alt=""></div>
       <div class="div div--u-ir8em2vtp title-shop-wrapper"><div class="div div--u-iqlo6zgmt title-wrapper__catalog"><div class="text color__h2 site__h3"><span class="text-block-wrap-div">${esc(item.title)}</span></div>
       <div class="div div--u-ipj03oyjv tex-tovar-wrapper"><div class="text color__h3 size__shop site-catalog__h3"><span class="text-block-wrap-div">${esc(height)}</span></div><div class="text site__h4 color__h3"><span class="text-block-wrap-div">${esc(category)}</span></div></div></div>
       <div class="text text--u-i35a4h7lp site__h2 color__h1"><span class="text-block-wrap-div">${money(lineTotal(item))}</span></div></div></div>

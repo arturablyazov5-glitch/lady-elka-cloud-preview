@@ -2,6 +2,15 @@ import { catalogEndpoint } from './config.js';
 import { csvRecords, findPromo, hasPromoBenefit, normalizePromoCode, promoDetails } from '../../supabase/functions/_shared/product-rules.mjs';
 import { getItems } from './cart-store.js';
 const KEY = 'lady_promo_state';
+let promoRowsPromise = null;
+const loadPromoRows = () => {
+  if (!promoRowsPromise) promoRowsPromise = (async () => {
+    const response = await fetch(catalogEndpoint('promos'), { cache: 'no-store' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return csvRecords(await response.text());
+  })().catch(error => { promoRowsPromise = null; throw error; });
+  return promoRowsPromise;
+};
 let state = null;
 try {
   const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
@@ -36,9 +45,7 @@ export function initPromo(changed) {
     if (!code) { alert('Введите промокод'); return; }
     loading = true; render();
     try {
-      const response = await fetch(catalogEndpoint('promos'), { cache: 'no-store' });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const row = findPromo(csvRecords(await response.text()), code);
+      const row = findPromo(await loadPromoRows(), code);
       if (!row) { alert('Промокод не подходит'); return; }
       const candidate = { code, ...promoDetails(row) };
       if (!hasPromoBenefit(candidate)) { alert('Промокод не даёт скидку или подарок'); return; }

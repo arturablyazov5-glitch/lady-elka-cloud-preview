@@ -37,8 +37,8 @@ location ~ ^/assets/[0-9a-f]{64}\\.(css|js|woff2|webp|avif|jpe?g|png|gif|svg|ico
     add_header Cache-Control "public, max-age=31536000, immutable";
     try_files $uri =404;
 }
-# Content-hashed pinned catalog photos never change.
-location ~ ^/media/catalog-pinned/[0-9a-f]{64}\\.(css|js|woff2|webp|avif|jpe?g|png|gif|svg|ico)$ {
+# Content-hashed catalog photos and previews never change.
+location ~ ^/media/catalog-(pinned|thumbs)/[0-9a-f]{64}\\.(css|js|woff2|webp|avif|jpe?g|png|gif|svg|ico)$ {
     add_header Cache-Control "public, max-age=31536000, immutable";
     try_files $uri =404;
 }
@@ -59,12 +59,14 @@ export async function buildHosting(target) {
   // Dedicated source copy; keep 404 independent of other pages and their CSS.
   let html = applyHeaderNav(await readFile(new URL('./404.html', import.meta.url), 'utf8'));
   await mkdir(join(target, 'assets'), { recursive: true });
-  for (const extension of ['css', 'js']) {
+  for (const extension of ['css']) {
     const bytes = await readFile(join(target, 'f', '404.' + extension));
     const url = '/assets/' + createHash('sha256').update(bytes).digest('hex') + '.' + extension;
     await writeFile(join(target, url), bytes);
     html = html.replaceAll('/f/404.' + extension, url);
   }
+  const script = await readFile(join(target, 'f', '404.js'), 'utf8');
+  html = html.replace('<script src="/f/404.js" defer></script>', () => `<script>${script.replaceAll('</script', '<\\/script')}</script>`);
   await writeFile(join(target, '404.html'), html);
   await writeFile(join(target, '.htaccess'), `# Generated from storefront/config/redirects.json; document root is built dist.
 Options -MultiViews

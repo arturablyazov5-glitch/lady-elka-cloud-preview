@@ -50,8 +50,8 @@ export async function buildSearch(blogRecords = []) {
     const product = route ? (route.kind === 'tree' ? trees : decor).get(route.id) : null;
     const productCard = product?.variants.length ? (route.kind === 'tree' ? cardHtml : decorCardHtml)('<div class="product-card search-product-card">', product, route) : null;
     index.push({ path, title, kind: product ? 'product' : blog || (path.startsWith('/blog/') && path !== '/blog/') ? 'article' : 'page',
-      description: blog ? `${blog.description}\n${blog.text}` : legacyBody ? `${description}\n${legacyBody}`.trim() : product ? `${description} ${product.variants.map(v => v.description || '').join(' ')}` : description,
-      ...(product ? { cardHtml: productCard, available: Boolean(productCard) } : {}) });
+      description: blog ? `${blog.description}\n${blog.text}` : legacyBody ? `${description}\n${legacyBody}`.trim() : product ? `${description} ${[...new Set(product.variants.map(v => v.description || ''))].join(' ')}` : description,
+      ...(product ? { cardHtml: productCard } : {}) });
   }
   await writeFile(join(dist, 'search-index.json'), JSON.stringify(index));
 
