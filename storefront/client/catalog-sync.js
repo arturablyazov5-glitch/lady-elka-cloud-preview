@@ -1,6 +1,6 @@
 import { loadTreeProducts, loadDecorProducts } from '../products/model.mjs';
 import { cardHtml, decorCardHtml } from '../products/card-renderer.mjs';
-import { jsonForHtml, presentProduct } from '../products/presentation.mjs';
+import { jsonForHtml, presentProduct, scopedTreeProduct } from '../products/presentation.mjs';
 import { initProducts } from './product-ui.js';
 
 let liveProducts;
@@ -62,14 +62,17 @@ async function syncFromSupabase() {
     existingIds.add(`${kind}:${String(previous.id)}`);
     const source = byKind[kind]?.get(productId(previous));
     if (!source?.variants.length) { card.remove(); continue; }
+    // Search cards can be scoped to one tree type («Миранда заснеженная»); keep that scope on refresh.
+    const scoped = card.dataset.searchScope && kind === 'tree' ? scopedTreeProduct(source, card.dataset.searchScope) : source;
+    if (!scoped) { card.remove(); continue; }
     const opening = rootOpening(card);
     if (!opening) { card.remove(); continue; }
     const path = card.querySelector('a.stroke-catalog__button[href]')?.getAttribute('href') || '/catalog/';
-    const route = { id: source.id, kind, path, liveTitle: source.title };
+    const route = { id: source.id, kind, path, liveTitle: scoped.title };
     const template = card.outerHTML;
     const html = kind === 'decor'
-      ? decorCardHtml(opening, source, route, template)
-      : cardHtml(opening, source, route, template);
+      ? decorCardHtml(opening, scoped, route, template)
+      : cardHtml(opening, scoped, route, template);
     const holder = document.createElement('template');
     holder.innerHTML = html.trim();
     const updated = holder.content.firstElementChild;

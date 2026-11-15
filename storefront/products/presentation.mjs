@@ -1,4 +1,5 @@
 import { initialSelection, resolveVariant } from './variants.mjs';
+import { typeSlug } from './type-query.mjs';
 
 // https URLs from the live feed, or local copies pinned by a candidate preview build (/media/catalog-pinned/<sha256>.<ext>).
 export const catalogPhotos = photos => [...new Set((photos || []).filter(value => /^(https:\/\/|\/media\/catalog-pinned\/[a-f0-9]{64}\.(webp|jpg|png)$)/i.test(String(value || '').trim())).map(value => String(value).trim()))]
@@ -30,6 +31,18 @@ export function pinPhotos(raw, lookup, strict = true) {
 
 // The cabinet (Supabase feed) title is authoritative; the captured live-site title is only a fallback.
 export const productTitle = (product, route) => String(product?.title || '').trim() || route?.liveTitle || '';
+
+// Search lists each tree type as its own card («Миранда заснеженная»): the scope is the public type slug.
+export function treeSearchScopes(product) {
+  return [...new Set((product?.variants || []).map(variant => variant.category))]
+    .map(category => typeSlug(category)).filter(slug => slug && slug !== 'thuja');
+}
+export function scopedTreeProduct(product, scope) {
+  const category = (product?.variants || []).map(variant => variant.category).find(name => typeSlug(name) === scope);
+  const variants = category ? product.variants.filter(variant => variant.category === category) : [];
+  if (!variants.length) return null;
+  return { ...product, title: `${String(product.title || '').trim()} ${category.toLocaleLowerCase('ru')}`, variants };
+}
 
 export function presentProduct(product, route) {
   const kind = route.kind;

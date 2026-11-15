@@ -2,6 +2,7 @@ import { pagePath } from './url-path.mjs';
 import { cardHtml, decorCardHtml } from './products/card-renderer.mjs';
 import { loadFeed } from './products/build-feed.mjs';
 import { treeProducts, decorProducts } from './products/model.mjs';
+import { scopedTreeProduct, treeSearchScopes } from './products/presentation.mjs';
 import { buildRoutes } from './products/routes.mjs';
 import { canonicalPath, noindexRoute } from './seo.mjs';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
@@ -48,10 +49,26 @@ export async function buildSearch(blogRecords = []) {
     const legacyBody = !blog && (path.startsWith('/blog/') && path !== '/blog/') ? plain(legacyArticleBody(html)) : '';
     const route = routes.find(route => pagePath(route.path) === path);
     const product = route ? (route.kind === 'tree' ? trees : decor).get(route.id) : null;
-    const productCard = product?.variants.length ? (route.kind === 'tree' ? cardHtml : decorCardHtml)('<div class="product-card search-product-card">', product, route) : null;
-    index.push({ path, title, kind: product ? 'product' : blog || (path.startsWith('/blog/') && path !== '/blog/') ? 'article' : 'page',
-      description: blog ? `${blog.description}\n${blog.text}` : legacyBody ? `${description}\n${legacyBody}`.trim() : product ? `${description} ${[...new Set(product.variants.map(v => v.description || ''))].join(' ')}` : description,
-      ...(product ? { cardHtml: productCard } : {}) });
+    const kind = product ? 'product' : blog || (path.startsWith('/blog/') && path !== '/blog/') ? 'article' : 'page';
+    const pageDescription = blog ? `${blog.description}\n${blog.text}` : legacyBody ? `${description}\n${legacyBody}`.trim() : description;
+    if (product?.variants.length) {
+      // One search card per tree type («Миранда заснеженная»); data-search-scope lets catalog-sync re-render it.
+      const scopes = route.kind === 'tree' ? treeSearchScopes(product) : [];
+      const entries = scopes.length
+        ? scopes.map(scope => ({ scope, product: scopedTreeProduct(product, scope) })).filter(entry => entry.product)
+        : [{ scope: null, product }];
+      for (const { scope, product: entryProduct } of entries) {
+        const card = (route.kind === 'tree' ? cardHtml : decorCardHtml)(
+          `<div class="product-card search-product-card"${scope ? ` data-search-scope="${scope}"` : ''}>`, entryProduct, route);
+        index.push({ path, title: scope ? entryProduct.title : title, kind,
+          description: `${pageDescription} ${entryProduct.variants.map(variant => variant.description || '').join(' ')}`,
+          cardHtml: card, available: true });
+      }
+    } else {
+      index.push({ path, title, kind,
+        description: product ? `${pageDescription} ${product.variants.map(variant => variant.description || '').join(' ')}` : pageDescription,
+        ...(product ? { cardHtml: null, available: false } : {}) });
+    }
   }
   await writeFile(join(dist, 'search-index.json'), JSON.stringify(index));
 
