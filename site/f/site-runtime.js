@@ -480,6 +480,13 @@
   // Existing controlled documents rely on the browser's normal update checks;
   // repeated register() calls would add a paid sw.js request on every page.
   if (navigator.serviceWorker.controller) return;
+  try {
+    const key = 'le-sw-first-page';
+    if (!sessionStorage.getItem(key)) {
+      sessionStorage.setItem(key, '1');
+      return;
+    }
+  } catch { return; }
   const register = () => navigator.serviceWorker.register('/sw.js', { scope: '/', updateViaCache: 'none' }).then(async () => {
     await navigator.serviceWorker.ready;
     const seed = () => {

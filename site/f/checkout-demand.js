@@ -1012,16 +1012,13 @@ function initCheckout(form, getPromo, cartStore = { getItems, clear, reprice }) 
 
 // storefront/client/form-presentation.js
 function describeLeadControl(control) {
-  var _a;
+  var _a, _b;
   const autocomplete = { name: "name", phone: "tel", email: "email", city: "address-level2" }[control.dataset.leadField];
   if (autocomplete && !control.hasAttribute("autocomplete")) control.setAttribute("autocomplete", autocomplete);
   if (control.dataset.leadField === "phone" && control.closest('form[data-lead-type="question"]')) control.setAttribute("aria-label", "Телефон");
-  if (control.type !== "checkbox" && !((_a = control.labels) == null ? void 0 : _a.length) && !control.hasAttribute("aria-label") && control.id && control.placeholder) {
-    const label = document.createElement("label");
-    label.className = "storefront-visually-hidden";
-    label.htmlFor = control.id;
-    label.textContent = control.placeholder.replace(/\*+\s*$/, "").trim();
-    control.before(label);
+  if (control.type !== "checkbox" && !((_a = control.labels) == null ? void 0 : _a.length) && !control.hasAttribute("aria-label") && !control.hasAttribute("aria-labelledby")) {
+    const name = (_b = control.placeholder) == null ? void 0 : _b.replace(/\*+\s*$/, "").trim();
+    if (name) control.setAttribute("aria-label", name);
   }
   if (control.type !== "checkbox") control.maxLength = { name: 120, phone: 40, email: 200, comment: 1500, city: 100, business: 200 }[control.dataset.leadField] || 200;
 }

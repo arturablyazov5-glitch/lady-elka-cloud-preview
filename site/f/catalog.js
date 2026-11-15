@@ -551,16 +551,13 @@
 
   // storefront/client/form-presentation.js
   function describeLeadControl(control) {
-    var _a;
+    var _a, _b;
     const autocomplete = { name: "name", phone: "tel", email: "email", city: "address-level2" }[control.dataset.leadField];
     if (autocomplete && !control.hasAttribute("autocomplete")) control.setAttribute("autocomplete", autocomplete);
     if (control.dataset.leadField === "phone" && control.closest('form[data-lead-type="question"]')) control.setAttribute("aria-label", "Телефон");
-    if (control.type !== "checkbox" && !((_a = control.labels) == null ? void 0 : _a.length) && !control.hasAttribute("aria-label") && control.id && control.placeholder) {
-      const label2 = document.createElement("label");
-      label2.className = "storefront-visually-hidden";
-      label2.htmlFor = control.id;
-      label2.textContent = control.placeholder.replace(/\*+\s*$/, "").trim();
-      control.before(label2);
+    if (control.type !== "checkbox" && !((_a = control.labels) == null ? void 0 : _a.length) && !control.hasAttribute("aria-label") && !control.hasAttribute("aria-labelledby")) {
+      const name = (_b = control.placeholder) == null ? void 0 : _b.replace(/\*+\s*$/, "").trim();
+      if (name) control.setAttribute("aria-label", name);
     }
     if (control.type !== "checkbox") control.maxLength = { name: 120, phone: 40, email: 200, comment: 1500, city: 100, business: 200 }[control.dataset.leadField] || 200;
   }
@@ -1042,10 +1039,12 @@
     function render() {
       const items2 = getItems(), promo = getPromo2();
       list.innerHTML = items2.length ? items2.map((item, index) => {
+        var _a2, _b;
         const height = item.options.height ? `${item.options.height} см.` : item.options.size || "";
+        const photo = ((_b = (_a2 = previewImage(item.image)) == null ? void 0 : _a2[240]) == null ? void 0 : _b.url) || item.image;
         const category = item.options.category || "";
         return `<div class="div div--u-im3bc3u4g item-wrapper__shop" data-cart-index="${index}">
-      <div class="div div--u-i09ij701w name-photo__shop"><div class="image shop__img"><img class="image__img" src="${esc(item.image)}" alt=""></div>
+      <div class="div div--u-i09ij701w name-photo__shop"><div class="image shop__img"><img class="image__img" data-le-src="${esc(photo)}" alt=""></div>
       <div class="div div--u-ir8em2vtp title-shop-wrapper"><div class="div div--u-iqlo6zgmt title-wrapper__catalog"><div class="text color__h2 site__h3"><span class="text-block-wrap-div">${esc(item.title)}</span></div>
       <div class="div div--u-ipj03oyjv tex-tovar-wrapper"><div class="text color__h3 size__shop site-catalog__h3"><span class="text-block-wrap-div">${esc(height)}</span></div><div class="text site__h4 color__h3"><span class="text-block-wrap-div">${esc(category)}</span></div></div></div>
       <div class="text text--u-i35a4h7lp site__h2 color__h1"><span class="text-block-wrap-div">${money2(lineTotal(item))}</span></div></div></div>
@@ -1082,6 +1081,18 @@
 
   // storefront/client/promo.js
   var KEY2 = "lady_promo_state";
+  var promoRowsPromise = null;
+  var loadPromoRows = () => {
+    if (!promoRowsPromise) promoRowsPromise = (async () => {
+      const response = await fetch(catalogEndpoint("promos"), { cache: "no-store" });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return csvRecords(await response.text());
+    })().catch((error) => {
+      promoRowsPromise = null;
+      throw error;
+    });
+    return promoRowsPromise;
+  };
   var state = null;
   try {
     const saved = JSON.parse(localStorage.getItem(KEY2) || "null");
@@ -1138,9 +1149,7 @@
       loading = true;
       render();
       try {
-        const response = await fetch(catalogEndpoint("promos"), { cache: "no-store" });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const row = findPromo(csvRecords(await response.text()), code);
+        const row = findPromo(await loadPromoRows(), code);
         if (!row) {
           alert("Промокод не подходит");
           return;
