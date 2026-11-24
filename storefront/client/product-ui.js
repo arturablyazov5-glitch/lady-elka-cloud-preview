@@ -5,6 +5,7 @@ import { setProductImage } from './product-image.js';
 import { closeDropdownIfDetached, enhanceSelect } from './custom-select.js';
 import { availableOptions, initialSelection, resolveVariant, variantDimensions } from '../products/variants.mjs';
 import { categoryFromType, typeSlug } from '../products/type-query.mjs';
+import { visibleDescription } from '../products/presentation.mjs';
 import { add } from './cart-store.js';
 const viewedProducts = new Set();
 const money = value => `${Number(value || 0).toLocaleString('ru-RU')} ₽`;
@@ -48,6 +49,16 @@ function bind(root, initialProduct) {
   const customSelects = new Map(Object.entries(selects).filter(([, select]) => select).map(([key, select]) => [key, enhanceSelect(select)]));
   let selectedVariant = resolveVariant(product, selection);
   const buy = root.querySelector('.buy-btn');
+  const details = product.kind === 'tree' && root.querySelector('a.stroke-catalog__button[href]');
+  function syncDetailsLink() {
+    if (!details) return;
+    const url = new URL(details.href);
+    const slug = typeSlug(selectedVariant?.options.category);
+    if (slug && slug !== 'green' && slug !== 'thuja') url.searchParams.set('type', slug);
+    else url.searchParams.delete('type');
+    details.setAttribute('href', url.pathname + url.search + url.hash);
+  }
+  syncDetailsLink();
   const analyticsProduct = () => ecommerceProduct({ ...product, productId: product.id, variantId: selectedVariant?.id, price: selectedVariant?.price });
   if (selectedVariant) {
     const page = !root.querySelector('[data-storefront-variants]');
@@ -89,6 +100,7 @@ function bind(root, initialProduct) {
       customSelects.get(key)?.sync();
     }
     selectedVariant = resolveVariant(product, selection);
+    syncDetailsLink();
     if (!selectedVariant) { buy?.setAttribute('aria-disabled', 'true'); return; }
     buy?.removeAttribute('aria-disabled');
     const v = selectedVariant;
@@ -100,7 +112,10 @@ function bind(root, initialProduct) {
     setText(root, '[data-prop-diam]', v.diameter ? `${v.diameter} см.` : '');
     const hasBranches = Number(v.branches) > 0;
     setText(root, '[data-prop-branches]', hasBranches ? `${v.branches} шт.` : '');
-    setText(root, '[data-prop-description]', v.description || product.staticDescription || '');
+    const description = visibleDescription(v.description || product.staticDescription);
+    setText(root, '[data-prop-description]', description);
+    const descriptionNode = root.querySelector('[data-prop-description]');
+    if (descriptionNode) descriptionNode.hidden = !description;
     setText(root, '[data-storefront-description]', v.description || '');
     for (const [selector, visible] of [['[data-storefront-diameter-row]', v.diameter], ['[data-storefront-branches-row]', hasBranches]]) {
       const node = root.querySelector(selector); if (node) { node.hidden = !visible; node.style.display = visible ? '' : 'none'; }

@@ -1,6 +1,11 @@
 import { initialSelection, resolveVariant } from './variants.mjs';
 import { typeSlug } from './type-query.mjs';
 
+export function visibleDescription(value) {
+  const description = String(value ?? '').trim();
+  return /^(?:текст|-)$/iu.test(description) ? '' : description;
+}
+
 // https URLs from the live feed, or local copies pinned by a candidate preview build (/media/catalog-pinned/<sha256>.<ext>).
 export const catalogPhotos = photos => [...new Set((photos || []).filter(value => /^(https:\/\/|\/media\/catalog-pinned\/[a-f0-9]{64}\.(webp|jpg|png)$)/i.test(String(value || '').trim())).map(value => String(value).trim()))]
   .filter(url => !/placeholder/i.test(url));

@@ -1,6 +1,6 @@
 import { imagePreviewAttributes } from './image-preview.mjs';
 import { availableOptions, initialSelection, variantDimensions } from './variants.mjs';
-import { escapeHtml as escape, jsonForHtml, money } from './presentation.mjs';
+import { escapeHtml as escape, jsonForHtml, money, visibleDescription } from './presentation.mjs';
 import { localImageSize } from './image-size.mjs';
 import { join } from 'node:path';
 
@@ -47,7 +47,10 @@ function controls(product) {
       : (product.kind === 'decor' ? 'Вариант декора' : 'Высота ёлки');
     const valueLabel = value => optionLabel(product.kind, key, value, product.variants.find(v => v.options[key] === value));
     const labelHook = key === 'category' ? 'data-storefront-category-label' : 'data-storefront-variant-label';
-    return `<div class="div ${classes} input__catalog" data-storefront-select><div ${labelHook} class="text color__h2 site-catalog__h3"><span class="text-block-wrap-div">${escape(valueLabel(selected[key]))}</span></div><div class="image down__img" aria-hidden="true"><img src="/thumb/2/uTw63IdxEnqR7fwGJjNqzA/640r480/d/chevron_down_2.svg" alt="" class="image__img"></div><button type="button" class="storefront-select-trigger" aria-label="${label}" aria-haspopup="listbox" aria-expanded="false"></button><select data-storefront-option="${key}" aria-label="${label}" aria-hidden="true" tabindex="-1">
+    const hint = product.kind === 'tree' && index === 0
+      ? `<span class="storefront-select-hint" aria-hidden="true">Нажми, чтобы выбрать<svg class="storefront-select-hint-arrow" viewBox="0 0 76 56" fill="none" focusable="false"><path d="M62 4C87 14 78 44 45 49" stroke-dasharray="4 4"/><path d="m49.5 43.75-4.5 5.25 6 3.75"/></svg></span>`
+      : '';
+    return `<div class="div ${classes} input__catalog" data-storefront-select><div ${labelHook} class="text color__h2 site-catalog__h3"><span class="text-block-wrap-div">${escape(valueLabel(selected[key]))}</span></div><div class="image down__img" aria-hidden="true"><img src="/thumb/2/uTw63IdxEnqR7fwGJjNqzA/640r480/d/chevron_down_2.svg" alt="" class="image__img"></div><button type="button" class="storefront-select-trigger" aria-label="${label}" aria-haspopup="listbox" aria-expanded="false">${hint}</button><select data-storefront-option="${key}" aria-label="${label}" aria-hidden="true" tabindex="-1">
       ${values.map(value => `<option value="${escape(value)}"${selected[key] === value ? ' selected' : ''}>${escape(valueLabel(value))}</option>`).join('')}
     </select><div class="storefront-select-menu" role="listbox" hidden></div></div>`;
   }).join('');
@@ -101,8 +104,9 @@ export function renderProductPage(template, product, route, description) {
   const [start, end] = divRange(template, 'product-wrapper__cms');
   let html = template.slice(start, end);
   const title = escape(product.title);
+  const descriptionText = visibleDescription(description);
   const heading = `<div class="div title-description__gap"><h1 class="text site__h1 color__h1" style="margin:0;font-weight:400"><span class="text-block-wrap-div">${title}</span></h1>
-    <div data-prop-description class="text color__h2 site__h3"><span class="text-block-wrap-div">${escape(description)}</span></div></div>`;
+    <div data-prop-description class="text color__h2 site__h3"${descriptionText ? '' : ' hidden'}><span class="text-block-wrap-div">${escape(descriptionText)}</span></div></div>`;
   html = replaceDiv(html, 'product__img-wrapper__cms', `<div class="div product__img-wrapper__cms" data-storefront-gallery-root><div class="image product__img__cms" data-storefront-image>${image ? `<img class="image__img" src="${escape(image)}" alt="${title}"${intrinsicSize(image)} loading="eager" fetchpriority="high" decoding="async">` : ''}<span data-storefront-photo-placeholder${image ? ' hidden' : ''}>Нет фото</span></div></div>`);
   html = replaceDiv(html, 'title-description__gap', heading);
   if (product.kind === 'tree') {

@@ -30,6 +30,7 @@ function positionDropdown(control) {
 
 function openDropdown(control, focusSelected = false) {
   if (activeDropdown && activeDropdown !== control) closeDropdown(activeDropdown);
+  control.trigger.querySelector('.storefront-select-hint')?.classList.add('storefront-select-hint--dismissed');
   control.menu.hidden = false;
   // Keep dialog options inside its focus trap and inert boundary.
   (control.wrapper.closest('[role="dialog"]') || document.body).append(control.menu);
