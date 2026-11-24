@@ -48,7 +48,7 @@ function controls(product) {
     const valueLabel = value => optionLabel(product.kind, key, value, product.variants.find(v => v.options[key] === value));
     const labelHook = key === 'category' ? 'data-storefront-category-label' : 'data-storefront-variant-label';
     const hint = product.kind === 'tree' && index === 0
-      ? `<span class="storefront-select-hint" aria-hidden="true">Нажми, чтобы выбрать<svg class="storefront-select-hint-arrow" viewBox="0 0 76 56" fill="none" focusable="false"><path d="M62 4C87 14 78 44 48 48.5" stroke-dasharray="4 4"/><path d="m45 49 7-4-1.5 3.2 2.3 2.6Z" fill="#181818" style="stroke:none"/></svg></span>`
+      ? `<span class="storefront-select-hint" aria-hidden="true">Нажмите, чтобы выбрать<svg class="storefront-select-hint-arrow" viewBox="0 0 76 56" fill="none" focusable="false"><path d="M62 4C87 14 78 44 48 48.5" stroke-dasharray="4 4"/><path d="m45 49 7-4-1.5 3.2 2.3 2.6Z" fill="#181818" style="stroke:none"/></svg></span>`
       : '';
     return `<div class="div ${classes} input__catalog" data-storefront-select><div ${labelHook} class="text color__h2 site-catalog__h3"><span class="text-block-wrap-div">${escape(valueLabel(selected[key]))}</span></div><div class="image down__img" aria-hidden="true"><img src="/thumb/2/uTw63IdxEnqR7fwGJjNqzA/640r480/d/chevron_down_2.svg" alt="" class="image__img"></div><button type="button" class="storefront-select-trigger" aria-label="${label}" aria-haspopup="listbox" aria-expanded="false">${hint}</button><select data-storefront-option="${key}" aria-label="${label}" aria-hidden="true" tabindex="-1">
       ${values.map(value => `<option value="${escape(value)}"${selected[key] === value ? ' selected' : ''}>${escape(valueLabel(value))}</option>`).join('')}
