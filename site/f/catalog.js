@@ -664,7 +664,9 @@
     });
   }
   function openDropdown(control, focusSelected = false) {
+    var _a;
     if (activeDropdown && activeDropdown !== control) closeDropdown(activeDropdown);
+    (_a = control.trigger.querySelector(".storefront-select-hint")) == null ? void 0 : _a.classList.add("storefront-select-hint--dismissed");
     control.menu.hidden = false;
     (control.wrapper.closest('[role="dialog"]') || document.body).append(control.menu);
     activeDropdown = control;
@@ -832,9 +834,49 @@
     return matches.length === 1 ? matches[0] : null;
   }
 
+  // storefront/products/presentation.mjs
+  function visibleDescription(value) {
+    const description = String(value != null ? value : "").trim();
+    return /^(?:текст|-)$/iu.test(description) ? "" : description;
+  }
+  var catalogPhotos = (photos) => [...new Set((photos || []).filter((value) => /^(https:\/\/|\/media\/catalog-pinned\/[a-f0-9]{64}\.(webp|jpg|png)$)/i.test(String(value || "").trim())).map((value) => String(value).trim()))].filter((url) => !/placeholder/i.test(url));
+  function pinPhotos(raw, lookup, strict = true) {
+    return catalogPhotos(String(raw != null ? raw : "").split("|")).map((url) => {
+      const pinned = lookup(url);
+      if (!pinned && strict) throw new Error(`Missing preview media mapping: ${url}`);
+      return pinned || url;
+    }).join("|");
+  }
+  var productTitle = (product, route) => String((product == null ? void 0 : product.title) || "").trim() || (route == null ? void 0 : route.liveTitle) || "";
+  function scopedTreeProduct(product, scope) {
+    const category = ((product == null ? void 0 : product.variants) || []).map((variant) => variant.category).find((name) => typeSlug(name) === scope);
+    const variants = category ? product.variants.filter((variant) => variant.category === category) : [];
+    if (!variants.length) return null;
+    return { ...product, title: `${String(product.title || "").trim()} ${category.toLocaleLowerCase("ru")}`, variants };
+  }
+  function presentProduct(product, route) {
+    const kind = route.kind;
+    const variants = product.variants.map((variant) => {
+      const photos = catalogPhotos(variant.photos);
+      const image = photos[0] || "";
+      return {
+        ...variant,
+        options: kind === "tree" ? { category: variant.category, height: String(variant.height) } : { category: variant.category, size: variant.size },
+        image,
+        photos
+      };
+    });
+    const view = { id: product.id, kind, title: productTitle(product, route), path: route.path, variants };
+    view.selectedVariant = resolveVariant(view, initialSelection(view));
+    return view;
+  }
+  var escapeHtml = (value) => String(value != null ? value : "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+  var money = (value) => `${Number(value || 0).toLocaleString("ru-RU")} ₽`;
+  var jsonForHtml = (value) => JSON.stringify(value).replaceAll("<", "\\u003c");
+
   // storefront/client/product-ui.js
   var viewedProducts = /* @__PURE__ */ new Set();
-  var money = (value) => `${Number(value || 0).toLocaleString("ru-RU")} ₽`;
+  var money2 = (value) => `${Number(value || 0).toLocaleString("ru-RU")} ₽`;
   var setText = (root, selector, value) => {
     const node = root.querySelector(selector);
     if (node) (node.querySelector(".text-block-wrap-div") || node).textContent = value;
@@ -881,6 +923,16 @@
     const customSelects = new Map(Object.entries(selects).filter(([, select]) => select).map(([key, select]) => [key, enhanceSelect(select)]));
     let selectedVariant = resolveVariant(product, selection);
     const buy = root.querySelector(".buy-btn");
+    const details = product.kind === "tree" && root.querySelector("a.stroke-catalog__button[href]");
+    function syncDetailsLink() {
+      if (!details) return;
+      const url = new URL(details.href);
+      const slug = typeSlug(selectedVariant == null ? void 0 : selectedVariant.options.category);
+      if (slug && slug !== "green" && slug !== "thuja") url.searchParams.set("type", slug);
+      else url.searchParams.delete("type");
+      details.setAttribute("href", url.pathname + url.search + url.hash);
+    }
+    syncDetailsLink();
     const analyticsProduct = () => ecommerceProduct({ ...product, productId: product.id, variantId: selectedVariant == null ? void 0 : selectedVariant.id, price: selectedVariant == null ? void 0 : selectedVariant.price });
     if (selectedVariant) {
       const page = !root.querySelector("[data-storefront-variants]");
@@ -924,6 +976,7 @@
         (_b = customSelects.get(key)) == null ? void 0 : _b.sync();
       }
       selectedVariant = resolveVariant(product, selection);
+      syncDetailsLink();
       if (!selectedVariant) {
         buy == null ? void 0 : buy.setAttribute("aria-disabled", "true");
         return;
@@ -931,14 +984,17 @@
       buy == null ? void 0 : buy.removeAttribute("aria-disabled");
       const v = selectedVariant;
       setProductImage(root, v.image, product.title);
-      setText(root, product.kind === "decor" ? "[data-price-decor]" : ".price", money(v.price));
-      setText(root, "[data-prop-offer]", v.oldPrice > v.price ? money(v.oldPrice) : "");
+      setText(root, product.kind === "decor" ? "[data-price-decor]" : ".price", money2(v.price));
+      setText(root, "[data-prop-offer]", v.oldPrice > v.price ? money2(v.oldPrice) : "");
       const discount = v.discount || (v.oldPrice > v.price ? Math.round((1 - v.price / v.oldPrice) * 100) : 0);
       setText(root, "[data-prop-discount]", discount ? `-${Math.abs(discount)}%` : "");
       setText(root, "[data-prop-diam]", v.diameter ? `${v.diameter} см.` : "");
       const hasBranches = Number(v.branches) > 0;
       setText(root, "[data-prop-branches]", hasBranches ? `${v.branches} шт.` : "");
-      setText(root, "[data-prop-description]", v.description || product.staticDescription || "");
+      const description = visibleDescription(v.description || product.staticDescription);
+      setText(root, "[data-prop-description]", description);
+      const descriptionNode = root.querySelector("[data-prop-description]");
+      if (descriptionNode) descriptionNode.hidden = !description;
       setText(root, "[data-storefront-description]", v.description || "");
       for (const [selector, visible] of [["[data-storefront-diameter-row]", v.diameter], ["[data-storefront-branches-row]", hasBranches]]) {
         const node = root.querySelector(selector);
@@ -1018,7 +1074,7 @@
   }
 
   // storefront/client/cart-ui.js
-  var money2 = (n) => `${Number(n || 0).toLocaleString("ru-RU")} ₽`;
+  var money3 = (n) => `${Number(n || 0).toLocaleString("ru-RU")} ₽`;
   var esc = (s) => String(s != null ? s : "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
   var mounted = /* @__PURE__ */ new WeakMap();
   function initCart(getPromo2) {
@@ -1047,13 +1103,13 @@
       <div class="div div--u-i09ij701w name-photo__shop"><div class="image shop__img"><img class="image__img" data-le-src="${esc(photo)}" alt=""></div>
       <div class="div div--u-ir8em2vtp title-shop-wrapper"><div class="div div--u-iqlo6zgmt title-wrapper__catalog"><div class="text color__h2 site__h3"><span class="text-block-wrap-div">${esc(item.title)}</span></div>
       <div class="div div--u-ipj03oyjv tex-tovar-wrapper"><div class="text color__h3 size__shop site-catalog__h3"><span class="text-block-wrap-div">${esc(height)}</span></div><div class="text site__h4 color__h3"><span class="text-block-wrap-div">${esc(category)}</span></div></div></div>
-      <div class="text text--u-i35a4h7lp site__h2 color__h1"><span class="text-block-wrap-div">${money2(lineTotal(item))}</span></div></div></div>
+      <div class="text text--u-i35a4h7lp site__h2 color__h1"><span class="text-block-wrap-div">${money3(lineTotal(item))}</span></div></div></div>
       <div class="div count-summ-wrapper"><button type="button" class="icons-shop" data-cart-down aria-label="Уменьшить количество">−</button>
       <span class="text site__h4 color__h3">${item.quantity} шт.</span><button type="button" class="icons-shop" data-cart-up aria-label="Увеличить количество">+</button>
       <div class="div div--u-igo9ynupl" aria-hidden="true"></div><button type="button" class="icons-shop" data-cart-remove aria-label="Удалить товар">×</button></div></div>`;
       }).join("") + ((promo == null ? void 0 : promo.gift) && items2.some((item) => item.kind !== "decor") ? `<div class="div item-wrapper__shop" data-cart-gift>Подарок: ${esc(promo.giftText || "Сумка для хранения")}</div>` : "") : '<p class="site__h3" data-cart-empty>Корзина пуста</p>';
       const amount = checkoutTotal(items2, promo);
-      if (totalNode) totalNode.textContent = `Итого: ${money2(amount)}`;
+      if (totalNode) totalNode.textContent = `Итого: ${money3(amount)}`;
       const single = items2.length === 1 && items2[0].quantity === 1 && amount === cartSubtotal(items2);
       if (totalRow) totalRow.hidden = single;
       if (dividerAfter) dividerAfter.hidden = single;
@@ -1221,7 +1277,7 @@
 
   // storefront/client/filter.js
   var normalize = (value) => String(value || "").trim().toLowerCase().replaceAll("ё", "е");
-  var money3 = (value) => `${Number(value).toLocaleString("ru-RU")} ₽`;
+  var money4 = (value) => `${Number(value).toLocaleString("ru-RU")} ₽`;
   var number = (value) => Number(String(value || "").replace(/[^\d]/g, "")) || 0;
   function enhanceFilterSelect(select, label2) {
     if (!select) return null;
@@ -1333,8 +1389,8 @@
       }
       const categoryPrices = cards.flatMap(({ product }) => matchingVariants(product, { category: selectedCategory }).map((v) => Number(v.price)));
       const priceHints = relevantPrices.length ? relevantPrices : categoryPrices.length ? categoryPrices : allPrices;
-      if (min) min.placeholder = priceHints.length ? money3(Math.min(...priceHints)) : "Без минимума";
-      if (max) max.placeholder = priceHints.length ? money3(Math.max(...priceHints)) : "Без максимума";
+      if (min) min.placeholder = priceHints.length ? money4(Math.min(...priceHints)) : "Без минимума";
+      if (max) max.placeholder = priceHints.length ? money4(Math.max(...priceHints)) : "Без максимума";
       for (const { items: items2, empty } of groups.values()) {
         empty.hidden = items2.some(({ card }) => card.style.display !== "none");
       }
@@ -1357,42 +1413,6 @@
     reset == null ? void 0 : reset.addEventListener("click", resetFilters);
     apply();
   }
-
-  // storefront/products/presentation.mjs
-  var catalogPhotos = (photos) => [...new Set((photos || []).filter((value) => /^(https:\/\/|\/media\/catalog-pinned\/[a-f0-9]{64}\.(webp|jpg|png)$)/i.test(String(value || "").trim())).map((value) => String(value).trim()))].filter((url) => !/placeholder/i.test(url));
-  function pinPhotos(raw, lookup, strict = true) {
-    return catalogPhotos(String(raw != null ? raw : "").split("|")).map((url) => {
-      const pinned = lookup(url);
-      if (!pinned && strict) throw new Error(`Missing preview media mapping: ${url}`);
-      return pinned || url;
-    }).join("|");
-  }
-  var productTitle = (product, route) => String((product == null ? void 0 : product.title) || "").trim() || (route == null ? void 0 : route.liveTitle) || "";
-  function scopedTreeProduct(product, scope) {
-    const category = ((product == null ? void 0 : product.variants) || []).map((variant) => variant.category).find((name) => typeSlug(name) === scope);
-    const variants = category ? product.variants.filter((variant) => variant.category === category) : [];
-    if (!variants.length) return null;
-    return { ...product, title: `${String(product.title || "").trim()} ${category.toLocaleLowerCase("ru")}`, variants };
-  }
-  function presentProduct(product, route) {
-    const kind = route.kind;
-    const variants = product.variants.map((variant) => {
-      const photos = catalogPhotos(variant.photos);
-      const image = photos[0] || "";
-      return {
-        ...variant,
-        options: kind === "tree" ? { category: variant.category, height: String(variant.height) } : { category: variant.category, size: variant.size },
-        image,
-        photos
-      };
-    });
-    const view = { id: product.id, kind, title: productTitle(product, route), path: route.path, variants };
-    view.selectedVariant = resolveVariant(view, initialSelection(view));
-    return view;
-  }
-  var escapeHtml = (value) => String(value != null ? value : "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
-  var money4 = (value) => `${Number(value || 0).toLocaleString("ru-RU")} ₽`;
-  var jsonForHtml = (value) => JSON.stringify(value).replaceAll("<", "\\u003c");
 
   // storefront/products/model.mjs
   var treeProducts2 = (rows) => treeProducts(rows);
@@ -1542,9 +1562,9 @@
       ${heightField}
     </div>
     <div class="div price-button-wrapper__product"><div class="div price-wrapper__product"><div class="div offer-wrapper__product">
-      <div class="text color__h2 price site-catalog__h1"><span class="text-block-wrap-div">${money4(initial.price)}</span></div>
+      <div class="text color__h2 price site-catalog__h1"><span class="text-block-wrap-div">${money(initial.price)}</span></div>
       <div data-prop-discount class="text offer__product site-catalog__h3"><span class="text-block-wrap-div">${discount ? `-${Math.abs(discount)}%` : ""}</span></div>
-    </div><div data-prop-offer class="text site__h4 color__h3" style="text-decoration:line-through"><span class="text-block-wrap-div">${initial.oldPrice > initial.price ? money4(initial.oldPrice) : ""}</span></div></div>
+    </div><div data-prop-offer class="text site__h4 color__h3" style="text-decoration:line-through"><span class="text-block-wrap-div">${initial.oldPrice > initial.price ? money(initial.oldPrice) : ""}</span></div></div>
     <div class="div button-wrapper__product"><div tabindex="0" data-cart-open role="button" class="button standart-catalog__button-2 buy-btn"><span class="text-button"><span class="text-block-wrap-div">купить</span></span></div>
       <a href="${escapeHtml(pagePath(route.path))}" class="button stroke-catalog__button"><span class="text-button"><span class="text-block-wrap-div">подробнее</span></span></a></div></div>
   </div><script type="application/json" data-storefront-variants>${serialized}<\/script></div>`;
@@ -1564,7 +1584,7 @@
       </div>
     ${types.length > 1 ? fieldHtml({ classes: "div input__catalog", labelClass: templateClass(template, byData("data-prop-category"), "text site-catalog__h3 color__h2"), data: "category", ariaLabel: "Тип декора", value: first.category, options: types.map((type) => ({ value: type, label: type })) }) : ""}
       ${product.variants.length > 1 || first.size ? fieldHtml({ classes: "div input__catalog", labelClass: templateClass(template, byData("data-prop-height"), "text site-catalog__h3 color__h2"), data: "variant", ariaLabel: "Вариант декора", value: first.label || first.category, options: product.variants.filter((v) => v.category === first.category).map((v) => ({ value: v.size, label: v.label || v.category })) }) : ""}
-      </div><div class="div price-button-wrapper__product"><div data-price-decor class="text color__h2 site-catalog__h1"><span class="text-block-wrap-div">${money4(first.price)}</span></div>
+      </div><div class="div price-button-wrapper__product"><div data-price-decor class="text color__h2 site-catalog__h1"><span class="text-block-wrap-div">${money(first.price)}</span></div>
       <div class="div button-wrapper__product"><div tabindex="0" data-cart-open role="button" class="button standart-catalog__button-2 buy-btn"><span class="text-button"><span class="text-block-wrap-div">в корзину</span></span></div>
       <a href="${escapeHtml(pagePath(route.path))}" class="button stroke-catalog__button"><span class="text-button"><span class="text-block-wrap-div">подробнее</span></span></a></div></div>
     </div><script type="application/json" data-storefront-variants>${serialized}<\/script></div>`;
