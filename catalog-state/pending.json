@@ -1,0 +1,12 @@
+{
+  "pointer": {
+    "schemaVersion": 1,
+    "id": "auto-c27af76c723c0ed6544be1cfb2796bdb",
+    "manifest": "storefront/catalog-snapshots/auto-c27af76c723c0ed6544be1cfb2796bdb/manifest.json",
+    "media": "storefront/catalog-snapshots/auto-c27af76c723c0ed6544be1cfb2796bdb/media-manifest.json",
+    "feedsSha256": "8bbc59d11c6511dde835baea1f3df3c3dfc83f979f9bd8ee0c0c1dae8db6f416",
+    "activatedAt": "2026-11-24T13:27:53.104Z",
+    "previousId": "auto-c2f1e3b4d123bc9b2cee0b4b284892e6"
+  },
+  "blog": false
+}
