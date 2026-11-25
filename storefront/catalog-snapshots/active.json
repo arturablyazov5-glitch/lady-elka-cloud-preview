@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "auto-c27af76c723c0ed6544be1cfb2796bdb",
-  "manifest": "storefront/catalog-snapshots/auto-c27af76c723c0ed6544be1cfb2796bdb/manifest.json",
-  "media": "storefront/catalog-snapshots/auto-c27af76c723c0ed6544be1cfb2796bdb/media-manifest.json",
-  "feedsSha256": "8bbc59d11c6511dde835baea1f3df3c3dfc83f979f9bd8ee0c0c1dae8db6f416",
-  "activatedAt": "2026-11-24T13:27:53.104Z",
-  "previousId": "auto-c2f1e3b4d123bc9b2cee0b4b284892e6"
+  "id": "auto-9e24d97e141c4a24af9086d48b259d70",
+  "manifest": "storefront/catalog-snapshots/auto-9e24d97e141c4a24af9086d48b259d70/manifest.json",
+  "media": "storefront/catalog-snapshots/auto-9e24d97e141c4a24af9086d48b259d70/media-manifest.json",
+  "feedsSha256": "4d1ebea7ba0881ded71f2394468bf9bcd95f69c94e941ba3f5b2a194ffef88bc",
+  "activatedAt": "2026-11-25T13:06:44.253Z",
+  "previousId": "auto-c27af76c723c0ed6544be1cfb2796bdb"
 }
