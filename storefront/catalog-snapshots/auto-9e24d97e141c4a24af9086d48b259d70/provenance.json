@@ -1,0 +1,43 @@
+{
+  "acceptance": {
+    "kind": "standing-owner-policy+automated-guards",
+    "policy": {
+      "date": "2026-10-08",
+      "source": "Explicit owner decision relayed in task 9 (catalog autosync), 2026-10-08",
+      "quote": "на сайте ВСЕГДА должны быть актуальные цены, тексты, размеры, ветки (варианты), фото и любые другие данные каталога — снапшот не должен устаревать и не должен требовать ручного «owner confirmation» на каждое обновление",
+      "scope": [
+        "prices",
+        "active",
+        "descriptions",
+        "media",
+        "promos"
+      ],
+      "authoritativeSource": "Current public Supabase catalog exports"
+    },
+    "guards": {
+      "passed": true,
+      "reportSha256": "e48de0fc4b8a7d6ed43904184fc3bcf07376442a5f82abecb51d464a413b5be6",
+      "checkedAt": "2026-11-25T13:06:44.242Z"
+    }
+  },
+  "feeds": {
+    "trees": {
+      "source": "https://mgnotvaahftrbifqtahf.supabase.co/functions/v1/catalog/feeds/trees.csv",
+      "receivedAt": "2026-11-25T13:06:21.535Z",
+      "sha256": "895807661f1070543241920400c2ec311f71c9735cf09cb7b6d853272cb4e8ca",
+      "bytes": 313894
+    },
+    "decor": {
+      "source": "https://mgnotvaahftrbifqtahf.supabase.co/functions/v1/catalog/feeds/decor.csv",
+      "receivedAt": "2026-11-25T13:06:21.553Z",
+      "sha256": "40ade4812f87dc2a2a14e89c9114777710080f12aed23059efef92cce663fc1b",
+      "bytes": 2706
+    },
+    "promos": {
+      "source": "https://mgnotvaahftrbifqtahf.supabase.co/functions/v1/catalog/feeds/promos.csv",
+      "receivedAt": "2026-11-25T13:06:21.584Z",
+      "sha256": "fe377076846604cd0dde28f0eca0755e8f834b3e50d220201dcd81e7059503ac",
+      "bytes": 508
+    }
+  }
+}

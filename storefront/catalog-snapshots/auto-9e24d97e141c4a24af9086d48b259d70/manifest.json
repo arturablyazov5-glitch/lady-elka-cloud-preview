@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "id": "auto-9e24d97e141c4a24af9086d48b259d70",
+  "snapshotDate": "2026-11-25",
+  "artifactGeneratedAt": "2026-11-25T13:06:44.244Z",
+  "dataAsOf": null,
+  "productionReady": false,
+  "source": {
+    "kind": "public-read-only-catalog-export"
+  },
+  "assetCoverage": "pinned-local-media",
+  "feeds": {
+    "trees": {
+      "path": "trees.csv",
+      "status": "available",
+      "records": 248,
+      "sha256": "895807661f1070543241920400c2ec311f71c9735cf09cb7b6d853272cb4e8ca",
+      "source": "https://mgnotvaahftrbifqtahf.supabase.co/functions/v1/catalog/feeds/trees.csv",
+      "receivedAt": "2026-11-25T13:06:21.535Z",
+      "http": {
+        "status": 200,
+        "etag": null,
+        "lastModified": "Wed, 25 Nov 2026 13:06:03 GMT"
+      }
+    },
+    "decor": {
+      "path": "decor.csv",
+      "status": "available",
+      "records": 9,
+      "sha256": "40ade4812f87dc2a2a14e89c9114777710080f12aed23059efef92cce663fc1b",
+      "source": "https://mgnotvaahftrbifqtahf.supabase.co/functions/v1/catalog/feeds/decor.csv",
+      "receivedAt": "2026-11-25T13:06:21.553Z",
+      "http": {
+        "status": 200,
+        "etag": null,
+        "lastModified": "Wed, 25 Nov 2026 13:06:03 GMT"
+      }
+    },
+    "promos": {
+      "path": "promos.csv",
+      "status": "available",
+      "records": 11,
+      "sha256": "fe377076846604cd0dde28f0eca0755e8f834b3e50d220201dcd81e7059503ac",
+      "source": "https://mgnotvaahftrbifqtahf.supabase.co/functions/v1/catalog/feeds/promos.csv",
+      "receivedAt": "2026-11-25T13:06:21.584Z",
+      "http": {
+        "status": 200,
+        "etag": null,
+        "lastModified": "Wed, 25 Nov 2026 13:06:04 GMT"
+      }
+    }
+  },
+  "candidate": "storefront/catalog-import/candidates/auto-9e24d97e141c4a24af9086d48b259d70",
+  "limitations": [
+    "Three separate public GETs do not prove a single merchant revision or atomic snapshot",
+    "Fetch timestamps are not historical effective dates of prices"
+  ],
+  "freshness": "current-fetch-auto-accepted",
+  "acceptance": {
+    "kind": "standing-owner-policy+automated-guards",
+    "policy": {
+      "date": "2026-10-08",
+      "source": "Explicit owner decision relayed in task 9 (catalog autosync), 2026-10-08",
+      "quote": "на сайте ВСЕГДА должны быть актуальные цены, тексты, размеры, ветки (варианты), фото и любые другие данные каталога — снапшот не должен устаревать и не должен требовать ручного «owner confirmation» на каждое обновление",
+      "scope": [
+        "prices",
+        "active",
+        "descriptions",
+        "media",
+        "promos"
+      ],
+      "authoritativeSource": "Current public Supabase catalog exports"
+    },
+    "guards": {
+      "passed": true,
+      "reportSha256": "e48de0fc4b8a7d6ed43904184fc3bcf07376442a5f82abecb51d464a413b5be6",
+      "checkedAt": "2026-11-25T13:06:44.242Z"
+    }
+  }
+}
